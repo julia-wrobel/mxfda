@@ -3,7 +3,8 @@
 #' Internal function called by \code{extract_summary_functions} to calculate a bivariate spatial summary function for a single image.
 #'
 #' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
-#' @importFrom spatstat ppp Kcross Lcross Gcross convexhull.xy
+#' @importFrom spatstat.geom ppp convexhull.xy
+#' @importFrom spatstat.explore Kcross Lcross Gcross
 #' @importFrom tibble as_tibble
 #' @import dplyr
 #'

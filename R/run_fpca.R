@@ -27,6 +27,7 @@
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param knots Number of knots for defining spline basis.Defaults to the number of measurements per function divided by 2.
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
+#' @param lightweight Default is FALSE. If TRUE, removes Y and Yhat from returned FPCA object. A good option to select for large datasets.
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #' @export
 run_fpca = function(mxfundata,
@@ -35,8 +36,8 @@ run_fpca = function(mxfundata,
                     value = "fundiff",
                     knots = NULL,
                     analysis_vars = NULL,
+                    lightweight = FALSE,
                     ...){
-
 
   index_range <- range(mxfundata[[r]])
 
@@ -55,11 +56,14 @@ run_fpca = function(mxfundata,
 
   # run fpca
   mx_fpc <- fpca.face(Y = mat, knots = knots, ...)
-  mx_fpc$Y <- NULL
-  mx_fpc$Yhat <- NULL
+
+  if(lightweight){
+    mx_fpc$Y <- NULL
+    mx_fpc$Yhat <- NULL
+  }
   mx_fpc$index_range <- index_range
 
-  score_df = setNames(as_tibble(mx_fpc$scores), paste0("fpc_", 1:mx_fpc$npc))
+  score_df = setNames(as.data.frame(mx_fpc$scores), paste0("fpc_", 1:mx_fpc$npc))
   # append all FPCA scores to dataframe that has one row per subject
   mxfundata = bind_cols(mxfundata, score_df)
 

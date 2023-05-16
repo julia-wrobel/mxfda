@@ -55,53 +55,25 @@ lung_df = lung_df %>%
          contains("phenotype"), tissue_category, adjuvant_therapy, stage = stage_numeric) 
   # count number of immune cells for each image
 
-
-
-   
-
 Gdf = extract_summary_functions(lung_df, "patient_id",
                                 extract_func = extract_univariate,
                 summary_func = Gest,
-                r_vec = seq(0, 100, by = 1),
+                r_vec = seq(0, 50, by = 1),
                 edge_correction = "rs",
                 markvar = "immune",
                 mark1 = "immune",
                 analysis_vars = c("gender", "age", "pack_years", "survival_days", "survival_status",
                                    "stage", "adjuvant_therapy"))
 
-
-p_preImpute = Gdf %>%
-  ggplot(aes(r, fundiff)) +
-  geom_line(alpha = 0.2, aes(group = patient_id)) +
-  geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
 
-Use fpca to impute missing values
+Use fpca to impute missing values. The functional call below replace any missing values in the functional predictor with an values from FPCA and otherwise leaves the data unchanged.
 
 
 ```{r}
-Gdf = Gdf %>%
-  select(-sumfun, -csr) %>%
-  pivot_wider(names_from = r, values_from = fundiff,
-              names_prefix = "r_")
-
-# define matrix for refund
-G_mat = Gdf %>% select(starts_with("r_")) %>% as.matrix()
-
-# apply fpca
-fpc_obj = fpca.face(as.matrix(G_mat),knots = 40)
-      
-# impute missing values using FPCA fitted values
-Gdf = Gdf %>%
-      # convert to long format
-      pivot_longer(contains("r_"), names_to = "index", 
-                   values_to = "value") %>%
-      mutate(Yhat = as.vector(t(fpc_obj$Yhat)),
-             value = ifelse(is.na(value), Yhat, value)) %>%
-      # convert back to wide format
-      select(-Yhat) %>%
-      pivot_wider(names_from = index, values_from = value) 
+Gdf <- mxfda:::impute_fpca(Gdf, id = "patient_id", r = "r", value = "fundiff",
+                   analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"))
 
 ```
 
@@ -115,10 +87,9 @@ I = length(unique(Gdf$patient_id))
 J = length(grep("r_", names(Gdf)))
 tind = seq(0, 100, by = 1)
 
-
-
 ### lmat: numeric integration of the functional term
-lmat <- I(matrix(1/J, ncol= J, nrow= I))
+lmat <- I(matrix(1/J, ncol= J, nrow= I)) # linear rescaling (1)
+
 ### tmat: time indices
 tmat <- I(matrix(tind, ncol=J, nrow = I, byrow=TRUE))
 # may want to define this again for the quantile transformation
@@ -167,7 +138,8 @@ Gdf$t_int = tmat
 Gdf$l_int = lmat
 
 fit_afc <- gam(survival_days ~ stage + adjuvant_therapy +
-                       ti(t_int, G, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE)), weights=survival_status,
+                       ti(t_int, G, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE)), 
+               weights=survival_status,
                    data=Gdf, family=cox.ph())
 
 fit_afc_qt <- gam(survival_days ~ stage + adjuvant_therapy +
@@ -233,7 +205,7 @@ Make plots
 
 ```{r}
 p1 = melt(real_coef_afc) %>% 
-  ggplot(aes(X1, X2, fill = value)) +
+  ggplot(aes(Var1, Var2, fill = value)) +
   geom_raster() +
   labs( title = "untransformed") +
   scale_x_continuous(name = "radius",
@@ -246,7 +218,7 @@ p1 = melt(real_coef_afc) %>%
 
 
 p2 = melt(real_coef_afc_qt) %>% 
-  ggplot(aes(X1, X2, fill = value)) +
+  ggplot(aes(Var1, Var2, fill = value)) +
   geom_raster() +
   labs( title = "quantile transformed") +
   scale_x_continuous(name = "radius",
@@ -259,7 +231,7 @@ p2 = melt(real_coef_afc_qt) %>%
 
 
 p3 = melt(real_coef_lfcm) %>% 
-  ggplot(aes(X1, X2, fill = value)) +
+  ggplot(aes(Var1, Var2, fill = value)) +
   geom_raster() +
   labs(title = "LFCM") +
   scale_x_continuous(name = "radius",

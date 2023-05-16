@@ -7,7 +7,7 @@
 extract_summary_functions(
   mxdata,
   image_patient_id,
-  r_vec = seq(0, 300, by = 10),
+  r_vec = seq(0, 100, by = 10),
   extract_func = c(extract_univariate, extract_bivariate),
   summary_func = c(Kest, Lest, Gest),
   markvar,

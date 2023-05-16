@@ -16,13 +16,9 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-#library(mxfda)
+library(mxfda)
 library(tidyverse)
-library(refund)
-library(spatstat)
-library(devtools)
 library(patchwork)
-load_all()
 ```
 
 
@@ -210,7 +206,7 @@ Gdf = extract_summary_functions(lung_oneImage_df, "patient_id",
 
 ```
 
-INTERPRET EMPTY SPACE FUNCTION
+INTERPRET NN Distance FUNCTION
 
 ```{r}
 Gdf %>%
@@ -233,7 +229,6 @@ Explore FPCA object
 Explain each of these plots
 
 ```{r fpc_plots}
-
 
 p1 = plot_fpc(G_fpca$fpc_object, 1)
 p2 = plot_fpc(G_fpca$fpc_object, 2)
