@@ -1,0 +1,258 @@
+---
+title: "explosring SoFR results"
+author: "JW"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    code_folding: hide
+    toc: true
+    toc_float: true
+hitheme: tomorrow
+highlighter: highlight.js
+---
+
+
+```{r setup, include=FALSE}
+library(mgcv)
+library(tidyverse)
+library(refund)
+library(patchwork)
+library(viridis)
+library(pROC)
+
+
+knitr::opts_chunk$set(
+  warning = FALSE,
+  message = FALSE,
+  fig.width = 9,
+  fig.height = 4,
+  fig.path = '../figs/'
+)
+
+theme_set(theme_bw() + theme(legend.position = "bottom"))
+```
+
+
+# Document notes
+
+* Instead of filtering by subjects with at least 30% of data, I removed time points where there are too many NAs, which allows us to keep more subjects.
+  * The `nmiss` argument from the `process_sofr` function I wrote below controls how many missing values a given time point is allowed to have
+  * I also rescaled the functions (multiplied by 100) so they are more interpretable when you put them in the model
+  * Results look roughly how I would expect- I don't think the coefficient function from SoFR is statistically significant anywhere- I think the functions are just too variable
+
+# Load data
+
+
+
+
+
+
+```{r}
+##reading in demographic data
+df30 <- readRDS(here::here("data", "df30.RDS"))
+zmat_30 <- readRDS(here::here("data", "Zmat_30.RDS"))
+colnames(zmat_30) = paste0("col_", 1:ncol(zmat_30))
+
+df30 = bind_cols(df30, as_tibble(zmat_30)) %>%
+  rename(id = record_id)
+
+
+
+df <- readRDS(here::here("data", "df_all.RDS"))
+zmat <- readRDS(here::here("data", "Zmat_all.RDS"))
+colnames(zmat) = paste0("col_", 1:ncol(zmat))
+
+df = bind_cols(df, as_tibble(zmat)) %>%
+    rename(id = record_id)
+
+
+rm(zmat, zmat_30)
+
+```
+
+
+
+Function to process data for use in GAM and refund models
+
+```{r}
+process_sofr = function(df,impute = TRUE, nmiss = 20){
+  sofr_df = df %>%
+    # convert to long format
+      pivot_longer(contains("col_"), names_to = "index", 
+               names_prefix = "col_",
+               names_transform = as.numeric,
+               values_to = "value") %>%
+    group_by(index) %>%
+    mutate(n_miss = sum(is.na(value)),
+           # rescale value
+           value = value * 100) %>%
+    ungroup() %>%
+    # remove some columns based on user input
+    filter(n_miss <= nmiss) %>%
+    select(id, pph, pre_eclamp, index, value) %>%
+    # convert back to wide format
+    pivot_wider(names_from = index, values_from = value, 
+                names_prefix = "col_")
+
+
+
+  
+  if(impute){
+      # define matrix for refund
+    sofr_mat = sofr_df %>% select(starts_with("col")) %>% as.matrix()
+
+    # apply fpca
+    fpc_obj = fpca.face(as.matrix(sofr_mat),
+                      knots = 50)
+      # impute missing values using FPCA fitted values
+    sofr_df = sofr_df %>%
+      # convert to long format
+      pivot_longer(contains("col_"), names_to = "index", 
+                   values_to = "value") %>%
+      mutate(Yhat = as.vector(t(fpc_obj$Yhat)),
+             value = ifelse(is.na(value), Yhat, value)) %>%
+      # convert back to wide format
+      select(id, index, value) %>%
+      pivot_wider(names_from = index, values_from = value)
+
+  }
+
+  sofr_mat = sofr_df %>% select(starts_with("col")) %>% as.matrix()
+  
+  
+  index = sort(as.numeric(str_remove(colnames(sofr_mat), "col_")))
+  ncols = ncol(sofr_mat)
+
+  #sind <- seq(0, 1, len = ncols)
+  #smat <- matrix(sind, nrow(sofr_df), ncols, byrow = TRUE)
+  smat <- matrix(index, nrow(sofr_df), ncols, byrow = TRUE)
+  
+  #sofr_df$Zraw <- I(as.matrix(sofr_right_post))
+  sofr_df$smat <- I(smat)
+  sofr_df$lmat <- I(matrix(1/ncols, nrow(sofr_df), ncols))
+  sofr_df$zlmat <- I(sofr_df$lmat * sofr_mat)
+  
+  inner_join(select(df, id, pph), sofr_df, by = "id")
+
+}
+
+```
+
+
+# Visualize data
+
+
+```{r}
+p30 = df30 %>%
+  pivot_longer(contains("col_"), names_to = "index", 
+               names_prefix = "col_",
+               names_transform = as.numeric,
+               values_to = "value") %>%
+  ggplot(aes(index, value, group = id, color = factor(pph))) +
+  geom_line(alpha = 0.3) +
+  geom_smooth(aes(group = pph, color = factor(pph)), method = "gam")  +
+  ggtitle("Subjects with < 30% missing")
+  
+pall = df %>%
+  pivot_longer(contains("col_"), names_to = "index", 
+               names_prefix = "col_",
+               names_transform = as.numeric,
+               values_to = "value") %>%
+  ggplot(aes(index, value, group = id, color = factor(pph))) +
+  geom_line(alpha = 0.3) +
+  geom_smooth(aes(group = pph, color = factor(pph)), method = "gam")  +
+  ggtitle("All subjects")
+
+
+p30 + pall
+```
+
+
+Visualize imputed data
+
+
+TO DO
+
+- visualize imputed data 
+- check if this is actually just because the functions are roughly parallel
+- do a rough simulation that shows this is the case
+
+```{r}
+df30_sofr = process_sofr(df30, nmiss = 1, impute = TRUE)
+
+
+p30 = df30_sofr %>%
+  select(id, pph, contains("col_")) %>%
+  pivot_longer(contains("col_"), names_to = "index", 
+               names_prefix = "col_",
+               names_transform = as.numeric,
+               values_to = "value") %>%
+  ggplot(aes(index, value, group = id, color = factor(pph))) +
+  geom_line(alpha = 0.3) +
+  geom_smooth(aes(group = pph, color = factor(pph)), method = "gam") +
+  ggtitle("30 subjs")
+
+
+df_sofr = process_sofr(df, nmiss = 10, impute = TRUE)
+
+
+pall = df_sofr %>%
+  select(id, pph, contains("col_")) %>% 
+  pivot_longer(contains("col_"), names_to = "index", 
+               names_prefix = "col_",
+               names_transform = as.numeric,
+               values_to = "value") %>%
+  ggplot(aes(index, value, group = id, color = factor(pph))) +
+  geom_point(alpha = .1, size = .1) +
+  geom_line(alpha = 0.1) +
+  geom_smooth(aes(group = pph, color = factor(pph)), method = "gam") +
+  ggtitle("all subjs") 
+
+
+p30 + pall
+
+```
+
+
+
+# scalar on function regression
+
+
+
+all subjects
+
+```{r}
+
+mod <- gam(pph ~ s(smat, by=zlmat, bs = "cr", k = 50), 
+                   data= df_sofr,
+                   method = "REML", family = binomial)
+
+```
+
+Constructing plot 
+
+```{r}
+# plots coefficient function, which is a log odds ratio over time
+plot(mod)
+```
+
+
+
+30 subjects
+
+```{r}
+
+mod30 <- gam(pph ~ s(smat, by=zlmat, bs = "cr", k = 30), 
+                   data= df30_sofr,
+                   method = "REML", family = binomial)
+```
+
+Constructing plot 
+
+```{r}
+# plots coefficient function, which is a log odds ratio over time
+# still looks pretty weird - I think the variance is too beg and their aren't enough subjects so GAM is just estimating this line to be linear rather than non linear. However, the tredns are similar to the all subjects line
+plot(mod30)
+```
+
+

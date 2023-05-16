@@ -1,0 +1,282 @@
+---
+title: "mx_funreg"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mx_funreg}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(mxfda)
+library(refund)
+library(refund.shiny)
+library(mgcv)
+library(patchwork)
+```
+
+
+## Models for survival outcomes
+
+### Cox regression using functional principal components as predictors
+
+### linear functional Cox regression
+
+### additive functional Cox regression
+
+Let's use the all immune cells data and the G-function
+
+```{r}
+# load processed lung cancer data
+load(url("https://github.com/julia-wrobel/MI_tutorial/raw/main/Data/lung.RDA"))
+
+# clean data
+lung_df = lung_df %>%
+  # subset to only analyze tumor areas
+  filter(tissue_category == "Tumor") %>%
+  # provide more intuitive patient and image IDs
+  mutate(patient_id = as.numeric(factor(patient_id))) %>%
+  group_by(patient_id) %>%
+  mutate(image_id = as.numeric(factor(image_id))) %>%
+  ungroup() %>%
+  # create patient-image id
+  mutate(patientImage_id = str_c(patient_id, "_", image_id)) %>%
+  # define cell type 'immune', which groups all immune cells
+  mutate(immune = ifelse(phenotype_cd19 == "CD19+" | phenotype_cd8 == "CD8+" |
+              phenotype_cd4 == "CD4+" | phenotype_cd14 == "CD14+", "immune", "other")) %>%
+  select(contains("id"), x, y, gender, age = age_at_diagnosis, immune, survival_days, survival_status, pack_years, mhcII_status,
+         contains("phenotype"), tissue_category, adjuvant_therapy, stage = stage_numeric) 
+  # count number of immune cells for each image
+
+
+
+   
+
+Gdf = extract_summary_functions(lung_df, "patient_id",
+                                extract_func = extract_univariate,
+                summary_func = Gest,
+                r_vec = seq(0, 100, by = 1),
+                edge_correction = "rs",
+                markvar = "immune",
+                mark1 = "immune",
+                analysis_vars = c("gender", "age", "pack_years", "survival_days", "survival_status",
+                                   "stage", "adjuvant_therapy"))
+
+
+p_preImpute = Gdf %>%
+  ggplot(aes(r, fundiff)) +
+  geom_line(alpha = 0.2, aes(group = patient_id)) +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+```
+
+
+Use fpca to impute missing values
+
+
+```{r}
+Gdf = Gdf %>%
+  select(-sumfun, -csr) %>%
+  pivot_wider(names_from = r, values_from = fundiff,
+              names_prefix = "r_")
+
+# define matrix for refund
+G_mat = Gdf %>% select(starts_with("r_")) %>% as.matrix()
+
+# apply fpca
+fpc_obj = fpca.face(as.matrix(G_mat),knots = 40)
+      
+# impute missing values using FPCA fitted values
+Gdf = Gdf %>%
+      # convert to long format
+      pivot_longer(contains("r_"), names_to = "index", 
+                   values_to = "value") %>%
+      mutate(Yhat = as.vector(t(fpc_obj$Yhat)),
+             value = ifelse(is.na(value), Yhat, value)) %>%
+      # convert back to wide format
+      select(-Yhat) %>%
+      pivot_wider(names_from = index, values_from = value) 
+
+```
+
+
+
+
+```{r}
+# set up data for use with the  AFCM
+# number of objects per subject
+I = length(unique(Gdf$patient_id))
+J = length(grep("r_", names(Gdf)))
+tind = seq(0, 100, by = 1)
+
+
+
+### lmat: numeric integration of the functional term
+lmat <- I(matrix(1/J, ncol= J, nrow= I))
+### tmat: time indices
+tmat <- I(matrix(tind, ncol=J, nrow = I, byrow=TRUE))
+# may want to define this again for the quantile transformation
+
+
+# quantile transformed version of the data
+Gmat_qt <- apply(select(Gdf, starts_with("r_")), 2, function(y) ecdf(y)(y))
+
+
+p_qt = as_refundObj(Gmat_qt) %>% ggplot(aes(index, value)) +
+  geom_line(alpha = 0.2, aes(group = id)) +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+
+
+Gmat_qt = I(Gmat_qt)
+```
+
+
+
+Plot the data, transformed and not.
+
+```{r}
+p_postImpute = Gdf %>%
+  pivot_longer(contains("r_"), names_to = "r", 
+                   values_to = "value",
+               names_prefix = "r_",
+               names_transform = as.numeric) %>%
+  ggplot(aes(r, value)) +
+  geom_line(alpha = 0.2, aes(group = patient_id)) +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+
+p_preImpute + p_postImpute + p_qt
+
+```
+
+
+Convert functional covariates to matrix
+
+```{r, warning = TRUE}
+Gdf_mat = Gdf %>% select(starts_with("r_")) %>% as.matrix()
+
+Gdf = Gdf %>% select(-starts_with("r_"))
+Gdf$G = Gdf_mat
+Gdf$G_qt = Gmat_qt
+Gdf$t_int = tmat
+Gdf$l_int = lmat
+
+fit_afc <- gam(survival_days ~ stage + adjuvant_therapy +
+                       ti(t_int, G, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE)), weights=survival_status,
+                   data=Gdf, family=cox.ph())
+
+fit_afc_qt <- gam(survival_days ~ stage + adjuvant_therapy +
+                       ti(t_int, G_qt, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE)), weights=survival_status,
+                   data=Gdf, family=cox.ph())
+
+
+# fit LFCM
+fit_lfcm <- gam(survival_days ~ stage + adjuvant_therapy +
+                s(t_int, by=l_int*G, bs="cr", k=10), weights=survival_status, data=Gdf, family=cox.ph())
+
+rm(Gdf_mat, Gmat_qt, G_mat, tmat, lmat)
+```
+
+
+Visualize the model
+
+```{r}
+## construct the grid (100*100 matrix by default) with specified ranges
+### function "cal_grid()" returns grid (grid_coef) with pre-specified range of x and s
+#### grid_length: length of grid in each direction, 100 by default
+#### range_x: pre-specified upper bound of x, 1 by default
+#### range_s: pre-specified upper bound of s, 1 by default
+cal_grid <- function(grid_length = 101, min_x = -.25, range_x = .75, range_s = 100){
+    tind_pred <- seq(0, range_s, length.out = grid_length)
+    xind_pred <- seq(min_x, range_x, length.out = grid_length)
+    grid_coef <- data.frame(t_int = rep(tind_pred, grid_length),
+                            G = rep(xind_pred, each = grid_length),
+                            l_int=1)
+    return(grid_coef)
+}
+```
+
+
+```{r extract_estimates}
+sample <- Gdf[1, c("stage", "adjuvant_therapy")]
+
+## untransformed data
+grid_coef <- cal_grid(grid_length = 101, min_x = -.25, range_x = .75, range_s = 100) ## range_x based on maximum of act_log_mat
+sample_rep <- do.call("rbind", replicate(nrow(grid_coef), sample, simplify = FALSE))
+grid_coef <- cbind(grid_coef, sample_rep)
+real_coef_afc <- predict(fit_afc, newdata = grid_coef, type = 'terms')
+real_coef_afc <- matrix(real_coef_afc[,"ti(t_int,G):l_int"], ncol = sqrt(nrow(grid_coef)), nrow = sqrt(nrow(grid_coef)), byrow = FALSE) # re-organize to matrix form
+
+
+# LFCM
+real_coef_lfcm <- predict(fit_lfcm, newdata = grid_coef, type = 'terms')
+real_coef_lfcm <- matrix(real_coef_lfcm[,"s(t_int):l_int * G"], ncol = sqrt(nrow(grid_coef)), nrow = sqrt(nrow(grid_coef)), byrow = FALSE) # re-organize to matrix form
+
+# quantile transformed data
+grid_coef <- cal_grid(grid_length = 101, min_x = 0, range_x = .1, range_s = 100) ## range_x based on maximum of act_log_mat
+grid_coef$G_qt = grid_coef$G
+sample_rep <- do.call("rbind", replicate(nrow(grid_coef), sample, simplify = FALSE))
+grid_coef <- cbind(grid_coef, sample_rep)
+real_coef_afc_qt <- predict(fit_afc_qt, newdata = grid_coef, type = 'terms')
+real_coef_afc_qt <- matrix(real_coef_afc_qt[,"ti(t_int,G_qt):l_int"], ncol = sqrt(nrow(grid_coef)), nrow = sqrt(nrow(grid_coef)), byrow = FALSE) # re-organize to matrix form
+```
+
+
+
+
+Make plots
+
+```{r}
+p1 = melt(real_coef_afc) %>% 
+  ggplot(aes(X1, X2, fill = value)) +
+  geom_raster() +
+  labs( title = "untransformed") +
+  scale_x_continuous(name = "radius",
+                               breaks = seq(0, 101, by = 10)) +
+  scale_y_continuous(name = "G value",
+                     breaks = seq(0, 101, length.out = 5),
+                               labels = seq(-.21, -.75, length.out = 5)) +
+  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
+  theme_minimal() 
+
+
+p2 = melt(real_coef_afc_qt) %>% 
+  ggplot(aes(X1, X2, fill = value)) +
+  geom_raster() +
+  labs( title = "quantile transformed") +
+  scale_x_continuous(name = "radius",
+                               breaks = seq(0, 101, by = 10)) +
+  scale_y_continuous(name = "G value",
+                     breaks = seq(0, 101, length.out = 5),
+                               labels = seq(0, 1, length.out = 5)) +
+  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
+  theme_minimal() 
+
+
+p3 = melt(real_coef_lfcm) %>% 
+  ggplot(aes(X1, X2, fill = value)) +
+  geom_raster() +
+  labs(title = "LFCM") +
+  scale_x_continuous(name = "radius",
+                               breaks = seq(0, 101, by = 10)) +
+  scale_y_continuous(name = "G value",
+                     breaks = seq(0, 101, length.out = 5),
+                               labels = seq(-.21, -.75, length.out = 5)) +
+  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
+  theme_minimal() 
+
+
+p1  + p2 + p3
+```
+
+
+
+```{r}
+summary(fit_afc)
+```
+

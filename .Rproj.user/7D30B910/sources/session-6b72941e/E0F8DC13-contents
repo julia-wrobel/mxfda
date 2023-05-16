@@ -1,0 +1,273 @@
+---
+title: "mx_fda"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mx_fda}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  figs.out = "../figures"
+)
+```
+
+```{r setup}
+#library(mxfda)
+library(tidyverse)
+library(refund)
+library(spatstat)
+library(devtools)
+library(patchwork)
+load_all()
+```
+
+
+This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysies. This vignette focuses on exploratory data analysis, visualization, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+
+
+## Goals of `mxfda`
+
+What are the goals of mxfda package?
+
+* Make it easier to analyze spatial relationships of cells in multiplex images
+* Use spatial summary functions of point processes to characterize univariate / bivariate clustering
+* Relate spatial summary functions to patient level outcomes
+* Use completely open source data
+
+Highlight papers that describe this type of work in more detail.
+
+
+## VectraPolarisData 
+
+All examples in this vignette use data from the VectraPolarisData package on Bioconductor's Experiment hub.  BRIEFLY, MORE INFO ON THIS DATA. ADD LINKS TO THE REPO AND MY SHORT COURSE WEBSITE.
+
+* Describe the two datasets
+* Say this one will focus on the lung data
+
+### HumanLungCancer
+
+This data contains (number of subjects, images per subject, number of cells). Load the data from my website.
+
+```{r}
+# load processed lung cancer data
+load(url("https://github.com/julia-wrobel/MI_tutorial/raw/main/Data/lung.RDA"))
+
+# clean data
+lung_df = lung_df %>%
+  # subset to only analyze tumor areas
+  filter(tissue_category == "Tumor") %>%
+  # provide more intuitive patient and image IDs
+  mutate(patient_id = as.numeric(factor(patient_id))) %>%
+  group_by(patient_id) %>%
+  mutate(image_id = as.numeric(factor(image_id))) %>%
+  ungroup() %>%
+  # create patient-image id
+  mutate(patientImage_id = str_c(patient_id, "_", image_id)) %>%
+  # define cell type 'immune', which groups all immune cells
+  mutate(immune = ifelse(phenotype_cd19 == "CD19+" | phenotype_cd8 == "CD8+" |
+              phenotype_cd4 == "CD4+" | phenotype_cd14 == "CD14+", "immune", "other")) %>%
+  select(contains("id"), x, y, gender, age = age_at_diagnosis, immune, survival_days, survival_status,
+         contains("phenotype"), tissue_category, stage = stage_numeric)
+         
+```
+
+Provide background on what type of cells and analyses you are interested in.
+
+* All immune cells in cancer area
+* Relationship between T-cells and macrophages
+* Plot some pictures of the images that help highlight this
+
+
+## Spatial summary functions based on point processes
+
+Use text from somewhere else here. Talk about K, g, and G and point to links
+
+### Univariate summary functions
+
+Use text from somewhere else here to describe what these are.
+
+
+Below we calculate univariate Ripley's K for all immune cells in each image. Describe that it is using spatstat under the hood. These can be calculated with our package or spatialTIME. Options for the edge correction when using Ripley's K include `"border", "isotropic", "Ripley", "translate"`.  See `spatstat.core::Kest` for more details. Below we calculate the K function across a range of radii from 0 to 300 and use the isotropic ("iso") edge correction.  The `analysis_vars` argument retains variables that may be used in downstream analysis
+
+
+
+```{r univariate_k}
+Kdf = extract_summary_functions(lung_df, "patientImage_id",
+                                extract_func = extract_univariate,
+                                summary_func = Kest,
+                                r_vec = seq(0, 100, by = 10),
+                                edge_correction = "iso",
+                                markvar = "immune",
+                                mark1 = "immune")
+
+
+
+```
+
+COMMENT ON THESE PLOTS
+
+```{r}
+Kdf %>%
+  ggplot(aes(r, fundiff)) +
+  geom_line(alpha = 0.2, aes( group = patientImage_id)) +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+```
+
+
+SAY WHAT YOU DO DIFFERENT TO GET L OR G
+
+
+
+```{r}
+rm(Gcrossdf)
+```
+
+### Bivariate summary functions
+
+Use if you want to do bivariate. We will look at relationship between T-cells and macrophages. There are a few images that have fewer than 5 T-cells or macrophages, which makes estimation less stable for those images.
+
+Below we calculate the bivariate G function, but replace Lcross or Kcross to do L or K bivariate functions
+
+
+```{r}
+lung_df = lung_df %>%
+  mutate(phenotype = case_when(phenotype_cd8 == "CD8+" ~ "T-cell",
+                               phenotype_cd14 == "CD14+" ~ "macrophage",
+                               TRUE ~ "other"),
+         phenotype = factor(phenotype)) 
+
+
+lung_df %>%
+  group_by(patientImage_id) %>%
+  count(phenotype) %>%
+  ungroup() %>%
+  filter(phenotype != "other") %>%
+  group_by(phenotype) %>%
+  summarize(sum(n < 5))
+```
+
+
+Automatically removes images that do not have at least 1 cell of each type
+
+```{r}
+Gcrossdf = extract_summary_functions(lung_df, "patientImage_id",
+                summary_func = Gcross,
+                extract_func = extract_bivariate,
+                r_vec = seq(0, 100, by = 10),
+                edge_correction = "rs",
+                markvar = "phenotype",
+                mark1 = "T-cell",
+                mark2 = "macrophage")
+
+```
+
+
+```{r}
+Gcrossdf %>%
+  ggplot(aes(r, fundiff)) +
+  geom_line(alpha = 0.2, aes(group = patientImage_id)) +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+```
+
+
+## Functional principal components analysis
+
+SAY THAT THIS CAN BE DONE WITH ANY OF THE FUNCTIONS CALCULATED ABOVE. FOR CONSISTENCY OF INTERPRATION, I WILL USE THE NEAREST NEIGHBOR G FUNCTION FOR THE REST OF THE VIGNETTE.
+
+Assumes one curve per subject.  Do univariate G function of immune cells, select image with highest number of cells for each subject. Do immune cells 
+
+```{r}
+# take image from each patient with greatest number of immune cells
+lung_oneImage_df = lung_df %>%
+  group_by(patient_id, image_id) %>%
+  mutate(n_immune = sum(immune == "immune")) %>%
+  ungroup() %>%
+  group_by(patient_id) %>%
+  arrange(-n_immune) %>%
+  filter(image_id == first(image_id)) %>%
+  ungroup() %>%
+  select(n_immune, everything())
+```
+
+
+
+
+
+```{r}
+Gdf = extract_summary_functions(lung_oneImage_df, "patient_id",
+                                extract_func = extract_univariate,
+                                summary_func = Gest,
+                                r_vec = seq(0, 100, by = 1),
+                                edge_correction = "rs",
+                                markvar = "immune",
+                                mark1 = "immune",
+                                analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"))
+
+
+```
+
+INTERPRET EMPTY SPACE FUNCTION
+
+```{r}
+Gdf %>%
+  ggplot(aes(r, fundiff)) +
+  geom_line(alpha = 0.2, aes(group = patient_id)) +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+```
+
+
+
+```{r}
+G_fpca <- run_fpca(Gdf, id = "patient_id", r = "r", value = "fundiff",
+                   analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"),
+                   pve = .95)
+
+Gdf = G_fpca$mxfundata
+```
+
+Explore FPCA object
+Explain each of these plots
+
+```{r fpc_plots}
+
+
+p1 = plot_fpc(G_fpca$fpc_object, 1)
+p2 = plot_fpc(G_fpca$fpc_object, 2)
+p3 = plot_fpc(G_fpca$fpc_object, 3)
+p4 = plot_fpc(G_fpca$fpc_object, 4)
+
+(p1 + p2)/(p3 + p4)
+```
+
+
+INTERPRET WHAT YOU LEARNED FROM FPCA
+
+
+Shout out to refund.shiny
+
+```{r refund.shiny, eval = FALSE}
+G_fpca$fpc_object$Y <- select(Gdf, contains("r_"))
+G_fpca$fpc_object$Yhat <- matrix(rnorm(153*101), nrow = 153, ncol = 101)
+
+library(refund.shiny)
+plot_shiny(G_fpca$fpc_object)
+
+```
+
+
+
+### MFPCA
+
+ICC
+
+
+
+# FDA Tips
+
+
+* Better to have 20+ measurements per curve- htat means using a dense grid of radii
+* Number of knots cannot exceed the number of datapoints per function

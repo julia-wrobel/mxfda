@@ -1,0 +1,58 @@
+library(usethis)
+library(devtools)
+
+use_vignette("mx_fda")
+
+
+
+
+mxdata = lung_df
+image_patient_id = "patientImage_id"
+summary_func = Gest
+extract_func = extract_univariate
+edge_correction = "rs"
+markvar = "immune"
+mark1 = "immune"
+#mark2 = "macrophage"
+mark2 = NULL
+analysis_vars = NULL
+func = Gest
+r_vec = seq(0, 100, by = 10)
+
+df_nest = lung_df %>%
+  select(all_of(image_patient_id), x, y, all_of(markvar), all_of(analysis_vars)) %>%
+  filter(get(markvar) %in% c(mark1, mark2)) %>%
+  nest(data = c(x, y, markvar))
+
+
+mximg = df_nest$data[[1]]
+
+
+
+mxfundata = Gdf %>% 
+  select(id = patient_id, r, value = fundiff) %>%
+  pivot_wider(names_from = r, 
+              names_glue = "r_{round(r, 2)}",
+              values_from = value)
+
+
+ids <- mxfundata$id
+
+mat <- mxfundata %>%
+  dplyr::select(-id) %>%
+  as.matrix(rownames.value = ids)
+
+knots = NULL
+
+if(is.null(knots)) knots = floor(ncol(mat)/3)
+if(knots > ncol(mat) - 5) knots = floor(ncol(mat)/2)
+
+# run fpca
+mx_fpc <- fpca.face(Y = mat, knots = knots)
+
+
+mx_fpc$scores
+rownames(mx_fpc$scores)
+
+
+plot_shiny(mx_fpc)
