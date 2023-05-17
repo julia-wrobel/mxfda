@@ -26,7 +26,6 @@
 #' @export
 run_fcm <- function(mxfundata,
                         form,
-                        event,
                         id,
                         r = "r",
                         value = "fundiff",
@@ -52,7 +51,7 @@ run_fcm <- function(mxfundata,
                    weights = event,
                    data = mxfundata, family = cox.ph())
 
-    class(fit_fcm) <- "afcm"
+    class(fit_fcm) <- append("afcm", class(fit_fcm))
   }else{
     form =  paste0(form, '+ s(t_int, by=l_int*func, bs="cr", k=10)')
 
@@ -60,7 +59,7 @@ run_fcm <- function(mxfundata,
                    weights = event,
                    data = mxfundata, family = cox.ph())
 
-    class(fit_fcm) <- "lfcm"
+    class(fit_fcm) <- append("lfcm", class(fit_fcm))
   }
 
  fit_fcm

@@ -40,19 +40,16 @@ extract_univariate = function(mximg,
                               edge_correction){
   #### note to switch edge correction based on choice of func, this should be automated
 
-
-  # subset data to only cells if interest
-  # mximg = filter(mximg, markvar == mark1)
-
   if(nrow(mximg) < 3) return(NA)
 
   # create a convex hull as the observation window
   w = convexhull.xy(mximg[["x"]], mximg[["y"]])
 
   # create ppp object
-  pp_obj = ppp(mximg[["x"]], mximg[["y"]], window = w, marks = mximg[[markvar]])
+  pp_obj = ppp(mximg[["x"]], mximg[["y"]], window = w,
+               marks = mximg[[markvar]], checkdup = FALSE)
 
-  # estimate L using spatstat
+  # estimate spatial summary function
   sumfun = func(pp_obj,
                 r = r_vec,
                 correction = edge_correction)

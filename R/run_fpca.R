@@ -44,7 +44,7 @@ run_fpca = function(mxfundata,
   mxfundata <- mxfundata %>%
     select(all_of(c(id, r, value, analysis_vars))) %>%
     pivot_wider(names_from = r,
-                names_glue = "r_{round(r, 2)}",
+                names_prefix = "r_",
                 values_from = value)
 
   mat <- mxfundata %>%
@@ -63,9 +63,11 @@ run_fpca = function(mxfundata,
   }
   mx_fpc$index_range <- index_range
 
-  score_df = setNames(as.data.frame(mx_fpc$scores), paste0("fpc_", 1:mx_fpc$npc))
-  # append all FPCA scores to dataframe that has one row per subject
-  mxfundata = bind_cols(mxfundata, score_df)
+  score_df = setNames(as.data.frame(mx_fpc$scores), paste0("fpc", 1:mx_fpc$npc))
+
+  # append all FPCA scores to dataframe that has one row per subject, then convert to long format
+  mxfundata = bind_cols(mxfundata, score_df) %>%
+    select(-starts_with("r_"))
 
   list(mxfundata = mxfundata,
        fpc_object = mx_fpc)

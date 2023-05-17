@@ -90,8 +90,7 @@ impute_fpca = function(mxfundata,
                        r = "r",
                        value = "fundiff",
                        knots = NULL,
-                       analysis_vars,
-                       ...){
+                       analysis_vars){
 
   mxfundata <- mxfundata %>%
     select(all_of(c(id, r, value, analysis_vars))) %>%
@@ -115,7 +114,7 @@ impute_fpca = function(mxfundata,
     pivot_longer(contains("r_"), names_to = r, values_to = value,
                  names_prefix = "r_", names_transform = as.numeric) %>%
     mutate(Yhat = as.vector(t(mx_fpc$Yhat)),
-           imputed = ifelse(is.na(get(value)), Yhat, get(value)))
+           imputed = ifelse(is.na(get(value)) | is.nan(get(value)), Yhat, get(value)))
 
   mxfundata[[value]] <- mxfundata$imputed
 

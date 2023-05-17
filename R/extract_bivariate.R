@@ -52,7 +52,8 @@ extract_bivariate = function(mximg,
   w = convexhull.xy(mximg[["x"]], mximg[["y"]])
 
   # create ppp object
-  pp_obj = ppp(mximg[["x"]], mximg[["y"]], window = w, marks = mximg[[markvar]])
+  pp_obj = ppp(mximg[["x"]], mximg[["y"]], window = w,
+               marks = mximg[[markvar]], checkdup = FALSE)
 
   # estimate L using spatstat
   sumfun = func(pp_obj, mark1, mark2,

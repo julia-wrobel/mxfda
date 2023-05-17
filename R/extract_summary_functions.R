@@ -56,7 +56,7 @@ extract_summary_functions <- function(mxdata, image_patient_id, r_vec = seq(0, 1
   df_nest = mxdata %>%
     select(all_of(image_patient_id), x, y, all_of(markvar), all_of(analysis_vars)) %>%
     filter(get(markvar) %in% c(mark1, mark2)) %>%
-    nest(data = c(x, y, markvar))
+    nest(data = c(x, y, all_of(markvar)))
 
    df_nest %>% mutate(sumfuns = map(df_nest$data, extract_func,
                                     markvar = markvar,
