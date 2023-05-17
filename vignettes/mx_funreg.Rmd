@@ -51,7 +51,8 @@ lung_df = lung_df %>%
   # define cell type 'immune', which groups all immune cells
   mutate(immune = ifelse(phenotype_cd19 == "CD19+" | phenotype_cd8 == "CD8+" |
               phenotype_cd4 == "CD4+" | phenotype_cd14 == "CD14+", "immune", "other")) %>%
-  select(contains("id"), x, y, gender, age = age_at_diagnosis, immune, survival_days, survival_status, pack_years, mhcII_status,
+  select(contains("id"), x, y, gender, age = age_at_diagnosis, immune, survival_days, 
+         event = survival_status, pack_years, mhcII_status,
          contains("phenotype"), tissue_category, adjuvant_therapy, stage = stage_numeric) 
   # count number of immune cells for each image
 
@@ -62,12 +63,15 @@ Gdf = extract_summary_functions(lung_df, "patient_id",
                 edge_correction = "rs",
                 markvar = "immune",
                 mark1 = "immune",
-                analysis_vars = c("gender", "age", "pack_years", "survival_days", "survival_status",
+                analysis_vars = c("gender", "age", "pack_years", "survival_days", "event",
                                    "stage", "adjuvant_therapy"))
 
 
-t = run_fcm(Gdf, id = "patient_id", r = "r", value = "fundiff",
-                   analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"),
+t = run_fcm(Gdf, form = "survival_days ~ stage + adjuvant_therapy",
+            event = "survival_status",
+            id = "patient_id", r = "r", value = "fundiff",
+            analysis_vars = c("gender", "age", "survival_days", "event", "stage",
+                              "adjuvant_therapy"),
             quantile_transform = TRUE)
 ```
 
@@ -85,46 +89,11 @@ Gdf <- mxfda:::impute_fpca(Gdf, id = "patient_id", r = "r", value = "fundiff",
 
 
 
-```{r}
-# set up data for use with the  AFCM
-# number of objects per subject
-I = length(unique(Gdf$patient_id))
-J = length(grep("r_", names(Gdf)))
-tind = seq(0, 100, by = 1)
-
-### lmat: numeric integration of the functional term
-lmat <- I(matrix(1/J, ncol= J, nrow= I)) # linear rescaling (1)
-
-### tmat: time indices
-tmat <- I(matrix(tind, ncol=J, nrow = I, byrow=TRUE))
-# may want to define this again for the quantile transformation
-
-
-# quantile transformed version of the data
-Gmat_qt <- apply(select(Gdf, starts_with("r_")), 2, function(y) ecdf(y)(y))
-```
-
-
 
 Convert functional covariates to matrix
 
 ```{r, warning = TRUE}
-Gdf_mat = Gdf %>% select(starts_with("r_")) %>% as.matrix()
 
-Gdf = Gdf %>% select(-starts_with("r_"))
-Gdf$G = Gdf_mat
-Gdf$G_qt = Gmat_qt
-Gdf$t_int = tmat
-Gdf$l_int = lmat
-
-fit_afc <- gam(survival_days ~ stage + adjuvant_therapy +
-                       ti(t_int, G, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE)), 
-               weights=survival_status,
-                   data=Gdf, family=cox.ph())
-
-fit_afc_qt <- gam(survival_days ~ stage + adjuvant_therapy +
-                       ti(t_int, G_qt, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE)), weights=survival_status,
-                   data=Gdf, family=cox.ph())
 
 
 # fit LFCM
