@@ -65,6 +65,10 @@ Gdf = extract_summary_functions(lung_df, "patient_id",
                 analysis_vars = c("gender", "age", "pack_years", "survival_days", "survival_status",
                                    "stage", "adjuvant_therapy"))
 
+
+t = run_fcm(Gdf, id = "patient_id", r = "r", value = "fundiff",
+                   analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"),
+            quantile_transform = TRUE)
 ```
 
 
@@ -72,6 +76,7 @@ Use fpca to impute missing values. The functional call below replace any missing
 
 
 ```{r}
+# normally would be called within the regression function
 Gdf <- mxfda:::impute_fpca(Gdf, id = "patient_id", r = "r", value = "fundiff",
                    analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"))
 
@@ -97,33 +102,8 @@ tmat <- I(matrix(tind, ncol=J, nrow = I, byrow=TRUE))
 
 # quantile transformed version of the data
 Gmat_qt <- apply(select(Gdf, starts_with("r_")), 2, function(y) ecdf(y)(y))
-
-
-p_qt = as_refundObj(Gmat_qt) %>% ggplot(aes(index, value)) +
-  geom_line(alpha = 0.2, aes(group = id)) +
-  geom_hline(yintercept = 0, color = "red", linetype = 2)
-
-
-Gmat_qt = I(Gmat_qt)
 ```
 
-
-
-Plot the data, transformed and not.
-
-```{r}
-p_postImpute = Gdf %>%
-  pivot_longer(contains("r_"), names_to = "r", 
-                   values_to = "value",
-               names_prefix = "r_",
-               names_transform = as.numeric) %>%
-  ggplot(aes(r, value)) +
-  geom_line(alpha = 0.2, aes(group = patient_id)) +
-  geom_hline(yintercept = 0, color = "red", linetype = 2)
-
-p_preImpute + p_postImpute + p_qt
-
-```
 
 
 Convert functional covariates to matrix
