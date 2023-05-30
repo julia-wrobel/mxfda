@@ -28,10 +28,10 @@ plot_fpc = function(obj, pc_choice){
 
   ggplot(df, aes(index, mu)) +
     geom_line(lwd = 1) +
-    geom_point(aes(y = plus), color = "blue", size = 4, shape = "+") +
-    geom_point(aes(y = minus), color = "darkred", size = 4, shape = "-") +
+    geom_point(aes(y = plus), color = "blue", size = 2, shape = "+") +
+    geom_point(aes(y = minus), color = "darkred", size = 2, shape = "-") +
     ggtitle(bquote(psi[.(pc_choice)]~(t) ~ ","
                    ~.(100*round(obj$evalues[pc_choice]/sum(obj$evalues),3)) ~ "% Variance")) +
-    labs(x = "radius", y = paste("functional principal component", pc_choice)) +
+    labs(x = "r", y = paste("fpc", pc_choice)) +
     theme_minimal()
 }
