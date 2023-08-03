@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 library(mxfda)
 library(tidyverse)
 library(patchwork)
+devtools::load_all()
 ```
 
 
