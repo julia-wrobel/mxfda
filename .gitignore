@@ -2,6 +2,7 @@ inst/doc
 .Rbuildignore
 *DS_Store
 *.Rproj.user/
+.Rproj.user/shared/notebooks/paths
 
 *Rproj.user*
 .Rproj.user

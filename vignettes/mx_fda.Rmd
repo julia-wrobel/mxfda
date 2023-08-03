@@ -23,7 +23,9 @@ devtools::load_all()
 ```
 
 
-This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysies. This vignette focuses on exploratory data analysis, visualization, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. This vignette focuses on exploratory data analysis, visualization, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+
+
 
 
 ## Goals of `mxfda`
@@ -33,14 +35,14 @@ What are the goals of mxfda package?
 * Make it easier to analyze spatial relationships of cells in multiplex images
 * Use spatial summary functions of point processes to characterize univariate / bivariate clustering
 * Relate spatial summary functions to patient level outcomes
-* Use completely open source data
+* Explain how to interpret output from functional data analyses
+* Use completely open source data 
 
-Highlight papers that describe this type of work in more detail.
 
 
 ## VectraPolarisData 
 
-All examples in this vignette use data from the VectraPolarisData package on Bioconductor's Experiment hub.  BRIEFLY, MORE INFO ON THIS DATA. ADD LINKS TO THE REPO AND MY SHORT COURSE WEBSITE.
+All examples in this vignette use data from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
 
 * Describe the two datasets
 * Say this one will focus on the lung data
@@ -77,7 +79,6 @@ Provide background on what type of cells and analyses you are interested in.
 * All immune cells in cancer area
 * Relationship between T-cells and macrophages
 * Plot some pictures of the images that help highlight this
-
 
 ## Spatial summary functions based on point processes
 
@@ -116,8 +117,6 @@ Kdf %>%
 
 
 SAY WHAT YOU DO DIFFERENT TO GET L OR G
-
-
 
 ```{r}
 rm(Gcrossdf)
@@ -229,7 +228,7 @@ Gdf = G_fpca$mxfundata
 Explore FPCA object
 Explain each of these plots
 
-```{r fpc_plots}
+```{r fpc_plots, fig.width = 10}
 
 p1 = plot_fpc(G_fpca$fpc_object, 1)
 p2 = plot_fpc(G_fpca$fpc_object, 2)
@@ -240,7 +239,7 @@ p4 = plot_fpc(G_fpca$fpc_object, 4)
 ```
 
 
-INTERPRET WHAT YOU LEARNED FROM FPCA
+INTERPRET WHAT YOU LEARNED FROM FPCA- this is an important piece
 
 
 Shout out to refund.shiny
@@ -262,8 +261,31 @@ ICC
 
 
 
-# FDA Tips
+
+## How to structure data for use in the `mxfda` package
+
+Add text here about what format data needs to be in for use in this package, so that users can create their own spatial summary functions. Functions are evaluated over a specific set of radii.  The data needs to be a `data.frame` or `tbl_df` object in long format, where each row represents the value of a spatial summary function for a particular image at a particular radius. Data should have the following variables (though you may give them different names)
+
+* `id`: should should identify each unique image from each patient (we will need to add a patient and image id, since many datasets will have multiple images per patient )
+* `r`: radius value
+* `value`: value of the spatial summary function
+
+Let's look at an example, using the cross G functions estimated in code above.
 
 
-* Better to have 20+ measurements per curve- htat means using a dense grid of radii
+```{r}
+head(Gcrossdf)
+```
+
+In this data, `patientImage_id` is the `id` variable, `r` is the radius value, and either `sumfun` or `fundiff` can be used as the function value `value` for downstream analysis. Here `sumfun` represents the value of the Gcross function at a particular radius, and $fundiff = sumfun -csr$- this is Gcross centered at it's value under complete spatial randomness, so that values above zero can be interpreted as clustering and values below zero can be interpreted as repulsion, more or less. 
+
+### SpatialTIME
+
+Add example for converting spatialTIME to long format for use with mxfda
+
+
+## FDA Tips / Principles/ Things to know
+
+* Sparse vs. even grids- mention these, and what types of analysis you can do with each
+* Better to have 20+ measurements per curve- that means using a dense grid of radii
 * Number of knots cannot exceed the number of datapoints per function
