@@ -25,15 +25,21 @@ knitr::opts_chunk$set(
 ```{r setup}
 library(mxfda)
 library(tidyverse)
-library(mgcv)
 library(patchwork)
-library(reshape2)
 devtools::load_all()
 ```
 
-## Data
 
-Load and clean data
+## A note on data formatting
+
+Use of this package requires that data be in a specific format: a long-form data frame with variables `id`, `index`, and `value`, where the `value` column contains functional observations for all subjects, the `id` column identifies which observations belong to which subject, and `index` provides the grid (domain) over which the `value`s are observed.  
+
+The variable `id` should be a unique identifier in that each id identifies a single subject. Since we assume there is only one curve per subject for this package, `id` uniquely identifies each curve as well. Other covariates can be included in the data as long as the variables `id`, `index`, and `value` are present.
+
+
+## Ovarian cancer multiplex imaging data
+
+Load and clean data- explain dataset
 
 ```{r load_data}
 # load processed ovarian cancer data
@@ -59,9 +65,9 @@ ovarian_df = ovarian_df %>%
 
 
 
-## Extract spatial summary functions
+### Extract spatial summary functions
 
-Let's use the all immune cells data and the G-function
+To do functional data analysis, we first need to extract spatial summary functions from our multiplex imaging data. Below we extract the nearest-neighbor G-function for immune cells. See the vignette `mxfda::mx_fda` for more details on extracting spatial summary functions.
 
 
 ```{r}
@@ -76,11 +82,10 @@ Gdf = extract_summary_functions(ovarian_df, "patient_id",
 ```
 
 
-Visualize functions. Need to remove some NaN values.
+Visualize functions below. Interpret.
 
 ```{r}
 Gdf %>%
-  filter(!is.na(fundiff)) %>%
   ggplot(aes(r, fundiff)) +
   geom_line(aes(group = patient_id), alpha = 0.2) +
   geom_hline(yintercept = 0, color = "red", linetype = 2) +
@@ -89,7 +94,7 @@ Gdf %>%
 ```
 
 
-## Models for survival outcomes
+## Functional regression models for survival outcomes
 
 ### Cox regression using functional principal components as predictors
 

@@ -13,6 +13,7 @@ run_fcm(
   afcm = FALSE,
   analysis_vars,
   quantile_transform = FALSE,
+  smooth = FALSE,
   ...
 )
 }
@@ -32,6 +33,8 @@ run_fcm(
 \item{analysis_vars}{List of variables to be retained for downstream analysis, including variables from formula.}
 
 \item{quantile_transform}{Defaults to FALSE. If TRUE, a quantile transformation is applied to the functional predictor before modeling using the \code{process_fcm} function.}
+
+\item{smooth}{Option to smooth data using FPCA. Defaults to FALSE.}
 
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
 

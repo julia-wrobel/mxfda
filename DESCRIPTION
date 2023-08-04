@@ -27,3 +27,6 @@ Imports:
     spatstat.geom,
     spatstat.explore
 VignetteBuilder: knitr
+Depends: 
+    R (>= 2.10)
+LazyData: true

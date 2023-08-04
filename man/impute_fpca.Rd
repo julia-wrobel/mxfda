@@ -11,7 +11,7 @@ impute_fpca(
   value = "fundiff",
   knots = NULL,
   analysis_vars,
-  ...
+  smooth
 )
 }
 \arguments{
@@ -26,6 +26,8 @@ impute_fpca(
 \item{knots}{Number of knots for defining spline basis.}
 
 \item{analysis_vars}{Optional list of variables to be retained for downstream analysis.}
+
+\item{smooth}{Option to smooth data using FPCA.}
 }
 \value{
 A \code{dataframe} where the missing function values (NA) for the \code{value} variable have been replaced with estimates from FPCA.

@@ -53,25 +53,7 @@ This data contains (number of subjects, images per subject, number of cells). Lo
 
 ```{r}
 # load processed lung cancer data
-load(url("https://github.com/julia-wrobel/MI_tutorial/raw/main/Data/lung.RDA"))
-
-# clean data
-lung_df = lung_df %>%
-  # subset to only analyze tumor areas
-  filter(tissue_category == "Tumor") %>%
-  # provide more intuitive patient and image IDs
-  mutate(patient_id = as.numeric(factor(patient_id))) %>%
-  group_by(patient_id) %>%
-  mutate(image_id = as.numeric(factor(image_id))) %>%
-  ungroup() %>%
-  # create patient-image id
-  mutate(patientImage_id = str_c(patient_id, "_", image_id)) %>%
-  # define cell type 'immune', which groups all immune cells
-  mutate(immune = ifelse(phenotype_cd19 == "CD19+" | phenotype_cd8 == "CD8+" |
-              phenotype_cd4 == "CD4+" | phenotype_cd14 == "CD14+", "immune", "other")) %>%
-  select(contains("id"), x, y, gender, age = age_at_diagnosis, immune, survival_days, survival_status,
-         contains("phenotype"), tissue_category, stage = stage_numeric)
-         
+data(lung_df)        
 ```
 
 Provide background on what type of cells and analyses you are interested in.
