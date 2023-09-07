@@ -25,7 +25,8 @@ Imports:
     tidyr,
     purrr,
     spatstat.geom,
-    spatstat.explore
+    spatstat.explore,
+    reshape2
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10)

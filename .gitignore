@@ -3,9 +3,11 @@ inst/doc
 *DS_Store
 *.Rproj.user/
 .Rproj.user/shared/notebooks/paths
+.Rprofile
 
 *Rproj.user*
 .Rproj.user
 
 *smi_talk
 *Rhistory
+*renv/
