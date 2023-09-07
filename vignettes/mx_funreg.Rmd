@@ -47,7 +47,6 @@ data("ovarian_gfun")
 
 
 
-
 Visualize functions below. Interpret.
 
 ```{r}
@@ -125,7 +124,7 @@ Using age and gender and stage as scalar covariates
 #### LFCM
 
 ```{r}
-fit_lfcm <- run_fcm(Gdf, form = "survival_time ~ age",
+fit_lfcm <- run_fcm(ovarian_gfun, form = "survival_time ~ age",
                     id = "patient_id", r = "r", value = "fundiff",
                     analysis_vars = c("age", "survival_time", "event"),
                     afcm = FALSE)
@@ -140,10 +139,24 @@ class(fit_lfcm)
 summary(fit_lfcm)
 ```
 
+Visualize
+
+```{r}
+extract_surface(ovarian_gfun, fit_lfcm, analysis_vars = c("age"), se = TRUE) %>%
+  ggplot(aes(r, exp(beta1))) +
+  geom_line()+
+  geom_line(aes(x=r, y = exp(beta1-2*beta1_se)), linetype = 'longdash')+
+  geom_line(aes(x=r, y = exp(beta1+2*beta1_se)), linetype = 'longdash')+
+  geom_hline(yintercept = 1, color = "red", linetype = 3) +
+  labs(y = expression(e^hat(beta)(r)), title = "LFCM Hazard Ratio") +
+  theme(axis.title = element_text(size = 15))
+```
+
+
 #### AFCM
 
 ```{r}
-fit_afcm <- run_fcm(Gdf, form = "survival_time ~ age",
+fit_afcm <- run_fcm(ovarian_gfun, form = "survival_time ~ age",
                     id = "patient_id", r = "r", value = "fundiff",
                     analysis_vars = c("age", "survival_time", "event"),
                     afcm = TRUE)
@@ -158,37 +171,28 @@ class(fit_afcm)
 summary(fit_afcm)
 ```
 
-#### AFCM, quantile transformed
+Visualize
 
 ```{r}
-fit_afcm_qt <- run_fcm(Gdf, form = "survival_time ~ age",
-                    id = "patient_id", r = "r", value = "fundiff",
-                    analysis_vars = c("age", "survival_time", "event"),
-                    afcm = TRUE,
-                    quantile_transform = TRUE)
-```
-
-
-```{r}
-summary(fit_afcm_qt)
-```
-
-## Visualize functional Cox models
-
-
-
-Visualize the models
-
-```{r extract_estimates, fig.with = 12}
-lfcm = extract_surface(Gdf, fit_lfcm, analysis_vars = c("age")) %>%
-  ggplot(aes(r, sumfun, fill = value)) +
+bind_rows(extract_surface(ovarian_gfun, fit_afcm, analysis_vars = c("age")) %>% 
+            mutate(type = "AFCM surface"),
+          extract_surface(ovarian_gfun, fit_afcm, analysis_vars = c("age"), se = TRUE) %>% mutate(type = "p < 0.05")) %>%
+  mutate(hr = exp(value)) %>%
+    ggplot(aes(r, sumfun, fill = hr)) +
   geom_tile() + 
-  labs(y = "G-function value", title = "LFCM") +
-  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
+  labs(y = "G value") +
+  scale_fill_distiller(name = expression(e^hat(F)(.,.)), na.value = "transparent",
+                     type = "div", breaks = c(.9, .95, 1, 1.05, 1.1),
+                     labels = c(".9"," .95", "1", "1.05", "1.1")) +
+  facet_wrap(~type, ncol = 2) +
+  theme(strip.text = element_text(size = 16))
 
-afcm = extract_surface(Gdf, fit_afcm, analysis_vars = c("age")) %>%
+
+```
+
+
+```{r, eval = FALSE}
+afcm = extract_surface(ovarian_gfun, fit_afcm, analysis_vars = c("age")) %>%
   ggplot(aes(r, sumfun, fill = value)) +
   geom_tile() + 
   labs(y = "G-function value", title = "AFCM") +
@@ -196,15 +200,32 @@ afcm = extract_surface(Gdf, fit_afcm, analysis_vars = c("age")) %>%
   theme_minimal() +
   theme(legend.position = "bottom")
 
-afcm_qt = extract_surface(Gdf, fit_afcm_qt, analysis_vars = c("age")) %>%
-  ggplot(aes(r, sumfun, fill = value)) +
-  geom_tile() + 
-  labs(y = "G-function value", title = "AFCM, quantile transformed") +
-  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-
-lfcm + afcm + afcm_qt
 ```
+
+
+## Model summaries and C-index 
+
+
+```{r}
+# calculate overall p value for fpca
+fit_fpc_null = coxph(Surv(survival_time, event) ~  age, data = Gdf_fpc)
+p_fpc = anova(fit_fpc_null, fit_fpc)
+
+
+c_index = c(
+  rep(fit_fpc$concordance[["concordance"]], times = 4),
+  extract_c(fit_lfcm, Gdf_fpc$survival_time, Gdf_fpc$event),
+  extract_c(fit_afcm, Gdf_fpc$survival_time, Gdf_fpc$event)
+)
+
+
+bind_rows(est_fpca, est_lfcm, est_afcm) %>%
+  filter(term != "age") %>%
+  mutate(p = format.pval(p, digits = 1),
+         "c-index" = c_index) %>%
+  knitr::kable(digits = 2)
+
+
+```
+
 

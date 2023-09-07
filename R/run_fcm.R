@@ -3,7 +3,7 @@
 #' Fit a functional Cox regression model.
 #'
 #' @importFrom tidyr pivot_wider
-#' @importFrom mgcv gam
+#' @importFrom mgcv gam cox.ph
 #' @import dplyr
 #'
 #' @return A \code{list} which is a linear or additive functional Cox model fit. See \code{mgcv::gam} for more details.
