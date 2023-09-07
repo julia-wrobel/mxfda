@@ -19,8 +19,8 @@
 
 #' Multiplex imaging data from an ovarian cancer tumor microarray
 #'
-#' This data is adapted from the VectraPolarisData Bioconductor package.
-#' Signal between the outcomes and spatial summary functions has been augmented for teaching purposes.
+#' This data is adapted from the VectraPolarisData Bioconductor package and comes from a tumor-microarray of tissue samples from 128 patients with ovarian cancer.
+#' There is one patient per subject.
 #'
 #' @format ## `ovarian_df`
 #' A data frame with 108,608 rows and 7 columns:
@@ -39,7 +39,7 @@
 #' Spatial summary functions of ovarian cancer multiplex imaging data.
 #'
 #' This data is adapted from the VectraPolarisData Bioconductor package.
-#' Signal between the outcomes and spatial summary functions has been augmented for teaching purposes.
+#' Signal between the survival outcome and spatial summary functions has been augmented for teaching purposes.
 #' Spatial relationship is summarized using the nearest neighbor G function.
 #'
 #' @format ## `ovarian_gfun`

@@ -42,56 +42,23 @@ The variable `id` should be a unique identifier in that each id identifies a sin
 Load and clean data- explain dataset
 
 ```{r load_data}
-# load processed ovarian cancer data
-load(url("https://github.com/julia-wrobel/MI_tutorial/raw/main/Data/ovarian.RDA"))
-
-# clean data
-ovarian_df = ovarian_df %>%
-  # subset to only analyze tumor areas
-  filter(tissue_category == "Tumor") %>%
-  # provide more intuitive patient and image IDs
-  mutate(patient_id = as.numeric(factor(sample_id))) %>%
-  # define cell type 'immune', which groups all immune cells
-  mutate(immune = ifelse(phenotype_cd19 == "CD19+" | phenotype_cd8 == "CD8+" |
-              phenotype_cd3 == "CD3+" | phenotype_cd68 == "CD68+", "immune", "other"),
-         phenotype = case_when(phenotype_cd19 == "CD19+" ~ "B-cell",
-                               phenotype_cd68 == "CD68+" ~ "macrophage",
-                               TRUE ~ "other")) %>%
-  select(patient_id, cell_id, x, y, age = age_at_diagnosis, immune, survival_time, 
-         event = death, contains("phenotype")) 
-
+data("ovarian_gfun")
 ```
 
 
-
-
-### Extract spatial summary functions
-
-To do functional data analysis, we first need to extract spatial summary functions from our multiplex imaging data. Below we extract the nearest-neighbor G-function for immune cells. See the vignette `mxfda::mx_fda` for more details on extracting spatial summary functions.
-
-
-```{r}
-Gdf = extract_summary_functions(ovarian_df, "patient_id",
-                                extract_func = extract_univariate,
-                                summary_func = Gest,
-                                r_vec = seq(0, 50, by = 1),
-                              edge_correction = "rs",
-                markvar = "immune",
-                mark1 = "immune",
-                analysis_vars = c("age", "survival_time", "event"))
-```
 
 
 Visualize functions below. Interpret.
 
 ```{r}
-Gdf %>%
+ovarian_gfun %>%
   ggplot(aes(r, fundiff)) +
   geom_line(aes(group = patient_id), alpha = 0.2) +
   geom_hline(yintercept = 0, color = "red", linetype = 2) +
   theme_minimal() 
   
 ```
+
 
 
 ## Functional regression models for survival outcomes
