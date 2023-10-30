@@ -25,9 +25,9 @@ Imports:
     tidyr,
     purrr,
     spatstat.geom,
-    spatstat.explore,
     reshape2
 VignetteBuilder: knitr
 Depends: 
-    R (>= 2.10)
+    R (>= 2.10),
+    spatstat.explore
 LazyData: true

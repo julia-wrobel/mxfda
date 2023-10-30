@@ -16,10 +16,10 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-#library(mxfda)
+library(mxfda)
 library(tidyverse)
 library(patchwork)
-devtools::load_all()
+#devtools::load_all()
 ```
 
 

@@ -32,6 +32,8 @@
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
+#' #'
+#' @export
 extract_bivariate = function(mximg,
                               markvar,
                               mark1,
