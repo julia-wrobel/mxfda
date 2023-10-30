@@ -5,8 +5,9 @@
 \title{run_fpca}
 \usage{
 run_fpca(
-  mxfundata,
+  mxFDAobject,
   id,
+  metric = "uni k",
   r = "r",
   value = "fundiff",
   knots = NULL,
@@ -16,9 +17,9 @@ run_fpca(
 )
 }
 \arguments{
-\item{mxfundata}{Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately. For FPCA there should be one function per image, and only one image per subject.}
-
 \item{id}{Character string, the name of the variable that identifies each unique subject.}
+
+\item{metric}{name of calculated spatial metric to use}
 
 \item{r}{Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".}
 
@@ -31,6 +32,8 @@ run_fpca(
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned FPCA object. A good option to select for large datasets.}
 
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
+
+\item{mxfundata}{Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately. For FPCA there should be one function per image, and only one image per subject.}
 }
 \value{
 A \code{list} containing:

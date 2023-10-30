@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(mxfda)
+#library(mxfda)
 library(tidyverse)
 library(patchwork)
 devtools::load_all()
@@ -53,8 +53,20 @@ This data contains (number of subjects, images per subject, number of cells). Lo
 
 ```{r}
 # load processed lung cancer data
-data(lung_df)        
+data(lung_df)
 ```
+
+```{r object}
+clinical = lung_df %>%
+  select(image_id, patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
+  distinct()
+spatial = lung_df %>%
+  select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)
+mxFDAobject = make_mxfda(metadata = clinical,
+                         spatial = spatial,
+                         key = "patient_id")
+```
+
 
 Provide background on what type of cells and analyses you are interested in.
 
@@ -76,24 +88,19 @@ Below we calculate univariate Ripley's K for all immune cells in each image. Des
 
 
 ```{r univariate_k}
-Kdf = extract_summary_functions(lung_df, "patientImage_id",
-                                extract_func = extract_univariate,
-                                summary_func = Kest,
-                                r_vec = seq(0, 100, by = 10),
-                                edge_correction = "iso",
-                                markvar = "immune",
-                                mark1 = "immune")
-
-
-
+mxFDAobject = extract_summary_functions(mxFDAobject, "patientImage_id",
+                                        extract_func = extract_univariate,
+                                        summary_func = Kest,
+                                        r_vec = seq(0, 100, by = 10),
+                                        edge_correction = "iso",
+                                        markvar = "immune",
+                                        mark1 = "immune")
 ```
 
 COMMENT ON THESE PLOTS
 
 ```{r}
-Kdf %>%
-  ggplot(aes(r, fundiff)) +
-  geom_line(alpha = 0.2, aes( group = patientImage_id)) +
+plot(mxFDAobject, y = "fundiff", what = "uni k", sampleID = "patientImage_id") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
@@ -116,7 +123,7 @@ lung_df = lung_df %>%
   mutate(phenotype = case_when(phenotype_cd8 == "CD8+" ~ "T-cell",
                                phenotype_cd14 == "CD14+" ~ "macrophage",
                                TRUE ~ "other"),
-         phenotype = factor(phenotype)) 
+         phenotype = factor(phenotype))
 
 
 lung_df %>%
@@ -132,7 +139,17 @@ lung_df %>%
 Automatically removes images that do not have at least 1 cell of each type
 
 ```{r}
-Gcrossdf = extract_summary_functions(lung_df, "patientImage_id",
+spatial = lung_df %>%
+  select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)
+mxFDAobject = make_mxfda(metadata = clinical,
+                         spatial = spatial,
+                         key = "patient_id")
+```
+
+Running Gcross on T-cells and macrophages
+
+```{r}
+mxFDAobject = extract_summary_functions(mxFDAobject, "patientImage_id",
                 summary_func = Gcross,
                 extract_func = extract_bivariate,
                 r_vec = seq(0, 100, by = 10),
@@ -145,9 +162,7 @@ Gcrossdf = extract_summary_functions(lung_df, "patientImage_id",
 
 
 ```{r}
-Gcrossdf %>%
-  ggplot(aes(r, fundiff)) +
-  geom_line(alpha = 0.2, aes(group = patientImage_id)) +
+plot(mxFDAobject, y = "fundiff", what = "bi g", sampleID = "patientImage_id") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
@@ -169,6 +184,11 @@ lung_oneImage_df = lung_df %>%
   filter(image_id == first(image_id)) %>%
   ungroup() %>%
   select(n_immune, everything())
+
+mxFDAobject_oneImage = make_mxfda(metadata = clinical,
+                         spatial = lung_oneImage_df %>%
+                           select(-image_id, -gender, -age, -survival_days, -survival_status, -stage),
+                         key = "patient_id")
 ```
 
 
@@ -176,14 +196,13 @@ lung_oneImage_df = lung_df %>%
 
 
 ```{r}
-Gdf = extract_summary_functions(lung_oneImage_df, "patient_id",
+mxFDAobject_oneImage = extract_summary_functions(mxFDAobject_oneImage, "patient_id",
                                 extract_func = extract_univariate,
                                 summary_func = Gest,
                                 r_vec = seq(0, 100, by = 1),
                                 edge_correction = "rs",
                                 markvar = "immune",
-                                mark1 = "immune",
-                                analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"))
+                                mark1 = "immune")
 
 
 ```
@@ -191,20 +210,18 @@ Gdf = extract_summary_functions(lung_oneImage_df, "patient_id",
 INTERPRET NN Distance FUNCTION
 
 ```{r}
-Gdf %>%
-  ggplot(aes(r, fundiff)) +
-  geom_line(alpha = 0.2, aes(group = patient_id)) +
+plot(mxFDAobject_oneImage, y = "fundiff", what = "uni g", sampleID = "patient_id") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
 
+analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage")
 
 ```{r}
-G_fpca <- run_fpca(Gdf, id = "patient_id", r = "r", value = "fundiff",
-                   analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage"),
+mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", value = "fundiff",
                    pve = .95)
 
-Gdf = G_fpca$mxfundata
+#Gdf = G_fpca$mxfundata
 ```
 
 Explore FPCA object
@@ -212,10 +229,10 @@ Explain each of these plots
 
 ```{r fpc_plots, fig.width = 10}
 
-p1 = plot_fpc(G_fpca$fpc_object, 1)
-p2 = plot_fpc(G_fpca$fpc_object, 2)
-p3 = plot_fpc(G_fpca$fpc_object, 3)
-p4 = plot_fpc(G_fpca$fpc_object, 4)
+p1 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 1)
+p2 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 2)
+p3 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 3)
+p4 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 4)
 
 (p1 + p2)/(p3 + p4)
 ```

@@ -54,6 +54,8 @@ extract_univariate = function(mximg,
                 r = r_vec,
                 correction = edge_correction)
 
+  if(edge_correction == "none") colnames(sumfun)[3] = "none"
+
   df = as_tibble(sumfun) %>%
     select(r, sumfun = all_of(edge_correction), csr = theo) %>%
     mutate(fundiff = sumfun - csr) %>%
