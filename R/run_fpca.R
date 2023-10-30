@@ -43,12 +43,8 @@ run_fpca = function(mxFDAobject,
   #get the right data
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
   metric = unlist(strsplit(metric, split = " "))
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxfundata = mxFDAobject@`Bivariate Summaries`$Kcross
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxfundata = mxFDAobject@`Bivariate Summaries`$Gcross
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxfundata = mxFDAobject@`Bivariate Summaries`$Lcross
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxfundata = mxFDAobject@`Univariate Summaries`$Kest
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxfundata = mxFDAobject@`Univariate Summaries`$Gest
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxfundata = mxFDAobjectx@`Univariate Summaries`$Lest
+
+  mxfundata = get_data(mxFDAobject, metric, 'summaries')
 
   index_range <- range(mxfundata[[r]])
 

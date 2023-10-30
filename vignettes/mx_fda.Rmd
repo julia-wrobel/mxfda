@@ -215,7 +215,6 @@ plot(mxFDAobject_oneImage, y = "fundiff", what = "uni g", sampleID = "patient_id
 ```
 
 
-analysis_vars = c("gender", "age", "survival_days", "survival_status", "stage")
 
 ```{r}
 mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", value = "fundiff",
@@ -244,11 +243,14 @@ INTERPRET WHAT YOU LEARNED FROM FPCA- this is an important piece
 Shout out to refund.shiny
 
 ```{r refund.shiny, eval = FALSE}
-G_fpca$fpc_object$Y <- select(Gdf, contains("r_"))
-G_fpca$fpc_object$Yhat <- matrix(rnorm(153*101), nrow = 153, ncol = 101)
+G_fpca = extract_fpca_object(mxFDAobject_oneImage,
+                             what = "uni g",
+                             id = "patient_id", r = "r", value = "fundiff")
+#G_fpca$fpc_object$Y <- select(Gdf, contains("r_"))
+#G_fpca$fpc_object$Yhat <- matrix(rnorm(153*101), nrow = 153, ncol = 101)
 
 library(refund.shiny)
-plot_shiny(G_fpca$fpc_object)
+plot_shiny(G_fpca)
 
 ```
 
