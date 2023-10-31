@@ -5,9 +5,11 @@
 \title{process_fcm}
 \usage{
 run_fcm(
-  mxfundata,
+  mxFDAobject,
+  model_name,
   form,
   id,
+  metric = "uni k",
   r = "r",
   value = "fundiff",
   afcm = FALSE,
@@ -18,11 +20,15 @@ run_fcm(
 )
 }
 \arguments{
-\item{mxfundata}{Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.}
+\item{mxFDAobject}{Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.}
+
+\item{model_name}{character string to give the fit model in the functional cox slot}
 
 \item{form}{Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".}
 
 \item{id}{Character string, the name of the variable that identifies each unique subject.}
+
+\item{metric}{name of calculated spatial metric to use}
 
 \item{r}{Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".}
 

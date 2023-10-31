@@ -31,6 +31,8 @@
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
+#'
+#' @export
 extract_univariate = function(mximg,
                               markvar,
                               mark1,
@@ -53,6 +55,8 @@ extract_univariate = function(mximg,
   sumfun = func(pp_obj,
                 r = r_vec,
                 correction = edge_correction)
+
+  if(edge_correction == "none") colnames(sumfun)[3] = "none"
 
   df = as_tibble(sumfun) %>%
     select(r, sumfun = all_of(edge_correction), csr = theo) %>%

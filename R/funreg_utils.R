@@ -137,7 +137,7 @@ impute_fpca = function(mxfundata,
 #' @param fit fit AFCM or LFCM model fit object.
 #' @param survival_time Vector of survival/censoring times
 #' @param event Survival statust (0 = censored, 1 = event)
-#' @eport
+#' @export
 extract_c <- function(fit, survival_time, event){
   eta <- predict(fit, type = "link")
   etimes <- sort(unique(survival_time[event==1]))

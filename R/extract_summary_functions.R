@@ -44,21 +44,23 @@
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @export
-extract_summary_functions <- function(mxdata, image_patient_id, r_vec = seq(0, 100, by = 10),
+extract_summary_functions <- function(mxFDAobject, image_patient_id, r_vec = seq(0, 100, by = 10),
                                       extract_func = c(extract_univariate, extract_bivariate),
                                       summary_func = c(Kest, Lest, Gest),
                                       markvar,
                                       mark1,
                                       mark2 = NULL,
-                                      edge_correction,
-                                      analysis_vars = NULL
+                                      edge_correction
                                       ){
-  df_nest = mxdata %>%
-    select(all_of(image_patient_id), x, y, all_of(markvar), all_of(analysis_vars)) %>%
+
+
+
+  df_nest = mxFDAobject@Spatial %>%
+    select(all_of(image_patient_id), x, y, all_of(markvar)) %>%
     filter(get(markvar) %in% c(mark1, mark2)) %>%
     nest(data = c(x, y, all_of(markvar)))
 
-   df_nest %>% mutate(sumfuns = map(df_nest$data, extract_func,
+   ndat = df_nest %>% mutate(sumfuns = map(df_nest$data, extract_func,
                                     markvar = markvar,
                                     mark1 = mark1,
                                     mark2 = mark2,
@@ -67,6 +69,17 @@ extract_summary_functions <- function(mxdata, image_patient_id, r_vec = seq(0, 1
                                     edge_correction = edge_correction)) %>%
      select(-data) %>%
      unnest(sumfuns)
+
+   if(deparse(substitute(extract_func)) == "extract_univariate"){
+     if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`Univariate Summaries`$Kest = ndat
+     if(deparse(substitute(summary_func)) == "Lest") mxFDAobject@`Univariate Summaries`$Lest = ndat
+     if(deparse(substitute(summary_func)) == "Gest") mxFDAobject@`Univariate Summaries`$Gest = ndat
+   } else {
+     if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`Bivariate Summaries`$Kcross = ndat
+     if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`Bivariate Summaries`$Lcross = ndat
+     if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`Bivariate Summaries`$Gcross = ndat
+   }
+   return(mxFDAobject)
 }
 
 

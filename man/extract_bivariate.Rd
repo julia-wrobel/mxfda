@@ -28,7 +28,8 @@ Should have variables \code{x} and \code{y} to denote x and y spatial locations 
 
 \item{func}{Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.}
 
-\item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")}
+\item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
+#'}
 }
 \value{
 A \code{data.frame} containing:

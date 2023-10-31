@@ -5,7 +5,7 @@
 \title{extract_summary_functions}
 \usage{
 extract_summary_functions(
-  mxdata,
+  mxFDAobject,
   image_patient_id,
   r_vec = seq(0, 100, by = 10),
   extract_func = c(extract_univariate, extract_bivariate),
@@ -13,13 +13,10 @@ extract_summary_functions(
   markvar,
   mark1,
   mark2 = NULL,
-  edge_correction,
-  analysis_vars = NULL
+  edge_correction
 )
 }
 \arguments{
-\item{mxdata}{Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.}
-
 \item{image_patient_id}{The name of the variable that identifies each unique image.}
 
 \item{r_vec}{Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.}
@@ -35,6 +32,8 @@ extract_summary_functions(
 \item{mark2}{Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.}
 
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")}
+
+\item{mxdata}{Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.}
 
 \item{analysis_vars}{Optional list of variables to be retained for downstream analysis.}
 }
