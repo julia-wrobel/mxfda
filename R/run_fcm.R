@@ -17,7 +17,7 @@
 #' @param model_name character string to give the fit model in the functional cox slot
 #' @param form Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
 #' @param id Character string, the name of the variable that identifies each unique subject.
-#' @parm metric name of calculated spatial metric to use
+#' @param metric name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param knots Number of knots for defining spline basis.
