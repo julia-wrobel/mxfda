@@ -23,7 +23,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(mxfda)
+#library(mxfda)
 library(tidyverse)
 library(patchwork)
 devtools::load_all()
@@ -62,6 +62,15 @@ ovarian_df = ovarian_df %>%
 
 ```
 
+```{r}
+clinical = ovarian_df %>%
+  select(patient_id, age, survival_time, event) %>% distinct()
+spatial = ovarian_df %>%
+  select(-survival_time, -event)
+ovarian_FDA = make_mxfda(clinical,
+                         spatial,
+                         key = "patient_id")
+```
 
 
 
@@ -71,23 +80,20 @@ To do functional data analysis, we first need to extract spatial summary functio
 
 
 ```{r}
-Gdf = extract_summary_functions(ovarian_df, "patient_id",
+ovarian_FDA = extract_summary_functions(ovarian_FDA, "patient_id",
                                 extract_func = extract_univariate,
                                 summary_func = Gest,
                                 r_vec = seq(0, 50, by = 1),
                               edge_correction = "rs",
                 markvar = "immune",
-                mark1 = "immune",
-                analysis_vars = c("age", "survival_time", "event"))
+                mark1 = "immune")
 ```
 
 
 Visualize functions below. Interpret.
 
 ```{r}
-Gdf %>%
-  ggplot(aes(r, fundiff)) +
-  geom_line(aes(group = patient_id), alpha = 0.2) +
+plot(ovarian_FDA, y = "fundiff", what = "uni g", sampleID = "patient_id") +
   geom_hline(yintercept = 0, color = "red", linetype = 2) +
   theme_minimal() 
   
@@ -101,16 +107,17 @@ Gdf %>%
 Runs FPCA and appends scores that explain up to 99% variance
 
 ```{r}
-Gdf_fpc <- run_fpca(Gdf, id = "patient_id", r = "r", value = "fundiff",
-                   analysis_vars = c("age", "survival_time", "event"),
-                   lightweight = TRUE,
-                   pve = .99)$mxfundata
+ovarian_FDA <- run_fpca(ovarian_FDA, id = "patient_id", metric = "uni g", r = "r", value = "fundiff",
+                        lightweight = TRUE,
+                        pve = .99)
 
 ```
 
 visualize
 
 ```{r, fig.height = 8}
+Gdf_fpc = bind_cols(ovarian_FDA@Metadata,
+                    ovarian_FDA@`Functional PCA`$Gest$score_df)
 p1 = Gdf_fpc %>%
   ggplot(aes(fpc1, survival_time, color = factor(event))) +
   geom_point() + ggtitle("fpc1") +
@@ -158,43 +165,46 @@ Using age and gender and stage as scalar covariates
 #### LFCM
 
 ```{r}
-fit_lfcm <- run_fcm(Gdf, form = "survival_time ~ age",
-                    id = "patient_id", r = "r", value = "fundiff",
-                    analysis_vars = c("age", "survival_time", "event"),
-                    afcm = FALSE)
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+                      form = "survival_time ~ age",
+                      metric = "uni g", id = "patient_id", r = "r", value = "fundiff",
+                      analysis_vars = c("age", "survival_time", "event"),
+                      afcm = FALSE)
 ```
 
 ```{r}
-class(fit_lfcm)
+class(ovarian_FDA@`Functional Cox`$Gest$fit_lfcm)
 ```
 
 
 ```{r}
-summary(fit_lfcm)
+summary(ovarian_FDA@`Functional Cox`$Gest$fit_lfcm)
 ```
 
 #### AFCM
 
 ```{r}
-fit_afcm <- run_fcm(Gdf, form = "survival_time ~ age",
+ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm", 
+                       form = "survival_time ~ age", metric = "uni g",
                     id = "patient_id", r = "r", value = "fundiff",
                     analysis_vars = c("age", "survival_time", "event"),
                     afcm = TRUE)
 ```
 
 ```{r}
-class(fit_afcm)
+class(ovarian_FDA@`Functional Cox`$Gest$fit_afcm)
 ```
 
 
 ```{r}
-summary(fit_afcm)
+summary(ovarian_FDA@`Functional Cox`$Gest$fit_afcm)
 ```
 
 #### AFCM, quantile transformed
 
 ```{r}
-fit_afcm_qt <- run_fcm(Gdf, form = "survival_time ~ age",
+ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm_qt",
+                       form = "survival_time ~ age", metric = 'uni g',
                     id = "patient_id", r = "r", value = "fundiff",
                     analysis_vars = c("age", "survival_time", "event"),
                     afcm = TRUE,
@@ -203,7 +213,7 @@ fit_afcm_qt <- run_fcm(Gdf, form = "survival_time ~ age",
 
 
 ```{r}
-summary(fit_afcm_qt)
+summary(ovarian_FDA@`Functional Cox`$Gest$fit_afcm_qt)
 ```
 
 ## Visualize functional Cox models
@@ -213,7 +223,10 @@ summary(fit_afcm_qt)
 Visualize the models
 
 ```{r extract_estimates, fig.with = 12}
-lfcm = extract_surface(Gdf, fit_lfcm, analysis_vars = c("age")) %>%
+Gdf = full_join(ovarian_FDA@Metadata,
+                ovarian_FDA@`Univariate Summaries`$Gest)
+
+lfcm = extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_lfcm, analysis_vars = c("age")) %>%
   ggplot(aes(r, sumfun, fill = value)) +
   geom_tile() + 
   labs(y = "G-function value", title = "LFCM") +
@@ -221,7 +234,7 @@ lfcm = extract_surface(Gdf, fit_lfcm, analysis_vars = c("age")) %>%
   theme_minimal() +
   theme(legend.position = "bottom")
 
-afcm = extract_surface(Gdf, fit_afcm, analysis_vars = c("age")) %>%
+afcm = extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_afcm, analysis_vars = c("age")) %>%
   ggplot(aes(r, sumfun, fill = value)) +
   geom_tile() + 
   labs(y = "G-function value", title = "AFCM") +
@@ -229,7 +242,7 @@ afcm = extract_surface(Gdf, fit_afcm, analysis_vars = c("age")) %>%
   theme_minimal() +
   theme(legend.position = "bottom")
 
-afcm_qt = extract_surface(Gdf, fit_afcm_qt, analysis_vars = c("age")) %>%
+afcm_qt = extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_afcm_qt, analysis_vars = c("age")) %>%
   ggplot(aes(r, sumfun, fill = value)) +
   geom_tile() + 
   labs(y = "G-function value", title = "AFCM, quantile transformed") +

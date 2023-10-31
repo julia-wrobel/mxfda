@@ -34,7 +34,8 @@ extract_surface = function(mxfundata,
 
   grid_coef <- data.frame(t_int = rep(tind_pred, grid_length),
                           func = rep(xind_pred, each = grid_length), l_int=1)
-  grid_coef <- cbind(grid_coef, mxfundata[1, analysis_vars])
+  grid_coef <- dplyr::bind_cols(grid_coef, mxfundata[1, ] %>%
+                       dplyr::select(!!analysis_vars)) #using just the first age? using the first doesnt seem right
 
   pred <- predict(fit, newdata = grid_coef, type = 'terms')
   if(inherits(fit,"afcm")){

@@ -14,6 +14,7 @@
 #'
 #'
 #' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
+#' @param model_name character string to give the fit model in the functional cox slot
 #' @param form Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
 #' @param id Character string, the name of the variable that identifies each unique subject.
 #' @parm metric name of calculated spatial metric to use
@@ -27,6 +28,7 @@
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #' @export
 run_fcm <- function(mxFDAobject,
+                    model_name,
                     form,
                     id,
                     metric = "uni k",
@@ -77,12 +79,12 @@ run_fcm <- function(mxFDAobject,
     class(fit_fcm) <- append("lfcm", class(fit_fcm))
   }
 
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kcross = fit_fcm
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gcross = fit_fcm
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lcross = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kest = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gest = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lest = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kcross[[model_name]] = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gcross[[model_name]] = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lcross[[model_name]] = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kest[[model_name]] = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gest[[model_name]] = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lest[[model_name]] = fit_fcm
 
  return(mxFDAobject)
 }

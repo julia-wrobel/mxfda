@@ -25,7 +25,7 @@ Imports:
     tidyr,
     purrr,
     spatstat.geom,
-    reshape2
+    reshape2,
     mgcv
 VignetteBuilder: knitr
 Depends: 
