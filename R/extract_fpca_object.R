@@ -14,7 +14,7 @@ extract_fpca_object = function(mxFDAobject, what, id, r, value){
   #check if object is of class mxFDA
   what = unlist(strsplit(what, split = " "))
 
-  dat = get_data(mxFDAobject, what, type = "functional")
+  dat = get_data(mxFDAobject, what, type = "fpca")
   # mxfundata = get_data(mxFDAobject, what, type = "summaries") %>%
   #   select(all_of(c(id, r, value))) %>%
   #   pivot_wider(names_from = r,

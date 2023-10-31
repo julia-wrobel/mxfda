@@ -13,9 +13,10 @@
 #' set.seed(1001)
 #'
 #'
-#' @param mxfundata Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
+#' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param form Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
 #' @param id Character string, the name of the variable that identifies each unique subject.
+#' @parm metric name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param knots Number of knots for defining spline basis.
@@ -25,16 +26,23 @@
 #' @param smooth Option to smooth data using FPCA. Defaults to FALSE.
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #' @export
-run_fcm <- function(mxfundata,
-                        form,
-                        id,
-                        r = "r",
-                        value = "fundiff",
+run_fcm <- function(mxFDAobject,
+                    form,
+                    id,
+                    metric = "uni k",
+                    r = "r",
+                    value = "fundiff",
                     afcm = FALSE,
-                        analysis_vars,
-                        quantile_transform = FALSE,
+                    analysis_vars,
+                    quantile_transform = FALSE,
                     smooth = FALSE,
-                        ...){
+                    ...){
+  #get the right data from the object
+  if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
+  metric = unlist(strsplit(metric, split = " "))
+
+  mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
+    full_join(mxFDAobject@Metadata, by = mxFDAobject@key)
 
   # check for missing values in the functional predictor
   if(smooth){
@@ -43,8 +51,8 @@ run_fcm <- function(mxfundata,
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
   if(anyNA(mxfundata[[value]])){
-    mxfundata <- impute_fpca(mxfundata, id = id, r = r, value = value,
-                               analysis_vars = analysis_vars)
+    mxfundata <- impute_fpca(mxfundata, id = id, r = r, value = value, knots = NULL,
+                               analysis_vars = analysis_vars, smooth)
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
 
@@ -54,21 +62,28 @@ run_fcm <- function(mxfundata,
   if(afcm){
     form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE))')
 
-    fit_fcm <- gam(formula = as.formula(form),
+    fit_fcm <- mgcv::gam(formula = as.formula(form),
                    weights = event,
-                   data = mxfundata, family = cox.ph())
+                   data = mxfundata, family = mgcv::cox.ph())
 
     class(fit_fcm) <- append("afcm", class(fit_fcm))
   }else{
     form =  paste0(form, '+ s(t_int, by=l_int*func, bs="cr", k=20)')
 
-    fit_fcm <- gam(formula = as.formula(form),
+    fit_fcm <- mgcv::gam(formula = as.formula(form),
                    weights = event,
-                   data = mxfundata, family = cox.ph())
+                   data = mxfundata, family = mgcv::cox.ph())
 
     class(fit_fcm) <- append("lfcm", class(fit_fcm))
   }
 
- fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kcross = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gcross = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lcross = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kest = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gest = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lest = fit_fcm
+
+ return(mxFDAobject)
 }
 

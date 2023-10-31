@@ -1,11 +1,11 @@
 get_data = function(mxFDAobject, what, type){
 
-  if(grepl("func", type, ignore.case = TRUE)){
-    if(grepl("[B|b]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`Functional Data`$Gcross
-    if(grepl("[B|b]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`Functional Data`$Lcross
-    if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`Functional Data`$Kest
-    if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`Functional Data`$Gest
-    if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`Functional Data`$Lest
+  if(grepl("pca", type, ignore.case = TRUE)){
+    if(grepl("[B|b]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`Functional PCA`$Gcross
+    if(grepl("[B|b]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`Functional PCA`$Lcross
+    if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`Functional PCA`$Kest
+    if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`Functional PCA`$Gest
+    if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`Functional PCA`$Lest
   }
   if(grepl("summ", type, ignore.case = TRUE)){
     if(grepl("[B|b]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`Bivariate Summaries`$Kcross

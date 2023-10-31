@@ -31,5 +31,6 @@ setClass("mxFDA", slots = list(
   key = "character",
   `Univariate Summaries` = "list", #G, K, L
   `Bivariate Summaries` = "list", #G, K, L
-  `Functional Data` = "list" #maybe subset for FDA
+  `Functional PCA` = "list", #maybe subset for FDA
+  `Functional Cox` = "list"
 ))

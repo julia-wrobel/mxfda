@@ -26,6 +26,7 @@ Imports:
     purrr,
     spatstat.geom,
     reshape2
+    mgcv
 VignetteBuilder: knitr
 Depends: 
     R (>= 2.10),

@@ -28,7 +28,7 @@ plot.mxFDA = function(x,...){
   }
 
   if(grepl("fpca", params$what[3], ignore.case = TRUE)){
-    dat = get_data(x, params$what, type = "functional")
+    dat = get_data(x, params$what, type = "fpca")
     # if(grepl("[B|b]", params$what[1]) & grepl("[K|k]", params$what[2])) dat = x@`Functional Data`$Kcross
     # if(grepl("[B|b]", params$what[1]) & grepl("[G|g]", params$what[2])) dat = x@`Functional Data`$Gcross
     # if(grepl("[B|b]", params$what[1]) & grepl("[L|l]", params$what[2])) dat = x@`Functional Data`$Lcross
