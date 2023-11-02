@@ -2,7 +2,7 @@
 #'
 #' Internal function called by \code{extract_summary_functions} to calculate a univariate spatial summary function for a single image.
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #' @importFrom spatstat.explore Kest Lest Gest
 #' @importFrom spatstat.geom ppp convexhull.xy
 #' @importFrom tibble as_tibble
@@ -14,10 +14,6 @@
 #' \item{csr}{the values of the spatial summary function under complete spatial randomness}
 #' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
 #'
-#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
-#' Fast covariance estimation for high-dimensional functional data.
-#' \emph{Statistics and Computing}, 26, 409-421.
-#' DOI: 10.1007/s11222-014-9485-x.
 
 #' @examples
 #' # simulate data

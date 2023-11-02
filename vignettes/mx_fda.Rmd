@@ -26,8 +26,6 @@ library(patchwork)
 This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. This vignette focuses on exploratory data analysis, visualization, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
 
 
-
-
 ## Goals of `mxfda`
 
 What are the goals of mxfda package?
@@ -56,12 +54,16 @@ This data contains (number of subjects, images per subject, number of cells). Lo
 data(lung_df)
 ```
 
+Make FDAobject
+
 ```{r object}
 clinical = lung_df %>%
   select(image_id, patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
   distinct()
+
 spatial = lung_df %>%
   select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)
+
 mxFDAobject = make_mxfda(metadata = clinical,
                          spatial = spatial,
                          key = "patient_id")
@@ -137,10 +139,12 @@ lung_df %>%
 
 
 Automatically removes images that do not have at least 1 cell of each type
+  * Is this behavior we actually want?
 
 ```{r}
 spatial = lung_df %>%
   select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)
+
 mxFDAobject = make_mxfda(metadata = clinical,
                          spatial = spatial,
                          key = "patient_id")
@@ -220,11 +224,12 @@ plot(mxFDAobject_oneImage, y = "fundiff", what = "uni g", sampleID = "patient_id
 mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", value = "fundiff",
                    pve = .95)
 
-#Gdf = G_fpca$mxfundata
 ```
 
 Explore FPCA object
 Explain each of these plots
+
+
 
 ```{r fpc_plots, fig.width = 10}
 
@@ -246,8 +251,6 @@ Shout out to refund.shiny
 G_fpca = extract_fpca_object(mxFDAobject_oneImage,
                              what = "uni g",
                              id = "patient_id", r = "r", value = "fundiff")
-#G_fpca$fpc_object$Y <- select(Gdf, contains("r_"))
-#G_fpca$fpc_object$Yhat <- matrix(rnorm(153*101), nrow = 153, ncol = 101)
 
 library(refund.shiny)
 plot_shiny(G_fpca)
@@ -274,7 +277,7 @@ Add text here about what format data needs to be in for use in this package, so 
 Let's look at an example, using the cross G functions estimated in code above.
 
 
-```{r}
+```{r, eval = FALSE}
 head(Gcrossdf)
 ```
 

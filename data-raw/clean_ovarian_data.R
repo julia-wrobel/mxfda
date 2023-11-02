@@ -1,64 +1,64 @@
-## this file cleans the ovarian cancer dataset
-# library(tidyverse)
-# library(VectraPolarisData) # Bioconductor data package
+# ## this file cleans the ovarian cancer dataset
+# # library(tidyverse)
+# # library(VectraPolarisData) # Bioconductor data package
+# #
+# # # load spatial experiment object
+# # oc <- HumanOvarianCancerVP()
+# # ## Assays slots
+# # assays_slot <- assays(oc)
+# # intensities_df <- assays_slot$intensities
+# # nucleus_intensities_df<- assays_slot$nucleus_intensities
+# # rownames(nucleus_intensities_df) <- paste0("nucleus_", rownames(nucleus_intensities_df))
+# # membrane_intensities_df<- assays_slot$membrane_intensities
+# # rownames(membrane_intensities_df) <- paste0("membrane_", rownames(membrane_intensities_df))
+# #
+# # # colData and spatialData
+# # colData_df <- colData(oc)
+# # spatialCoords_df <- spatialCoords(oc)
+# #
+# # # clinical data
+# # patient_level_ovarian <- metadata(oc)$clinical_data %>%
+# #   # create binary stage variable
+# #   dplyr::mutate(stage_bin = ifelse(stage %in% c("1", "2"), 0, 1))
+# #
+# # # only include samples for whom we have an id in the patient dataset, which is 128- the other 4 are controls
+# # # give Markers shorter names
+# # cell_level_ovarian <- as.data.frame(cbind(colData_df,
+# #                                           spatialCoords_df,
+# #                                           t(intensities_df),
+# #                                           t(nucleus_intensities_df),
+# #                                           t(membrane_intensities_df))
+# # ) %>%
+# #   dplyr::rename(cd19 = cd19_opal_480,
+# #                 cd68 = cd68_opal_520,
+# #                 cd3 = cd3_opal_540,
+# #                 cd8 = cd8_opal_650,
+# #                 ier3 = ier3_opal_620,
+# #                 pstat3 = p_stat3_opal_570,
+# #                 ck = ck_opal_780,
+# #                 ki67 = ki67_opal_690) %>%
+# #   # define cell type 'immune'
+# #   mutate(immune = ifelse(phenotype_cd19 == "CD19+" | phenotype_cd8 == "CD8+" |
+# #                            phenotype_cd3 == "CD3+" | phenotype_cd68 == "CD68+", "immune", "other")) %>%
+# #   dplyr::select(contains("id"), tissue_category, contains("phenotype"),
+# #                 contains("position"), ck:dapi, immune) %>%
+# #   # only retain 128 subjects who have clinical data (other 4 are controls)
+# #   dplyr::filter(sample_id %in% patient_level_ovarian$sample_id)
+# #
+# #
+# # # data frame with clinical characteristics where each row is a different cell
+# # ovarian_df <- full_join(patient_level_ovarian, cell_level_ovarian, by = "sample_id") %>%
+# #   mutate(sample_id = as.numeric(as.factor(sample_id))) %>%
+# #   filter(tissue_category != "Glass") %>%
+# #   dplyr::select(sample_id, cell_id, tissue_category, x = cell_x_position, y = cell_y_position,
+# #                 everything()) %>%
+# #   select(-tma, -diagnosis, -grade)
+# #
+# # rm(oc, assays_slot, intensities_df, nucleus_intensities_df, membrane_intensities_df, colData_df, spatialCoords_df, patient_level_ovarian, cell_level_ovarian)
+# #
 #
-# # load spatial experiment object
-# oc <- HumanOvarianCancerVP()
-# ## Assays slots
-# assays_slot <- assays(oc)
-# intensities_df <- assays_slot$intensities
-# nucleus_intensities_df<- assays_slot$nucleus_intensities
-# rownames(nucleus_intensities_df) <- paste0("nucleus_", rownames(nucleus_intensities_df))
-# membrane_intensities_df<- assays_slot$membrane_intensities
-# rownames(membrane_intensities_df) <- paste0("membrane_", rownames(membrane_intensities_df))
 #
-# # colData and spatialData
-# colData_df <- colData(oc)
-# spatialCoords_df <- spatialCoords(oc)
-#
-# # clinical data
-# patient_level_ovarian <- metadata(oc)$clinical_data %>%
-#   # create binary stage variable
-#   dplyr::mutate(stage_bin = ifelse(stage %in% c("1", "2"), 0, 1))
-#
-# # only include samples for whom we have an id in the patient dataset, which is 128- the other 4 are controls
-# # give Markers shorter names
-# cell_level_ovarian <- as.data.frame(cbind(colData_df,
-#                                           spatialCoords_df,
-#                                           t(intensities_df),
-#                                           t(nucleus_intensities_df),
-#                                           t(membrane_intensities_df))
-# ) %>%
-#   dplyr::rename(cd19 = cd19_opal_480,
-#                 cd68 = cd68_opal_520,
-#                 cd3 = cd3_opal_540,
-#                 cd8 = cd8_opal_650,
-#                 ier3 = ier3_opal_620,
-#                 pstat3 = p_stat3_opal_570,
-#                 ck = ck_opal_780,
-#                 ki67 = ki67_opal_690) %>%
-#   # define cell type 'immune'
-#   mutate(immune = ifelse(phenotype_cd19 == "CD19+" | phenotype_cd8 == "CD8+" |
-#                            phenotype_cd3 == "CD3+" | phenotype_cd68 == "CD68+", "immune", "other")) %>%
-#   dplyr::select(contains("id"), tissue_category, contains("phenotype"),
-#                 contains("position"), ck:dapi, immune) %>%
-#   # only retain 128 subjects who have clinical data (other 4 are controls)
-#   dplyr::filter(sample_id %in% patient_level_ovarian$sample_id)
-#
-#
-# # data frame with clinical characteristics where each row is a different cell
-# ovarian_df <- full_join(patient_level_ovarian, cell_level_ovarian, by = "sample_id") %>%
-#   mutate(sample_id = as.numeric(as.factor(sample_id))) %>%
-#   filter(tissue_category != "Glass") %>%
-#   dplyr::select(sample_id, cell_id, tissue_category, x = cell_x_position, y = cell_y_position,
-#                 everything()) %>%
-#   select(-tma, -diagnosis, -grade)
-#
-# rm(oc, assays_slot, intensities_df, nucleus_intensities_df, membrane_intensities_df, colData_df, spatialCoords_df, patient_level_ovarian, cell_level_ovarian)
-#
-
-
-# load processed ovarian cancer data
+# ##load processed ovarian cancer data
 # load(url("https://github.com/julia-wrobel/MI_tutorial/raw/main/Data/ovarian.RDA"))
 #
 #
@@ -115,30 +115,31 @@
 #   unnest(new_pp) %>%
 #   distinct()
 #
+# ### Make mxFDA object
+# clinical = ovarian_df %>%
+#   select(patient_id, age, survival_time, event) %>% distinct()
+# spatial = ovarian_df %>%
+#   select(-survival_time, -event)
+#
+# ovarian_FDA = make_mxfda(clinical,
+#                          spatial,
+#                          key = "patient_id")
 #
 #
 # # extract gfunctions from the ovarian data
-# ovarian_gfun = mxfda::extract_summary_functions(ovarian_df, "patient_id",
-#                                 extract_func = extract_univariate,
-#                                 summary_func = Gest,
-#                                 r_vec = seq(0, 100, by = 1),
-#                                 edge_correction = "rs",
-#                                 markvar = "immune",
-#                                 mark1 = "immune",
-#                                 analysis_vars = c("age", "survival_time", "event")) %>%
-#   # remove negative outliers
-#   group_by(patient_id) %>%
-#   mutate(outlier = min(fundiff)< -0.3) %>%
-#   ungroup() %>%
-#   filter(!outlier) %>%
-#   select(-outlier)
+# ovarian_FDA = extract_summary_functions(ovarian_FDA, "patient_id",
+#                                         extract_func = extract_univariate,
+#                                         summary_func = Gest,
+#                                         r_vec = seq(0, 50, by = 1),
+#                                         edge_correction = "rs",
+#                                         markvar = "immune",
+#                                         mark1 = "immune")
 #
-# write.csv(ovarian_df, file=gzfile("data-raw/ovarian_df.csv.gz", compression = 9))
-# write.csv(ovarian_gfun, file=gzfile("data-raw/ovarian_gfun.csv.gz", compression = 9))
-
-ovarian_df = read.csv(gzfile("data-raw/ovarian_df.csv.gz"))
-ovarian_gfun = read.csv(gzfile("data-raw/ovarian_gfun.csv.gz"))
+#
+# write.csv(ovarian_gfun, file=gzfile("data-raw/ovarian_FDA.csv.gz", compression = 9))
+#
+# ovarian_gfun = read.csv(gzfile("data-raw/ovarian_FDA.csv.gz"))
 
 # add dataset to data folder
-usethis::use_data(ovarian_df, ovarian_gfun, overwrite = TRUE)
+usethis::use_data(ovarian_FDA, overwrite = TRUE)
 

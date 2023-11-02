@@ -19,6 +19,8 @@
 #' @param grid_length Length of grid on which to evaluate coefficient functions.
 #' @param analysis_vars Other variables used in modeling FCM fit.
 #' @param se Defaults to FALSE, and returns surface. If TRUE, returns coefficient function with standard errors for LFCM, or coefficient surface for AFCM with non NA values that are statistically significant
+#'
+#' @export
 extract_surface = function(mxfundata,
                            fit,
                        r = "r",
