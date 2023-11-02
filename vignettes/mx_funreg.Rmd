@@ -132,6 +132,26 @@ class(ovarian_FDA@`Functional Cox`$Gest$fit_lfcm)
 summary(ovarian_FDA@`Functional Cox`$Gest$fit_lfcm)
 ```
 
+Visualize coefficient function
+
+```{r}
+Gdf = full_join(ovarian_FDA@Metadata,
+                ovarian_FDA@`Univariate Summaries`$Gest)
+
+extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_lfcm, analysis_vars = c("age"), se = TRUE) %>%
+  ggplot(aes(r, exp(beta1))) +
+  geom_line()+
+  geom_line(aes(x=r, y = exp(beta1-2*beta1_se)), linetype = 'longdash')+
+  geom_line(aes(x=r, y = exp(beta1+2*beta1_se)), linetype = 'longdash')+
+  geom_hline(yintercept = 1, color = "red", linetype = 3) +
+  ylim(0, 15) +
+  labs(y = expression(e^hat(beta)(r)), title = "LFCM Hazard Ratio") +
+  theme(axis.title = element_text(size = 15))
+
+```
+
+
+
 #### AFCM
 
 ```{r}
@@ -152,32 +172,67 @@ summary(ovarian_FDA@`Functional Cox`$Gest$fit_afcm)
 ```
 
 
-## Visualize functional Cox models
-
-
-
-Visualize the models
+Visualize the afcm model
 
 ```{r extract_estimates, fig.with = 12}
-Gdf = full_join(ovarian_FDA@Metadata,
-                ovarian_FDA@`Univariate Summaries`$Gest)
-
-lfcm = extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_lfcm, analysis_vars = c("age")) %>%
-  ggplot(aes(r, sumfun, fill = value)) +
+bind_rows(extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_afcm, analysis_vars = c("age")) %>% 
+            mutate(type = "AFCM surface"),
+          extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_afcm, analysis_vars = c("age"), se = TRUE) %>% 
+            mutate(type = "p < 0.05")) %>%
+  mutate(hr = exp(value)) %>%
+    ggplot(aes(r, sumfun, fill = hr)) +
   geom_tile() + 
-  labs(y = "G-function value", title = "LFCM") +
-  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
-
-afcm = extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_afcm, analysis_vars = c("age")) %>%
-  ggplot(aes(r, sumfun, fill = value)) +
-  geom_tile() + 
-  labs(y = "G-function value", title = "AFCM") +
-  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
+  labs(y = "G value") +
+  scale_fill_distiller(name = expression(e^hat(F)(.,.)), na.value = "transparent",
+                     type = "div") +
+  facet_wrap(~type, ncol = 2) +
+  theme(strip.text = element_text(size = 16))
 
 
-lfcm + afcm 
 ```
+
+## Model summaries and C-index 
+
+C-index is a good way to compare across models, especially when incorporating cross validation.
+
+```{r}
+# calculate overall p value for fpca
+#fit_fpc_null = coxph(Surv(survival_time, event) ~  age, data = Gdf_fpc)
+#p_fpc = anova(fit_fpc_null, phmod_fpc)
+
+fit_afcm = ovarian_FDA@`Functional Cox`$Gest$fit_afcm
+fit_lfcm = ovarian_FDA@`Functional Cox`$Gest$fit_lfcm
+
+c_index = c(
+  rep(phmod_fpc$concordance[["concordance"]], times = 4),
+  extract_c(fit_lfcm, Gdf_fpc$survival_time, Gdf_fpc$event),
+  extract_c(fit_afcm, Gdf_fpc$survival_time, Gdf_fpc$event)
+)
+
+
+est_fpca = broom::tidy(phmod_fpc, exp = TRUE) %>%
+  mutate(model = "fpca", edf = NA) %>%
+  select(model,  term, "hazard ratio" = estimate, edf, p = p.value)
+
+est_lfcm = bind_rows(broom::tidy(fit_lfcm) %>% 
+  mutate("hazard ratio" = NA, p = NA, model = "lfcm") %>%
+  select(model, term, "hazard ratio", edf, p),
+  broom::tidy(fit_lfcm, parametric = TRUE, exp = TRUE) %>% 
+  mutate(edf = NA, model = "lfcm") %>%
+  select(model, term, "hazard ratio" = estimate, edf, p = p.value)
+)
+
+est_afcm = bind_rows(broom::tidy(fit_afcm) %>% 
+  mutate("hazard ratio" = NA, p = NA, model = "afcm") %>%
+  select(model, term, "hazard ratio", edf, p),
+  broom::tidy(fit_afcm, parametric = TRUE, exp = TRUE) %>% 
+  mutate(edf = NA, model = "afcm") %>%
+  select(model, term, "hazard ratio" = estimate, edf, p = p.value)
+)
+
+bind_rows(est_fpca, est_lfcm, est_afcm) %>%
+  filter(term != "age") %>%
+  mutate(p = format.pval(p, digits = 1),
+         "c-index" = c_index) %>%
+  knitr::kable(digits = 2)
+
