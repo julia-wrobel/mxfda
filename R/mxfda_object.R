@@ -11,7 +11,7 @@ make_mxfda = function(metadata,
                       spatial,
                       key){
   #check that input data is in right format
-  if(!inherits(clinical, "data.frame"))
+  if(!inherits(metadata, "data.frame"))
     stop("Clinical as a data frame")
   if(!inherits(spatial, "list"))
     spatial = do.call(dplyr::bind_rows, spatial)
