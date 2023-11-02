@@ -1,6 +1,7 @@
 get_data = function(mxFDAobject, what, type){
 
   if(grepl("pca", type, ignore.case = TRUE)){
+    if(grepl("[B|b]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`Functional PCA`$Kcross
     if(grepl("[B|b]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`Functional PCA`$Gcross
     if(grepl("[B|b]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`Functional PCA`$Lcross
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`Functional PCA`$Kest
