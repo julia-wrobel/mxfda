@@ -151,21 +151,6 @@ class(ovarian_FDA@`Functional Cox`$Gest$fit_afcm)
 summary(ovarian_FDA@`Functional Cox`$Gest$fit_afcm)
 ```
 
-#### AFCM, quantile transformed
-
-```{r}
-ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm_qt",
-                       form = "survival_time ~ age", metric = 'uni g',
-                    id = "patient_id", r = "r", value = "fundiff",
-                    analysis_vars = c("age", "survival_time", "event"),
-                    afcm = TRUE,
-                    quantile_transform = TRUE)
-```
-
-
-```{r}
-summary(ovarian_FDA@`Functional Cox`$Gest$fit_afcm_qt)
-```
 
 ## Visualize functional Cox models
 
