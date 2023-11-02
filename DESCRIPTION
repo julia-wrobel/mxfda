@@ -32,3 +32,4 @@ Depends:
     R (>= 2.10),
     spatstat.explore
 LazyData: true
+Config/testthat/edition: 3
