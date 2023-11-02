@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 library(mxfda)
 library(tidyverse)
 library(patchwork)
-#devtools::load_all()
 ```
 
 
@@ -108,10 +107,6 @@ plot(mxFDAobject, y = "fundiff", what = "uni k", sampleID = "patientImage_id") +
 
 
 SAY WHAT YOU DO DIFFERENT TO GET L OR G
-
-```{r}
-rm(Gcrossdf)
-```
 
 ### Bivariate summary functions
 
