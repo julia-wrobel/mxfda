@@ -22,19 +22,6 @@
 #' This data is adapted from the VectraPolarisData Bioconductor package and comes from a tumor-microarray of tissue samples from 128 patients with ovarian cancer.
 #' There is one patient per subject.
 #'
-#' @format ## `ovarian_df`
-#' A data frame with 108,608 rows and 7 columns:
-#' \describe{
-#'   \item{patient_id}{Unique patient id}
-#'   \item{age}{Patient age at time of cancer diagnosis}
-#'   \item{survival_time}{Survival time from diagnosis, in days}
-#'   \item{event}{Censoring variable, 1 = death, 0 = censor}
-#'   \item{x}{Cell x position}
-#'   \item{y}{Cell y position}
-#'   \item{immune}
-#' }
-#' @source <https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html>
-"ovarian_df"
 
 #' Spatial summary functions of ovarian cancer multiplex imaging data.
 #'
@@ -42,7 +29,7 @@
 #' Signal between the survival outcome and spatial summary functions has been augmented for teaching purposes.
 #' Spatial relationship is summarized using the nearest neighbor G function.
 #'
-#' @format ## `ovarian_gfun`
+#' @format ## `ovarian_FDA`
 #' A data frame with 12,726 rows and 8 columns:
 #' \describe{
 #'   \item{patient_id}{Unique patient id}
@@ -55,4 +42,4 @@
 #'   \item{fundiff}{sumfun-csr}
 #' }
 #' @source <https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html>
-"ovarian_gfun"
+"ovarian_FDA"

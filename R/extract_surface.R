@@ -3,6 +3,7 @@
 #' Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
 #'
 #' @importFrom reshape2 melt
+#' @importFrom mgcv predict.gam
 #' @import dplyr
 #'
 #' @return A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting

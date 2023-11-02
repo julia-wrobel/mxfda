@@ -193,14 +193,6 @@ afcm = extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_afcm, analysis
   theme_minimal() +
   theme(legend.position = "bottom")
 
-afcm_qt = extract_surface(Gdf, ovarian_FDA@`Functional Cox`$Gest$fit_afcm_qt, analysis_vars = c("age")) %>%
-  ggplot(aes(r, sumfun, fill = value)) +
-  geom_tile() + 
-  labs(y = "G-function value", title = "AFCM, quantile transformed") +
-  scale_fill_gradientn(colours=c("blue3", "#FFFFFF", "#F67F7F", "#FF0000")) +
-  theme_minimal() +
-  theme(legend.position = "bottom")
 
-
-lfcm + afcm + afcm_qt
+lfcm + afcm 
 ```
