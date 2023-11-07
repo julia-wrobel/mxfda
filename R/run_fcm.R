@@ -16,7 +16,6 @@
 #' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param model_name character string to give the fit model in the functional cox slot
 #' @param form Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
-#' @param id Character string, the name of the variable that identifies each unique subject.
 #' @param metric name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
@@ -30,7 +29,6 @@
 run_fcm <- function(mxFDAobject,
                     model_name,
                     form,
-                    id,
                     metric = "uni k",
                     r = "r",
                     value = "fundiff",
@@ -44,21 +42,21 @@ run_fcm <- function(mxFDAobject,
   metric = unlist(strsplit(metric, split = " "))
 
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
-    full_join(mxFDAobject@Metadata, by = mxFDAobject@key)
+    full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
 
   # check for missing values in the functional predictor
   if(smooth){
-    mxfundata <- impute_fpca(mxfundata, id = id, r = r, value = value,
+    mxfundata <- impute_fpca(mxfundata, id = mxFDAobject@sample_key, r = r, value = value,
                              analysis_vars = analysis_vars, smooth = TRUE)
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
   if(anyNA(mxfundata[[value]])){
-    mxfundata <- impute_fpca(mxfundata, id = id, r = r, value = value, knots = NULL,
+    mxfundata <- impute_fpca(mxfundata, id = mxFDAobject@sample_key , r = r, value = value, knots = NULL,
                                analysis_vars = analysis_vars, smooth)
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
 
-  mxfundata <- process_fcm(mxfundata, id, r, value, analysis_vars, quantile_transform)
+  mxfundata <- process_fcm(mxfundata, mxFDAobject@sample_key, r, value, analysis_vars, quantile_transform)
 
   # fit linear or additive functional Cox model
   if(afcm){
@@ -79,12 +77,12 @@ run_fcm <- function(mxFDAobject,
     class(fit_fcm) <- append("lfcm", class(fit_fcm))
   }
 
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kcross[[model_name]] = fit_fcm
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gcross[[model_name]] = fit_fcm
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lcross[[model_name]] = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional Cox`$Kest[[model_name]] = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional Cox`$Gest[[model_name]] = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional Cox`$Lest[[model_name]] = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_cox`$Kcross[[model_name]] = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`functional_cox`$Gcross[[model_name]] = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`functional_cox`$Lcross[[model_name]] = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_cox`$Kest[[model_name]] = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`functional_cox`$Gest[[model_name]] = fit_fcm
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`functional_cox`$Lest[[model_name]] = fit_fcm
 
  return(mxFDAobject)
 }

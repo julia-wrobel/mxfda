@@ -6,7 +6,6 @@
 \usage{
 run_fpca(
   mxFDAobject,
-  id,
   metric = "uni k",
   r = "r",
   value = "fundiff",
@@ -18,8 +17,6 @@ run_fpca(
 }
 \arguments{
 \item{mxFDAobject}{object of class \code{mxFDA} created by \code{make_mxfda} with metrics derived with \code{extract_summary_functions}}
-
-\item{id}{Character string, the name of the variable that identifies each unique subject.}
 
 \item{metric}{name of calculated spatial metric to use}
 
@@ -34,6 +31,8 @@ run_fpca(
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned FPCA object. A good option to select for large datasets.}
 
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
+
+\item{id}{Character string, the name of the variable that identifies each unique subject.}
 }
 \value{
 A \code{mxFDA} object containing:

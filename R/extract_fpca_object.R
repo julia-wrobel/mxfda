@@ -2,14 +2,13 @@
 #'
 #' @param mxFDAobject object of class `mxFDA`
 #' @param what what functional PCA data to extract, e.g. 'uni k'
-#' @param id sample id column used in `run_fpca` function
 #' @param r column id for radii
 #' @param value value used to calculate fpcs
 #'
 #' @return fpca object
 #' @export
 #'
-extract_fpca_object = function(mxFDAobject, what, id, r, value){
+extract_fpca_object = function(mxFDAobject, what, r, value){
   if(!inherits(mxFDAobject_oneImage, "mxFDA")) stop("supply object of class `mxFDA`")
   #check if object is of class mxFDA
   what = unlist(strsplit(what, split = " "))

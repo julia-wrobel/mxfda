@@ -34,7 +34,6 @@
 #'
 #'
 #' @param mxdata Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.
-#' @param image_patient_id The name of the variable that identifies each unique image.
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param extract_func Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.
 #' @param summary_func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
@@ -44,7 +43,7 @@
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @export
-extract_summary_functions <- function(mxFDAobject, image_patient_id, r_vec = seq(0, 100, by = 10),
+extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       extract_func = c(extract_univariate, extract_bivariate),
                                       summary_func = c(Kest, Lest, Gest),
                                       markvar,
@@ -56,7 +55,7 @@ extract_summary_functions <- function(mxFDAobject, image_patient_id, r_vec = seq
 
 
   df_nest = mxFDAobject@Spatial %>%
-    select(all_of(image_patient_id), x, y, all_of(markvar)) %>%
+    select(all_of(mxFDAobject@sample_key), x, y, all_of(markvar)) %>%
     filter(get(markvar) %in% c(mark1, mark2)) %>%
     nest(data = c(x, y, all_of(markvar)))
 
@@ -71,13 +70,13 @@ extract_summary_functions <- function(mxFDAobject, image_patient_id, r_vec = seq
      unnest(sumfuns)
 
    if(deparse(substitute(extract_func)) == "extract_univariate"){
-     if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`Univariate Summaries`$Kest = ndat
-     if(deparse(substitute(summary_func)) == "Lest") mxFDAobject@`Univariate Summaries`$Lest = ndat
-     if(deparse(substitute(summary_func)) == "Gest") mxFDAobject@`Univariate Summaries`$Gest = ndat
+     if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`univariate_summaries`$Kest = ndat
+     if(deparse(substitute(summary_func)) == "Lest") mxFDAobject@`univariate_summaries`$Lest = ndat
+     if(deparse(substitute(summary_func)) == "Gest") mxFDAobject@`univariate_summaries`$Gest = ndat
    } else {
-     if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`Bivariate Summaries`$Kcross = ndat
-     if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`Bivariate Summaries`$Lcross = ndat
-     if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`Bivariate Summaries`$Gcross = ndat
+     if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`bivariate_summaries`$Kcross = ndat
+     if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`bivariate_summaries`$Lcross = ndat
+     if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`bivariate_summaries`$Gcross = ndat
    }
    return(mxFDAobject)
 }

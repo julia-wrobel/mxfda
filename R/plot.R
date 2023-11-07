@@ -21,7 +21,7 @@ plot.mxFDA = function(x,...){
 
     pl = ggplot2::ggplot(data = dat,
                     ggplot2::aes(x = r, y = get(params$y))) +
-      ggplot2::geom_line(alpha = 0.2, ggplot2::aes(group = get(params$sampleID))) +
+      ggplot2::geom_line(alpha = 0.2, ggplot2::aes(group = get(x@sample_key))) +
       ggplot2::labs(title = params$what[1], y = params$what[2])
 
     return(pl)

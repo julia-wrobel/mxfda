@@ -2,35 +2,41 @@
 #'
 #' @param metadata metadata with column `key` for samples
 #' @param spatial spatial information, either list or df, with column `key`
-#' @param key column name to link metadata to the spatial data
+#' @param subject_key column name for subject ID
+#' @param sample_key column linking metadata to spatial data
 #'
 #' @return object of class mxFDA
 #' @export
 #'
 make_mxfda = function(metadata,
                       spatial,
-                      key){
+                      subject_key,
+                      sample_key){
   #check that input data is in right format
   if(!inherits(metadata, "data.frame"))
     stop("Clinical as a data frame")
   if(!inherits(spatial, "list"))
     spatial = do.call(dplyr::bind_rows, spatial)
-  if(!(key %in% colnames(metadata) & key %in% colnames(spatial)))
-    stop("Key doesn't connect metadata and spatial data")
+  if(!(sample_key %in% colnames(metadata) & sample_key %in% colnames(spatial)))
+    stop("Sample key doesn't connect metadata and spatial data")
+  if(!(subject_key %in% colnames(metadata)))
+    stop("Subject key not in metadata")
 
   datClass = methods::new("mxFDA",
                           Metadata = metadata,
                           Spatial = spatial,
-                          key = key)
+                          subject_key = subject_key,
+                          sample_key = sample_key)
   return(datClass)
 }
 
 setClass("mxFDA", slots = list(
   Metadata = "data.frame",
   Spatial = "data.frame",
-  key = "character",
-  `Univariate Summaries` = "list", #G, K, L
-  `Bivariate Summaries` = "list", #G, K, L
-  `Functional PCA` = "list", #maybe subset for FDA
-  `Functional Cox` = "list"
+  subject_key = "character",
+  sample_key = "character",
+  `univariate_summaries` = "list", #G, K, L
+  `bivariate_summaries` = "list", #G, K, L
+  `functional_pca` = "list", #maybe subset for FDA
+  `functional_cox` = "list"
 ))

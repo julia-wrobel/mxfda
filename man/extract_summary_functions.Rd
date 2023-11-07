@@ -6,7 +6,6 @@
 \usage{
 extract_summary_functions(
   mxFDAobject,
-  image_patient_id,
   r_vec = seq(0, 100, by = 10),
   extract_func = c(extract_univariate, extract_bivariate),
   summary_func = c(Kest, Lest, Gest),
@@ -17,8 +16,6 @@ extract_summary_functions(
 )
 }
 \arguments{
-\item{image_patient_id}{The name of the variable that identifies each unique image.}
-
 \item{r_vec}{Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.}
 
 \item{extract_func}{Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.}
