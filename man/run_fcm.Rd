@@ -8,7 +8,6 @@ run_fcm(
   mxFDAobject,
   model_name,
   form,
-  id,
   metric = "uni k",
   r = "r",
   value = "fundiff",
@@ -25,8 +24,6 @@ run_fcm(
 \item{model_name}{character string to give the fit model in the functional cox slot}
 
 \item{form}{Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".}
-
-\item{id}{Character string, the name of the variable that identifies each unique subject.}
 
 \item{metric}{name of calculated spatial metric to use}
 

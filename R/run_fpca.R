@@ -61,7 +61,7 @@ run_fpca = function(mxFDAobject,
   if(knots > ncol(mat) - 5) knots = floor(ncol(mat)/3)
 
   # run fpca
-  mx_fpc <- fpca.face(Y = mat, knots = knots, ...)
+  mx_fpc <- refund::fpca.face(Y = mat, knots = knots, ...)
 
   if(lightweight){
     mx_fpc$Y <- NULL
