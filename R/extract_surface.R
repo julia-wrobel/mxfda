@@ -13,23 +13,47 @@
 #' set.seed(1001)
 #'
 #'
-#' @param mxfundata Dataframe of spatial summary functions from multiplex imaging data, in long format.
-#' @param fit AFCM or LFCM model fit object
+#' @param mxFDAobject object of class `mxFDA` with model `model` calculated wihtin
+#' @param metric spatial summary function to extract surface for
+#' @param model character string for the name of the model for `metric` data
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param grid_length Length of grid on which to evaluate coefficient functions.
 #' @param analysis_vars Other variables used in modeling FCM fit.
 #' @param se Defaults to FALSE, and returns surface. If TRUE, returns coefficient function with standard errors for LFCM, or coefficient surface for AFCM with non NA values that are statistically significant
+#' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #'
 #' @export
-extract_surface = function(mxfundata,
-                           fit,
-                       r = "r",
-                       value = "fundiff",
-                       grid_length = 100,
-                       analysis_vars,
-                       se = FALSE){
+extract_surface = function(mxFDAobject,
+                           metric,
+                           model = NULL,
+                           r = "r",
+                           value = "fundiff",
+                           grid_length = 100,
+                           analysis_vars,
+                           se = FALSE,
+                           filter_cols = NULL){
+  #data preparation
+  if(is.null(model))
+    stop("Must provide a model")
+  #get the right data
+  if(length(metric) != 1)
+    stop("Please provide a single spatial metric to extract surface for")
+  metric = unlist(strsplit(metric, split = " "))
 
+  mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
+    filter_data(filter_cols) %>%
+    dplyr::full_join(mxFDAobject@Metadata)
+
+  #get the model
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@functional_cox$Kcross[[model]]
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) fit = mxFDAobject@functional_cox$Gcross[[model]]
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) fit = mxFDAobject@functional_cox$Lcross[[model]]
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@functional_cox$Kest[[model]]
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) fit = mxFDAobject@functional_cox$Gest[[model]]
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) fit = mxFDAobject@functional_cox$Lest[[model]]
+
+  #calculate
   range_s = range(mxfundata[[r]], na.rm = TRUE)
   range_x = range(mxfundata[[value]], na.rm = TRUE)
   tind_pred <- seq(range_s[1], range_s[2], length.out = grid_length)

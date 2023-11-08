@@ -40,7 +40,8 @@ run_fcm <- function(mxFDAobject,
                     filter_cols = NULL,
                     ...){
   #get the right data from the object
-  if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
+  if(length(metric) != 1)
+    stop("Please provide a single spatial metric to calculate functional cox models with")
   metric = unlist(strsplit(metric, split = " "))
 
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%

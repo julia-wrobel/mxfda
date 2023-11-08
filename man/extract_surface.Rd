@@ -5,19 +5,23 @@
 \title{extract_surface}
 \usage{
 extract_surface(
-  mxfundata,
-  fit,
+  mxFDAobject,
+  metric,
+  model = NULL,
   r = "r",
   value = "fundiff",
   grid_length = 100,
   analysis_vars,
-  se = FALSE
+  se = FALSE,
+  filter_cols = NULL
 )
 }
 \arguments{
-\item{mxfundata}{Dataframe of spatial summary functions from multiplex imaging data, in long format.}
+\item{mxFDAobject}{object of class \code{mxFDA} with model \code{model} calculated wihtin}
 
-\item{fit}{AFCM or LFCM model fit object}
+\item{metric}{spatial summary function to extract surface for}
+
+\item{model}{character string for the name of the model for \code{metric} data}
 
 \item{r}{Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".}
 
@@ -28,6 +32,8 @@ extract_surface(
 \item{analysis_vars}{Other variables used in modeling FCM fit.}
 
 \item{se}{Defaults to FALSE, and returns surface. If TRUE, returns coefficient function with standard errors for LFCM, or coefficient surface for AFCM with non NA values that are statistically significant}
+
+\item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 }
 \value{
 A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
