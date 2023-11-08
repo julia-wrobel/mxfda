@@ -29,6 +29,7 @@
 #' @param knots Number of knots for defining spline basis.Defaults to the number of measurements per function divided by 2.
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @param lightweight Default is FALSE. If TRUE, removes Y and Yhat from returned FPCA object. A good option to select for large datasets.
+#' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #' @export
 run_fpca = function(mxFDAobject,
@@ -38,12 +39,14 @@ run_fpca = function(mxFDAobject,
                     knots = NULL,
                     analysis_vars = NULL,
                     lightweight = FALSE,
+                    filter_cols = NULL,
                     ...){
   #get the right data
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
   metric = unlist(strsplit(metric, split = " "))
 
-  mxfundata = get_data(mxFDAobject, metric, 'summaries')
+  mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
+    filter_data(filter_cols)
 
   index_range <- range(mxfundata[[r]])
 

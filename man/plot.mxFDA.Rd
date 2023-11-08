@@ -4,10 +4,16 @@
 \alias{plot.mxFDA}
 \title{Plot mxFDA object}
 \usage{
-\method{plot}{mxFDA}(x, ...)
+\method{plot}{mxFDA}(x, filter_cols = NULL, ...)
 }
 \arguments{
 \item{x}{object of class \code{mxFDA} to be plotted}
+
+\item{filter_cols}{column key to filter
+
+If there are multiple metrics that are included in the derived table, an extra parameter \code{filter_cols}
+in the format of \code{c(Derived_Column = "Level_to_Filter")} will return curves from the \code{Derived_Column}
+with the level \code{Level_to_Filter}}
 
 \item{...}{additional paramters including \code{y}, \code{what}, and \code{sampleID} to inform whats to be plotted}
 }

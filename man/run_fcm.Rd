@@ -15,6 +15,7 @@ run_fcm(
   analysis_vars,
   quantile_transform = FALSE,
   smooth = FALSE,
+  filter_cols = NULL,
   ...
 )
 }
@@ -38,6 +39,8 @@ run_fcm(
 \item{quantile_transform}{Defaults to FALSE. If TRUE, a quantile transformation is applied to the functional predictor before modeling using the \code{process_fcm} function.}
 
 \item{smooth}{Option to smooth data using FPCA. Defaults to FALSE.}
+
+\item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
 

@@ -22,12 +22,12 @@ add_summary_function = function(mxFDAobject,
     stop("summary_function_data must have sample_key column name")
 
   #fill slot with new data
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@bivariate_summaries$Kcross = fpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`bivariate_summaries`$Gcross = fpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`bivariate_summaries`$Lcross = fpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`univariate_summaries`$Kest = fpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`univariate_summaries`$Gest = fpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`univariate_summaries`$Lest = fpca_dat
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@bivariate_summaries$Kcross = summary_function_data
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`bivariate_summaries`$Gcross = summary_function_data
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`bivariate_summaries`$Lcross = summary_function_data
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`univariate_summaries`$Kest = summary_function_data
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`univariate_summaries`$Gest = summary_function_data
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`univariate_summaries`$Lest = summary_function_data
 
   #return updated object
   return(mxFDAobject)

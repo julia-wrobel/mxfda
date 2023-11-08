@@ -24,6 +24,7 @@
 #' @param analysis_vars List of variables to be retained for downstream analysis, including variables from formula.
 #' @param quantile_transform Defaults to FALSE. If TRUE, a quantile transformation is applied to the functional predictor before modeling using the \code{process_fcm} function.
 #' @param smooth Option to smooth data using FPCA. Defaults to FALSE.
+#' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #' @export
 run_fcm <- function(mxFDAobject,
@@ -36,12 +37,14 @@ run_fcm <- function(mxFDAobject,
                     analysis_vars,
                     quantile_transform = FALSE,
                     smooth = FALSE,
+                    filter_cols = NULL,
                     ...){
   #get the right data from the object
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
   metric = unlist(strsplit(metric, split = " "))
 
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
+    filter_data(filter_cols) %>%
     full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
 
   # check for missing values in the functional predictor

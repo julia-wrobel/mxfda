@@ -14,7 +14,7 @@ get_data = function(mxFDAobject, what, type){
     if(grepl("[B|b]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`bivariate_summaries`$Lcross
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`univariate_summaries`$Kest
     if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`univariate_summaries`$Gest
-    if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobjectx@`univariate_summaries`$Lest
+    if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`univariate_summaries`$Lest
   }
   return(dat)
 }
@@ -25,4 +25,13 @@ is.empty <- function(obj, slot.name) {
   } else {
     stop(paste0("Object does not have a '", slot.name, "' slot."))
   }
+}
+
+filter_data = function(dat, filter_columns){
+  if(is.null(filter_columns)) return(dat)
+  for(col in seq(filter_columns)){
+    dat = dat %>%
+      dplyr::filter(get(names(filter_columns[col])) == !!filter_columns[col])
+  }
+  return(dat)
 }

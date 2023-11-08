@@ -2,16 +2,23 @@
 #'
 #' @param x object of class `mxFDA` to be plotted
 #' @param ... additional paramters including `y`, `what`, and `sampleID` to inform whats to be plotted
+#' @param filter_cols column key to filter
+#'
+#' If there are multiple metrics that are included in the derived table, an extra parameter `filter_cols`
+#' in the format of `c(Derived_Column = "Level_to_Filter")` will return curves from the `Derived_Column`
+#' with the level `Level_to_Filter`
 #'
 #' @return object compatable with ggplot2
 #' @export
 #'
-plot.mxFDA = function(x,...){
+plot.mxFDA = function(x, filter_cols = NULL, ...){
   params = as.list(substitute(list(...)))
   params$what = unlist(strsplit(params$what, split = " "))
+  #return(params)
 
   if(length(params$what) == 2){
-    dat = get_data(x, params$what, type = 'summaries')
+    dat = get_data(x, params$what, type = 'summaries') %>%
+      filter_data(filter_cols)
 
     pl = ggplot2::ggplot(data = dat,
                     ggplot2::aes(x = r, y = get(params$y))) +

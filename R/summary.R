@@ -11,6 +11,12 @@ summary.mxFDA = function(x, ...){
   cat("mxFDA Object:\n")
   cat("\tSubjects: ", length(unique(x@Metadata[[x@subject_key]])), "\n", sep = "")
   cat("\tSamples: ", length(unique(x@Metadata[[x@sample_key]])), "\n", sep = "")
+  #alert about spatial slot
+  if(nrow(x@Spatial) == 0){
+    cat("\tSpatial slot empty\n")
+  } else {
+    cat("\tHas spatial data\n")
+  }
   #any FPCs calculated
   if(length(x@functional_pca) == 0){
     cat("FPCs not yet calculated\n", sep = "")

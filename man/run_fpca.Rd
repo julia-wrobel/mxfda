@@ -12,6 +12,7 @@ run_fpca(
   knots = NULL,
   analysis_vars = NULL,
   lightweight = FALSE,
+  filter_cols = NULL,
   ...
 )
 }
@@ -29,6 +30,8 @@ run_fpca(
 \item{analysis_vars}{Optional list of variables to be retained for downstream analysis.}
 
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned FPCA object. A good option to select for large datasets.}
+
+\item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
 
