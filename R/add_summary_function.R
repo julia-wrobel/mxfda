@@ -7,7 +7,7 @@
 #' @param summary_function_data data frame with `summary_key` from `mxFDA` object as key column for summary function
 #' @param metric character vector with either 'uni' or 'bi' and 'k', 'l', or 'g'; e.g. 'uni g'
 #'
-#' @return
+#' @return an updated `mxFDA` object with a derived value added
 #' @export
 #'
 add_summary_function = function(mxFDAobject,
