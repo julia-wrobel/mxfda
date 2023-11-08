@@ -18,3 +18,11 @@ get_data = function(mxFDAobject, what, type){
   }
   return(dat)
 }
+
+is.empty <- function(obj, slot.name) {
+  if (slot.name %in% methods::slotNames(class(obj))) {
+    return(is.null(methods::slot(obj, slot.name)) || length(methods::slot(obj, slot.name)) == 0)
+  } else {
+    stop(paste0("Object does not have a '", slot.name, "' slot."))
+  }
+}

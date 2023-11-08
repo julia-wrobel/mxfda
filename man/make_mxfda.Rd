@@ -4,12 +4,12 @@
 \alias{make_mxfda}
 \title{Make mxFDA class object}
 \usage{
-make_mxfda(metadata, spatial, subject_key, sample_key)
+make_mxfda(metadata, spatial = NULL, subject_key, sample_key)
 }
 \arguments{
 \item{metadata}{metadata with column \code{key} for samples}
 
-\item{spatial}{spatial information, either list or df, with column \code{key}}
+\item{spatial}{spatial information, either list or df, with column \code{key}. \code{spatial} can be empty if inputting data already derived}
 
 \item{subject_key}{column name for subject ID}
 

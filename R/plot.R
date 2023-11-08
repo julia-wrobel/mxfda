@@ -12,12 +12,6 @@ plot.mxFDA = function(x,...){
 
   if(length(params$what) == 2){
     dat = get_data(x, params$what, type = 'summaries')
-    # if(grepl("[B|b]", params$what[1]) & grepl("[K|k]", params$what[2])) dat = x@`Bivariate Summaries`$Kcross
-    # if(grepl("[B|b]", params$what[1]) & grepl("[G|g]", params$what[2])) dat = x@`Bivariate Summaries`$Gcross
-    # if(grepl("[B|b]", params$what[1]) & grepl("[L|l]", params$what[2])) dat = x@`Bivariate Summaries`$Lcross
-    # if(grepl("[U|u]", params$what[1]) & grepl("[K|k]", params$what[2])) dat = x@`Univariate Summaries`$Kest
-    # if(grepl("[U|u]", params$what[1]) & grepl("[G|g]", params$what[2])) dat = x@`Univariate Summaries`$Gest
-    # if(grepl("[U|u]", params$what[1]) & grepl("[L|l]", params$what[2])) dat = x@`Univariate Summaries`$Lest
 
     pl = ggplot2::ggplot(data = dat,
                     ggplot2::aes(x = r, y = get(params$y))) +
@@ -29,12 +23,6 @@ plot.mxFDA = function(x,...){
 
   if(grepl("fpca", params$what[3], ignore.case = TRUE)){
     dat = get_data(x, params$what, type = "fpca")
-    # if(grepl("[B|b]", params$what[1]) & grepl("[K|k]", params$what[2])) dat = x@`Functional Data`$Kcross
-    # if(grepl("[B|b]", params$what[1]) & grepl("[G|g]", params$what[2])) dat = x@`Functional Data`$Gcross
-    # if(grepl("[B|b]", params$what[1]) & grepl("[L|l]", params$what[2])) dat = x@`Functional Data`$Lcross
-    # if(grepl("[U|u]", params$what[1]) & grepl("[K|k]", params$what[2])) dat = x@`Functional Data`$Kest
-    # if(grepl("[U|u]", params$what[1]) & grepl("[G|g]", params$what[2])) dat = x@`Functional Data`$Gest
-    # if(grepl("[U|u]", params$what[1]) & grepl("[L|l]", params$what[2])) dat = x@`Functional Data`$Lest
 
     plus = minus = mu = index = NULL
     obj = dat$fpc_object

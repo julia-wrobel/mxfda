@@ -1,7 +1,7 @@
 #' Make mxFDA class object
 #'
 #' @param metadata metadata with column `key` for samples
-#' @param spatial spatial information, either list or df, with column `key`
+#' @param spatial spatial information, either list or df, with column `key`. `spatial` can be empty if inputting data already derived
 #' @param subject_key column name for subject ID
 #' @param sample_key column linking metadata to spatial data
 #'
@@ -9,16 +9,21 @@
 #' @export
 #'
 make_mxfda = function(metadata,
-                      spatial,
+                      spatial = NULL,
                       subject_key,
                       sample_key){
   #check that input data is in right format
   if(!inherits(metadata, "data.frame"))
     stop("Clinical as a data frame")
-  if(!inherits(spatial, "list"))
+  if(inherits(spatial, "list"))
     spatial = do.call(dplyr::bind_rows, spatial)
-  if(!(sample_key %in% colnames(metadata) & sample_key %in% colnames(spatial)))
+  #make dummy spatial if null
+  if(is.null(spatial)){
+    spatial = data.frame()
+  } else if(!(sample_key %in% colnames(metadata) & sample_key %in% colnames(spatial))){
     stop("Sample key doesn't connect metadata and spatial data")
+  }
+
   if(!(subject_key %in% colnames(metadata)))
     stop("Subject key not in metadata")
 

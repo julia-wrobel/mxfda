@@ -51,8 +51,11 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       mark2 = NULL,
                                       edge_correction
                                       ){
-
-
+  if(!inherits(mxFDAobject, "mxFDA"))
+    stop("Object must be of class `mxFDA`.")
+  #need spatial data to calculate spatial summary functions
+  if(nrow(mxFDAobject@Spatial) == 0)
+    stop("No summary function to be calculated - missing spatial")
 
   df_nest = mxFDAobject@Spatial %>%
     select(all_of(mxFDAobject@sample_key), x, y, all_of(markvar)) %>%
