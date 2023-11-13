@@ -221,8 +221,9 @@ plot(mxFDAobject_oneImage, y = "fundiff", what = "uni g", sampleID = "patient_id
 
 
 ```{r}
-mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", value = "fundiff",
-                   pve = .95)
+mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", 
+                                 value = "fundiff",
+                                 pve = .95)
 
 ```
 
