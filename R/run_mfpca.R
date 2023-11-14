@@ -34,6 +34,7 @@
 #' @export
 run_mfpca = function(mxFDAobject,
                     id,
+                    image_id,
                     metric = "uni k",
                     r = "r",
                     value = "fundiff",
@@ -63,9 +64,7 @@ run_mfpca = function(mxFDAobject,
     select(all_of(c(id, image_id, r, value))) %>%
     pivot_wider(names_from = r,
                 names_prefix = "r_",
-                values_from = value)
-
-  mxfundata %>%
+                values_from = value) %>%
     arrange(id, image_id)
 
   mat <- mxfundata %>%
@@ -76,29 +75,28 @@ run_mfpca = function(mxFDAobject,
   if(knots > ncol(mat) - 5) knots = floor(ncol(mat)/3)
 
   # run fpca
-  mx_fpc <- fpca.face(Y = mat, knots = knots, ...)
+  mx_mfpc <- mfpca.face(Y = mat, id = id, visit = image_id, twoway = FALSE, knots = knots, ...)
 
   if(lightweight){
-    mx_fpc$Y <- NULL
-    mx_fpc$Yhat <- NULL
+    mx_mfpc$Y <- NULL
+    mx_mfpc$Xhat <- NULL
   }
-  mx_fpc$index_range <- index_range
-
-  score_df = setNames(as.data.frame(mx_fpc$scores), paste0("fpc", 1:mx_fpc$npc))
+  mx_mfpc$index_range <- index_range
+  score_df = as.data.frame(mx_mfpc$scores)
 
   # append all FPCA scores to dataframe that has one row per subject, then convert to long format
   mxfundata = bind_cols(mxfundata, score_df) %>%
     select(-starts_with("r_"))
 
-  fpca_dat = list(score_df = score_df,
-       fpc_object = mx_fpc)
+  mfpca_dat = list(score_df = score_df,
+       mfpc_object = mx_mfpc)
 
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kcross = fpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gcross = fpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lcross = fpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kest = fpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gest = fpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lest = fpca_dat
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`mFPCA`$Kcross = mfpca_dat
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`mFPCA`$Gcross = mfpca_dat
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`mFPCA`$Lcross = mfpca_dat
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`mFPCA`$Kest = mfpca_dat
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`mFPCA`$Gest = mfpca_dat
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`mFPCA`$Lest = mfpca_dat
 
   return(mxFDAobject)
 

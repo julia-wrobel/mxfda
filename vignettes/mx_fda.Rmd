@@ -19,7 +19,6 @@ knitr::opts_chunk$set(
 library(mxfda)
 library(tidyverse)
 library(patchwork)
-#devtools::load_all()
 ```
 
 
@@ -93,7 +92,7 @@ Below we calculate univariate Ripley's K for all immune cells in each image. Des
 mxFDAobject = extract_summary_functions(mxFDAobject, "patientImage_id",
                                         extract_func = extract_univariate,
                                         summary_func = Kest,
-                                        r_vec = seq(0, 100, by = 10),
+                                        r_vec = seq(0, 100, by = 1),
                                         edge_correction = "iso",
                                         markvar = "immune",
                                         mark1 = "immune")
@@ -156,7 +155,7 @@ Running Gcross on T-cells and macrophages
 mxFDAobject = extract_summary_functions(mxFDAobject, "patientImage_id",
                 summary_func = Gcross,
                 extract_func = extract_bivariate,
-                r_vec = seq(0, 100, by = 10),
+                r_vec = seq(0, 100, by = 1),
                 edge_correction = "rs",
                 markvar = "phenotype",
                 mark1 = "T-cell",
@@ -263,6 +262,13 @@ plot_shiny(G_fpca)
 ### MFPCA
 
 ICC
+
+```{r}
+mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", 
+                                 value = "fundiff",
+                                 pve = .95)
+```
+
 
 
 
