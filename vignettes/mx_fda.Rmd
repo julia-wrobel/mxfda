@@ -227,6 +227,12 @@ mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric
 ```
 
 Explore FPCA object
+
+```{r}
+
+```
+
+
 Explain each of these plots
 
 
@@ -261,15 +267,29 @@ plot_shiny(G_fpca)
 
 ### MFPCA
 
-ICC
+Right now this takes the same id in both slots and splits it under the hood. need to change this behavior
+
+
 
 ```{r}
-mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", 
-                                 value = "fundiff",
-                                 pve = .95)
+mxFDAobject <- run_mfpca(mxFDAobject, id = "id", 
+                                  image_id = "image_id", 
+                                  metric = "uni k", r = "r", 
+                                  value = "fundiff",
+                                  pve = .95)
+```
+
+Accessing mfpca object
+
+```{r}
+
 ```
 
 
+
+
+
+ICC
 
 
 

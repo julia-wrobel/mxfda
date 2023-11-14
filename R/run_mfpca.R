@@ -91,12 +91,12 @@ run_mfpca = function(mxFDAobject,
   mfpca_dat = list(score_df = score_df,
        mfpc_object = mx_mfpc)
 
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`mFPCA`$Kcross = mfpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`mFPCA`$Gcross = mfpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`mFPCA`$Lcross = mfpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`mFPCA`$Kest = mfpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`mFPCA`$Gest = mfpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`mFPCA`$Lest = mfpca_dat
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kcross = mfpca_dat
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gcross = mfpca_dat
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lcross = mfpca_dat
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kest = mfpca_dat
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gest = mfpca_dat
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lest = mfpca_dat
 
   return(mxFDAobject)
 
