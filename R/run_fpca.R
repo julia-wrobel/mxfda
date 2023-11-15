@@ -70,14 +70,14 @@ run_fpca = function(mxFDAobject,
   }
   mx_fpc$index_range <- index_range
 
-  score_df = setNames(as.data.frame(mx_fpc$scores), paste0("fpc", 1:mx_fpc$npc))
+  score_df <- setNames(as.data.frame(mx_fpc$scores), paste0("fpc", 1:mx_fpc$npc))
 
   # append all FPCA scores to dataframe that has one row per subject, then convert to long format
-  mxfundata = bind_cols(mxfundata, score_df) %>%
+  mxfundata <- bind_cols(mxfundata, score_df) %>%
     select(-starts_with("r_"))
 
-  fpca_dat = list(score_df = score_df,
-       fpc_object = mx_fpc)
+  fpca_dat <- list(score_df = score_df,
+                   fpc_object = mx_fpc)
 
   if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kcross = fpca_dat
   if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gcross = fpca_dat

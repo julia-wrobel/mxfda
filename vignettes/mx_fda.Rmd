@@ -284,7 +284,7 @@ mfpca_obj <- run_mfpca(mxFDAobject,
 Explore FPCA object
 
 ```{r}
-mfpca_obj$mfpc_object$npc
+mfpca_obj$npc
 
 mfpca = mfpca_obj$mfpc_object
 

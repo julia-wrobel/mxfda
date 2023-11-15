@@ -13,7 +13,7 @@
 plot_mfpc = function(obj, pc_choice_level1, pc_choice_level2){
 
   efunctions = obj$efunctions
-  sqrt.evalues = lapply(obj$evalues, function(i) diag(sqrt(i)))
+  sqrt.evalues = lapply(1:2, function(i) diag(sqrt(obj$evalues[[i]]), nrow = obj$npc[[i]]))
   scaled_efunctions = lapply(1:2, function(i) efunctions[[i]] %*% sqrt.evalues[[i]])
   names(scaled_efunctions) <- names(sqrt.evalues) <- names(efunctions) <- c("level1", "level2")
 

@@ -82,19 +82,23 @@ run_mfpca = function(mxFDAobject,
     mx_mfpc$Xhat <- NULL
   }
   mx_mfpc$index_range <- index_range
-  # doing it right now
-  # how do we want to return the scores?
-  #score_df = as.data.frame(mx_mfpc$scores)
+
+  # how do we want to return the scores? Right now returning the level 1 scores and the standard deviation of the level 2 scores
+  score_df <- setNames(as.data.frame(mx_mfpc$scores$level1), paste0("level1_", 1:mx_mfpc$npc$level1))
+  score_df$id <- unique(mxfundata[[id]])
+
+  scores_level2 <- setNames(as.data.frame(mx_mfpc$scores$level2), paste0("level2_", 1:mx_mfpc$npc$level2))
+  scores_level2 <- scores_level2 %>%
+    mutate(id = mxfundata[[id]],
+           image_id = mxfundata[[image_id]])
 
 
 
-  # append all FPCA scores to dataframe that has one row per subject, then convert to long format
-  #mxfundata = bind_cols(mxfundata, score_df) %>%
-   # select(-starts_with("r_"))
+  fpca_dat = list(score_df = score_df,
+                  scores_level2 = scores_level2,
+                  mfpc_object = mx_mfpc)
 
-  #fpca_dat = list(score_df = score_df,
-   #    mfpc_object = mx_mfpc)
-  mx_mfpc
+  return(fpca_dat)
 
 
 
