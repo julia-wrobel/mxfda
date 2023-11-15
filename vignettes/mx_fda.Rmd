@@ -226,13 +226,6 @@ mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric
 
 ```
 
-Explore FPCA object
-
-```{r}
-
-```
-
-
 Explain each of these plots
 
 
@@ -269,22 +262,45 @@ plot_shiny(G_fpca)
 
 Right now this takes the same id in both slots and splits it under the hood. need to change this behavior
 
+```{r}
+plot(mxFDAobject, y = "fundiff", what = "uni k", sampleID = "patientImage_id") +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+```
+
 
 
 ```{r}
-mxFDAobject <- run_mfpca(mxFDAobject, id = "id", 
+# see what happens when you use mfpca.sc as an engine
+mfpca_obj <- run_mfpca(mxFDAobject, 
+                       id = "id", 
                                   image_id = "image_id", 
                                   metric = "uni k", r = "r", 
                                   value = "fundiff",
-                                  pve = .95)
+                                  pve = .99,
+                       lightweight = FALSE)
 ```
 
-Accessing mfpca object
+
+Explore FPCA object
+
+```{r}
+mfpca_obj$mfpc_object$npc
+
+mfpca = mfpca_obj$mfpc_object
+
+p = plot_mfpc(mfpca_obj$mfpc_object, 1, 1)
+
+p[[1]] + p[[2]]
+
+#library(refund.shiny)
+#plot_shiny(mfpca)
+```
+
+Calculate variance of level 2 scores. Also, are the 
 
 ```{r}
 
 ```
-
 
 
 

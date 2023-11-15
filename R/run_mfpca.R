@@ -45,7 +45,6 @@ run_mfpca = function(mxFDAobject,
   #get the right data
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
   metric = unlist(strsplit(metric, split = " "))
-
   mxfundata = get_data(mxFDAobject, metric, 'summaries')
 
   ## add stopper here to check if they provided a metric that doesn't exist
@@ -53,10 +52,8 @@ run_mfpca = function(mxFDAobject,
   mxfundata = mxfundata %>%
     separate(patientImage_id, into = c("id", "image_id"), sep = "_")
 
-
   # NEED TO CHANGE THIS BEHAVIOR- WHAT DO WE DO IF WE HAVE AN NA FOR THE IMAGE SUMMARY FUNCTION
   mxfundata = mxfundata %>% filter(!is.na(r))
-
   index_range <- range(mxfundata[[r]])
 
   # this seems to break when there are NA values, what behavior do I want for that?
@@ -75,29 +72,39 @@ run_mfpca = function(mxFDAobject,
   if(knots > ncol(mat) - 5) knots = floor(ncol(mat)/3)
 
   # run fpca
-  mx_mfpc <- mfpca.face(Y = mat, id = id, visit = image_id, twoway = FALSE, knots = knots, ...)
+  mx_mfpc <- mfpca.face(Y = mat, id = mxfundata[[id]],
+                        visit = mxfundata[[image_id]],
+                        twoway = FALSE,
+                        knots = knots, ...)
 
   if(lightweight){
     mx_mfpc$Y <- NULL
     mx_mfpc$Xhat <- NULL
   }
   mx_mfpc$index_range <- index_range
-  score_df = as.data.frame(mx_mfpc$scores)
+  # doing it right now
+  # how do we want to return the scores?
+  #score_df = as.data.frame(mx_mfpc$scores)
+
+
 
   # append all FPCA scores to dataframe that has one row per subject, then convert to long format
-  mxfundata = bind_cols(mxfundata, score_df) %>%
-    select(-starts_with("r_"))
+  #mxfundata = bind_cols(mxfundata, score_df) %>%
+   # select(-starts_with("r_"))
 
-  mfpca_dat = list(score_df = score_df,
-       mfpc_object = mx_mfpc)
+  #fpca_dat = list(score_df = score_df,
+   #    mfpc_object = mx_mfpc)
+  mx_mfpc
 
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kcross = mfpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gcross = mfpca_dat
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lcross = mfpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kest = mfpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gest = mfpca_dat
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lest = mfpca_dat
 
-  return(mxFDAobject)
+
+  # if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kcross = fpca_dat
+  # if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gcross = fpca_dat
+  # if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lcross = fpca_dat
+  # if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kest = fpca_dat
+  # if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gest = fpca_dat
+  # if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lest = fpca_dat
+  #
+  # return(mxFDAobject)
 
 }
