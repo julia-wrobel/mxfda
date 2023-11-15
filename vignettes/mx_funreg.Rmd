@@ -136,10 +136,7 @@ summary(ovarian_FDA@`functional_cox`$Gest$fit_lfcm)
 Visualize coefficient function
 
 ```{r}
-Gdf = full_join(ovarian_FDA@Metadata,
-                ovarian_FDA@`univariate_summaries`$Gest)
-
-extract_surface(Gdf, ovarian_FDA@`functional_cox`$Gest$fit_lfcm, analysis_vars = c("age"), se = TRUE) %>%
+extract_surface(ovarian_FDA, metric = "uni g", model = "fit_lfcm", analysis_vars = c("age"), se = TRUE) %>%
   ggplot(aes(r, exp(beta1))) +
   geom_line()+
   geom_line(aes(x=r, y = exp(beta1-2*beta1_se)), linetype = 'longdash')+
@@ -176,10 +173,10 @@ summary(ovarian_FDA@`functional_cox`$Gest$fit_afcm)
 Visualize the afcm model
 
 ```{r extract_estimates, fig.with = 12}
-bind_rows(extract_surface(Gdf, ovarian_FDA@`functional_cox`$Gest$fit_afcm, analysis_vars = c("age")) %>% 
-            mutate(type = "AFCM surface"),
-          extract_surface(Gdf, ovarian_FDA@`functional_cox`$Gest$fit_afcm, analysis_vars = c("age"), se = TRUE) %>% 
-            mutate(type = "p < 0.05")) %>%
+bind_rows(
+  extract_surface(ovarian_FDA, metric = "uni g", model = "fit_afcm", analysis_vars = c("age")) %>% mutate(type = "AFCM surface"),
+  extract_surface(ovarian_FDA, metric = "uni g", model = "fit_afcm", analysis_vars = c("age"), se = TRUE) %>% mutate(type = "p < 0.05")
+) %>%
   mutate(hr = exp(value)) %>%
     ggplot(aes(r, sumfun, fill = hr)) +
   geom_tile() + 
@@ -188,7 +185,6 @@ bind_rows(extract_surface(Gdf, ovarian_FDA@`functional_cox`$Gest$fit_afcm, analy
                      type = "div") +
   facet_wrap(~type, ncol = 2) +
   theme(strip.text = element_text(size = 16))
-
 
 ```
 
