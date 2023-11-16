@@ -3,7 +3,7 @@ title: "mx_fpca"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{mx_fda}
+  %\VignetteIndexEntry{mxFPCA}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -22,7 +22,7 @@ This vignette describes the `mxfda` package for analyzing single-cell multiplex 
 
 
 ```{r setup}
-library(mxfda)
+#library(mxfda)
 library(tidyverse)
 library(patchwork)
 devtools::load_all()
@@ -81,10 +81,9 @@ plot(ovarian_FDA, y = "fundiff", what = "uni g", sampleID = "patient_id") +
 
 ```{r}
 ovarian_FDA <- run_fpca(ovarian_FDA, 
-                                 #id = "patient_id", 
-                                 metric = "uni g", r = "r", 
-                                 value = "fundiff",
-                                 pve = .95)
+                        metric = "uni g", r = "r", 
+                        value = "fundiff",
+                        pve = .95)
 
 ```
 
@@ -109,12 +108,11 @@ INTERPRET WHAT YOU LEARNED FROM FPCA- this is an important piece
 Shout out to refund.shiny
 
 ```{r refund.shiny, eval = FALSE}
-G_fpca = extract_fpca_object(mxFDAobject_oneImage,
-                             what = "uni g",
-                             id = "patient_id", r = "r", value = "fundiff")
-
-library(refund.shiny)
-plot_shiny(G_fpca)
+G_fpca = extract_fpca_object(ovarian_FDA,
+                             what = "uni g", r = "r", value = "fundiff")
+class(G_fpca)
+#library(refund.shiny)
+#plot_shiny(G_fpca)
 
 ```
 

@@ -3,7 +3,7 @@ title: "mx_fda"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{mx_fda}
+  %\VignetteIndexEntry{mxFDA Object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -63,10 +63,17 @@ data(lung_df)
 
 # Setting up the mxfun object
 
-Alex to fill in these details.
+The central object used with the `mxfda` package is the `mxFDA` object. These objects are created with `make_mxfda()` and hold everything from the raw spatial data to fit functional cox models using derived spatial summary functions. To save space on large samples, the meta data is kept separately from the spatial data and when needed, is exported and merged back together. Slots in the `mxFDA` object are as follows
 
+- `Metadata` - stores sample specific traits that may be used as covariate when fitting models
+- `Spatial` - a dataframe of cell level information (x, y, phenotype, etc) that can be used to calculate spatial summary functions
+- `subject_key` - a character string for the column in the meta data that denotes the subject samples belong to
+- `sample_key` - a character string for the columns linking the meta data and spatial data
+- `univariate_summaries` and `bivariate_summaries` - list of calculate spatial summary functions either imported with `XX` or calculated with `extract_summary_functions()`
+- `functional_pca` - list of functional principle components for the spatial summary functions 
+- `functional_cox` - list of functional cox models that have been fit.
 
-Make FDAobject
+## Make FDAobject
 
 ```{r object}
 clinical = lung_df %>%
