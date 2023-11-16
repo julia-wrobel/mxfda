@@ -1,6 +1,7 @@
 ---
 title: "mx_fda"
 output: rmarkdown::html_vignette
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{mx_fda}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,6 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+
+This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal components analysis can be found in the separate vignette `mx_fpca`. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+
+
 ```{r setup}
 library(mxfda)
 library(tidyverse)
@@ -22,12 +28,8 @@ library(patchwork)
 ```
 
 
-This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. This vignette focuses on exploratory data analysis and visualization
 
-, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
-
-
-## Goals of `mxfda`
+# Background on functional data analysis for multiplex imaging data
 
 What are the goals of mxfda package?
 
@@ -37,23 +39,31 @@ What are the goals of mxfda package?
 * Explain how to interpret output from functional data analyses
 * Use completely open source data 
 
+* Add references here to relevant papers. Need to add to the references.bib file then can cite by:
 
+@wrobel_2019
 
-## VectraPolarisData 
+# VectraPolarisData 
 
 All examples in this vignette use data from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
 
 * Describe the two datasets
-* Say this one will focus on the lung data
+* Say this vignette will focus on the lung data
+* Data has been preprocessed and stored directly in the package
 
-### HumanLungCancer
 
-This data contains (number of subjects, images per subject, number of cells). Load the data from my website.
+This data contains (number of subjects, images per subject, number of cells). Load the data.
 
 ```{r}
 # load processed lung cancer data
 data(lung_df)
 ```
+
+
+# Setting up the mxfun object
+
+Alex to fill in these details.
+
 
 Make FDAobject
 
@@ -71,17 +81,13 @@ mxFDAobject = make_mxfda(metadata = clinical,
 ```
 
 
-Provide background on what type of cells and analyses you are interested in.
 
-* All immune cells in cancer area
-* Relationship between T-cells and macrophages
-* Plot some pictures of the images that help highlight this
 
-## Spatial summary functions based on point processes
+# Spatial summary functions based on point processes
 
 Use text from somewhere else here. Talk about K, g, and G and point to links
 
-### Univariate summary functions
+## Univariate summary functions
 
 Use text from somewhere else here to describe what these are.
 
@@ -114,7 +120,7 @@ SAY WHAT YOU DO DIFFERENT TO GET L OR G
 rm(Gcrossdf)
 ```
 
-### Bivariate summary functions
+## Bivariate summary functions
 
 Use if you want to do bivariate. We will look at relationship between T-cells and macrophages. There are a few images that have fewer than 5 T-cells or macrophages, which makes estimation less stable for those images.
 
@@ -171,32 +177,18 @@ plot(mxFDAobject, y = "fundiff", what = "bi g", sampleID = "patientImage_id") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
+# Exploring the S4 object
+
+Alex to add other details of neat things he has here.
 
 
-## How to structure data for use in the `mxfda` package
+# SpatialTIME
 
-Add text here about what format data needs to be in for use in this package, so that users can create their own spatial summary functions. Functions are evaluated over a specific set of radii.  The data needs to be a `data.frame` or `tbl_df` object in long format, where each row represents the value of a spatial summary function for a particular image at a particular radius. Data should have the following variables (though you may give them different names)
+Add example for converting spatialTIME to long format for use with mxfda.
 
-* `id`: should should identify each unique image from each patient (we will need to add a patient and image id, since many datasets will have multiple images per patient )
-* `r`: radius value
-* `value`: value of the spatial summary function
+# Calculating and adding your own spatial summary function
 
-Let's look at an example, using the cross G functions estimated in code above.
+Add example of how to do this.
 
 
-```{r, eval = FALSE}
-head(Gcrossdf)
-```
-
-In this data, `patientImage_id` is the `id` variable, `r` is the radius value, and either `sumfun` or `fundiff` can be used as the function value `value` for downstream analysis. Here `sumfun` represents the value of the Gcross function at a particular radius, and $fundiff = sumfun -csr$- this is Gcross centered at it's value under complete spatial randomness, so that values above zero can be interpreted as clustering and values below zero can be interpreted as repulsion, more or less. 
-
-### SpatialTIME
-
-Add example for converting spatialTIME to long format for use with mxfda
-
-
-## FDA Tips / Principles/ Things to know
-
-* Sparse vs. even grids- mention these, and what types of analysis you can do with each
-* Better to have 20+ measurements per curve- that means using a dense grid of radii
-* Number of knots cannot exceed the number of datapoints per function
+# References
