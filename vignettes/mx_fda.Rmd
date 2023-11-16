@@ -1,6 +1,7 @@
 ---
 title: "mx_fda"
 output: rmarkdown::html_vignette
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{mx_fda}
   %\VignetteEngine{knitr::rmarkdown}
@@ -15,6 +16,11 @@ knitr::opts_chunk$set(
 )
 ```
 
+
+
+This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal components analysis can be found in the separate vignette `mx_fpca`. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+
+
 ```{r setup}
 #library(mxfda)
 library(tidyverse)
@@ -23,10 +29,8 @@ devtools::load_all()
 ```
 
 
-This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. This vignette focuses on exploratory data analysis, visualization, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
 
-
-## Goals of `mxfda`
+# Background on functional data analysis for multiplex imaging data
 
 What are the goals of mxfda package?
 
@@ -36,23 +40,31 @@ What are the goals of mxfda package?
 * Explain how to interpret output from functional data analyses
 * Use completely open source data 
 
+* Add references here to relevant papers. Need to add to the references.bib file then can cite by:
 
+@wrobel_2019
 
-## VectraPolarisData 
+# VectraPolarisData 
 
 All examples in this vignette use data from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
 
 * Describe the two datasets
-* Say this one will focus on the lung data
+* Say this vignette will focus on the lung data
+* Data has been preprocessed and stored directly in the package
 
-### HumanLungCancer
 
-This data contains (number of subjects, images per subject, number of cells). Load the data from my website.
+This data contains (number of subjects, images per subject, number of cells). Load the data.
 
 ```{r}
 # load processed lung cancer data
 data(lung_df)
 ```
+
+
+# Setting up the mxfun object
+
+Alex to fill in these details.
+
 
 Make FDAobject
 
@@ -71,17 +83,13 @@ mxFDAobject = make_mxfda(metadata = clinical,
 ```
 
 
-Provide background on what type of cells and analyses you are interested in.
 
-* All immune cells in cancer area
-* Relationship between T-cells and macrophages
-* Plot some pictures of the images that help highlight this
 
-## Spatial summary functions based on point processes
+# Spatial summary functions based on point processes
 
 Use text from somewhere else here. Talk about K, g, and G and point to links
 
-### Univariate summary functions
+## Univariate summary functions
 
 Use text from somewhere else here to describe what these are.
 
@@ -94,7 +102,7 @@ Below we calculate univariate Ripley's K for all immune cells in each image. Des
 mxFDAobject = extract_summary_functions(mxFDAobject,
                                         extract_func = extract_univariate,
                                         summary_func = Kest,
-                                        r_vec = seq(0, 100, by = 10),
+                                        r_vec = seq(0, 100, by = 1),
                                         edge_correction = "iso",
                                         markvar = "immune",
                                         mark1 = "immune")
@@ -114,7 +122,7 @@ SAY WHAT YOU DO DIFFERENT TO GET L OR G
 rm(Gcrossdf)
 ```
 
-### Bivariate summary functions
+## Bivariate summary functions
 
 Use if you want to do bivariate. We will look at relationship between T-cells and macrophages. There are a few images that have fewer than 5 T-cells or macrophages, which makes estimation less stable for those images.
 
@@ -158,7 +166,7 @@ Running Gcross on T-cells and macrophages
 mxFDAobject = extract_summary_functions(mxFDAobject,
                 summary_func = Gcross,
                 extract_func = extract_bivariate,
-                r_vec = seq(0, 100, by = 10),
+                r_vec = seq(0, 100, by = 1),
                 edge_correction = "rs",
                 markvar = "phenotype",
                 mark1 = "T-cell",
@@ -172,126 +180,18 @@ plot(mxFDAobject, y = "fundiff", what = "bi g") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
+# Exploring the S4 object
 
-## Functional principal components analysis
-
-SAY THAT THIS CAN BE DONE WITH ANY OF THE FUNCTIONS CALCULATED ABOVE. FOR CONSISTENCY OF INTERPRATION, I WILL USE THE NEAREST NEIGHBOR G FUNCTION FOR THE REST OF THE VIGNETTE.
-
-Assumes one curve per subject.  Do univariate G function of immune cells, select image with highest number of cells for each subject. Do immune cells 
-
-```{r}
-# take image from each patient with greatest number of immune cells
-lung_oneImage_df = lung_df %>%
-  group_by(patient_id, image_id) %>%
-  mutate(n_immune = sum(immune == "immune")) %>%
-  ungroup() %>%
-  group_by(patient_id) %>%
-  arrange(-n_immune) %>%
-  filter(image_id == first(image_id)) %>%
-  ungroup() %>%
-  select(n_immune, everything())
-
-mxFDAobject_oneImage = make_mxfda(metadata = clinical,
-                         spatial = lung_oneImage_df %>%
-                           select(-image_id, -gender, -age, -survival_days, -survival_status, -stage),
-                         subject_key = "patient_id",
-                         sample_key = "patientImage_id")
-```
+Alex to add other details of neat things he has here.
 
 
+# SpatialTIME
+
+Add example for converting spatialTIME to long format for use with mxfda.
+
+# Calculating and adding your own spatial summary function
+
+Add example of how to do this.
 
 
-
-```{r}
-mxFDAobject_oneImage = extract_summary_functions(mxFDAobject_oneImage,
-                                extract_func = extract_univariate,
-                                summary_func = Gest,
-                                r_vec = seq(0, 100, by = 1),
-                                edge_correction = "rs",
-                                markvar = "immune",
-                                mark1 = "immune")
-
-
-```
-
-INTERPRET NN Distance FUNCTION
-
-```{r}
-plot(mxFDAobject_oneImage, y = "fundiff", what = "uni g") +
-  geom_hline(yintercept = 0, color = "red", linetype = 2)
-```
-
-
-
-```{r}
-mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, metric = "uni g", r = "r", value = "fundiff",
-                   pve = .95)
-
-```
-
-Explore FPCA object
-Explain each of these plots
-
-
-
-```{r fpc_plots, fig.width = 10}
-
-p1 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 1)
-p2 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 2)
-p3 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 3)
-p4 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 4)
-
-(p1 + p2)/(p3 + p4)
-```
-
-
-INTERPRET WHAT YOU LEARNED FROM FPCA- this is an important piece
-
-
-Shout out to refund.shiny
-
-```{r refund.shiny, eval = FALSE}
-G_fpca = extract_fpca_object(mxFDAobject_oneImage,
-                             what = "uni g", r = "r", value = "fundiff")
-
-library(refund.shiny)
-plot_shiny(G_fpca)
-
-```
-
-
-
-### MFPCA
-
-ICC
-
-
-
-
-## How to structure data for use in the `mxfda` package
-
-Add text here about what format data needs to be in for use in this package, so that users can create their own spatial summary functions. Functions are evaluated over a specific set of radii.  The data needs to be a `data.frame` or `tbl_df` object in long format, where each row represents the value of a spatial summary function for a particular image at a particular radius. Data should have the following variables (though you may give them different names)
-
-* `id`: should should identify each unique image from each patient (we will need to add a patient and image id, since many datasets will have multiple images per patient )
-* `r`: radius value
-* `value`: value of the spatial summary function
-
-Let's look at an example, using the cross G functions estimated in code above.
-
-
-```{r, eval = FALSE}
-head(Gcrossdf)
-```
-
-In this data, `patientImage_id` is the `id` variable, `r` is the radius value, and either `sumfun` or `fundiff` can be used as the function value `value` for downstream analysis. Here `sumfun` represents the value of the Gcross function at a particular radius, and $fundiff = sumfun -csr$- this is Gcross centered at it's value under complete spatial randomness, so that values above zero can be interpreted as clustering and values below zero can be interpreted as repulsion, more or less. 
-
-### SpatialTIME
-
-Add example for converting spatialTIME to long format for use with mxfda
-
-
-## FDA Tips / Principles/ Things to know
-
-* Sparse vs. even grids- mention these, and what types of analysis you can do with each
-* Better to have 20+ measurements per curve- that means using a dense grid of radii
-* Number of knots cannot exceed the number of datapoints per function
+# References

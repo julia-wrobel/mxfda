@@ -9,7 +9,7 @@
 #' @export
 #'
 extract_fpca_object = function(mxFDAobject, what, r, value){
-  if(!inherits(mxFDAobject_oneImage, "mxFDA")) stop("supply object of class `mxFDA`")
+  if(!inherits(mxFDAobject, "mxFDA")) stop("supply object of class `mxFDA`")
   #check if object is of class mxFDA
   what = unlist(strsplit(what, split = " "))
 
