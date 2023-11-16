@@ -17,6 +17,11 @@ summary.mxFDA = function(x, ...){
   } else {
     cat("\tHas spatial data\n")
   }
+  #spatial summaries
+  uni_sums = names(x@univariate_summaries)
+  bi_sums = names(x@bivariate_summaries)
+  cat("\tUnivariate Summaries: ", ifelse(length(uni_sums) == 0, "None", paste0(uni_sums, collapse =  ", ")), "\n", sep = "")
+  cat("\tBivariate Summaries: ", ifelse(length(bi_sums) == 0, "None", paste0(bi_sums, collapse =  ", ")), "\n", sep = "")
   #any FPCs calculated
   if(length(x@functional_pca) == 0){
     cat("FPCs not yet calculated\n", sep = "")
@@ -29,7 +34,7 @@ summary.mxFDA = function(x, ...){
   }
   #any models run
   if(length(x@functional_cox) == 0){
-    cat("FPCs not yet calculated\n", sep = "")
+    cat("FCMs not yet calculated\n", sep = "")
   } else {
     f_cox_slots = names(x@functional_cox)
     cat("Models Fit:\n", sep = "")
