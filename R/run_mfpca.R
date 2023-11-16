@@ -74,7 +74,7 @@ run_mfpca = function(mxFDAobject,
   # run fpca
   mx_mfpc <- mfpca.face(Y = mat, id = mxfundata[[id]],
                         visit = mxfundata[[image_id]],
-                        twoway = FALSE,
+                        twoway = FALSE, # argument, but default is false
                         knots = knots, ...)
 
   if(lightweight){
