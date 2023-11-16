@@ -44,7 +44,9 @@ run_fpca = function(mxFDAobject,
   #get the right data
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
   metric = unlist(strsplit(metric, split = " "))
-
+  #check for slot in summaries
+  metric.exists(mxFDAobject, metric)
+  #get data
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols)
 

@@ -35,3 +35,14 @@ filter_data = function(dat, filter_columns){
   }
   return(dat)
 }
+
+metric.exists = function(mxFDAobject, metric){
+  if(grepl("[U|u]", metric[1])){
+    if(!grepl(metric[2], names(mxFDAobject@univariate_summaries), ignore.case = TRUE))
+      stop("Missing summary function provided")
+  }
+  if(grepl("[B|b]", metric[1])){
+    if(!grepl(metric[2], names(mxFDAobject@bivariate_summaries), ignore.case = TRUE))
+      stop("Missing summary function provided")
+  }
+}
