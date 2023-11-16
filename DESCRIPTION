@@ -2,7 +2,8 @@ Package: mxfda
 Title: What the Package Does (Title Case- stuff)
 Version: 0.1.0
 Date: 2023-08-03
-Author: person("Julia", "Wrobel", role = c("aut", "cre"), 
+Authors@R: 
+    person("Julia", "Wrobel", role = c("aut", "cre"), 
     email = "julia.wrobel@cuanschutz.edu",
     comment = c(ORCID = "0000-0001-6783-1421"))
 Description: More about what it does (maybe more than one line)
@@ -27,7 +28,6 @@ Imports:
     spatstat.geom,
     reshape2,
     mgcv
-VignetteBuilder: knitr
 Depends: 
     R (>= 2.10),
     spatstat.explore
