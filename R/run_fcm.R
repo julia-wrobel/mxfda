@@ -43,6 +43,8 @@ run_fcm <- function(mxFDAobject,
   if(length(metric) != 1)
     stop("Please provide a single spatial metric to calculate functional cox models with")
   metric = unlist(strsplit(metric, split = " "))
+  #check for slot in summaries
+  metric.exists(mxFDAobject, metric)
 
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols) %>%
