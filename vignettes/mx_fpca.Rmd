@@ -1,0 +1,173 @@
+---
+title: "mx_fpca"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{mx_fda}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  figs.out = "../figures"
+)
+```
+
+```{r setup}
+library(mxfda)
+library(tidyverse)
+library(patchwork)
+```
+
+
+This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. This vignette focuses on exploratory data analysis and visualization
+
+, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+
+
+## Functional principal components analysis
+
+SAY THAT THIS CAN BE DONE WITH ANY OF THE FUNCTIONS CALCULATED ABOVE. FOR CONSISTENCY OF INTERPRATION, I WILL USE THE NEAREST NEIGHBOR G FUNCTION FOR THE REST OF THE VIGNETTE.
+
+Assumes one curve per subject.  Do univariate G function of immune cells, select image with highest number of cells for each subject. Do immune cells 
+
+```{r}
+# take image from each patient with greatest number of immune cells
+lung_oneImage_df = lung_df %>%
+  group_by(patient_id, image_id) %>%
+  mutate(n_immune = sum(immune == "immune")) %>%
+  ungroup() %>%
+  group_by(patient_id) %>%
+  arrange(-n_immune) %>%
+  filter(image_id == first(image_id)) %>%
+  ungroup() %>%
+  select(n_immune, everything())
+
+mxFDAobject_oneImage = make_mxfda(metadata = clinical,
+                         spatial = lung_oneImage_df %>%
+                           select(-image_id, -gender, -age, -survival_days, -survival_status, -stage),
+                         key = "patient_id")
+```
+
+
+
+
+
+```{r}
+mxFDAobject_oneImage = extract_summary_functions(mxFDAobject_oneImage, "patient_id",
+                                extract_func = extract_univariate,
+                                summary_func = Gest,
+                                r_vec = seq(0, 100, by = 1),
+                                edge_correction = "rs",
+                                markvar = "immune",
+                                mark1 = "immune")
+
+
+```
+
+INTERPRET NN Distance FUNCTION
+
+```{r}
+plot(mxFDAobject_oneImage, y = "fundiff", what = "uni g", sampleID = "patient_id") +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+```
+
+
+
+```{r}
+mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", 
+                                 value = "fundiff",
+                                 pve = .95)
+
+```
+
+Explain each of these plots
+
+
+
+```{r fpc_plots, fig.width = 10}
+
+p1 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 1)
+p2 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 2)
+p3 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 3)
+p4 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 4)
+
+(p1 + p2)/(p3 + p4)
+```
+
+
+INTERPRET WHAT YOU LEARNED FROM FPCA- this is an important piece
+
+
+Shout out to refund.shiny
+
+```{r refund.shiny, eval = FALSE}
+G_fpca = extract_fpca_object(mxFDAobject_oneImage,
+                             what = "uni g",
+                             id = "patient_id", r = "r", value = "fundiff")
+
+library(refund.shiny)
+plot_shiny(G_fpca)
+
+```
+
+
+
+### MFPCA
+
+Right now this takes the same id in both slots and splits it under the hood. need to change this behavior
+
+```{r}
+plot(mxFDAobject, y = "fundiff", what = "uni k", sampleID = "patientImage_id") +
+  geom_hline(yintercept = 0, color = "red", linetype = 2)
+```
+
+
+
+```{r}
+# see what happens when you use mfpca.sc as an engine
+mfpca_obj <- run_mfpca(mxFDAobject, 
+                       id = "id", 
+                                  image_id = "image_id", 
+                                  metric = "uni k", r = "r", 
+                                  value = "fundiff",
+                                  pve = .99,
+                       lightweight = FALSE)
+```
+
+
+Explore FPCA object
+
+```{r}
+
+
+
+
+p = plot_mfpc(mfpca_obj$mfpc_object, 1, 3)
+
+p[[1]] + p[[2]]
+
+#library(refund.shiny)
+#plot_shiny(mfpca)
+```
+
+Calculate variance of level 2 scores. Also, are the 
+
+```{r}
+
+```
+
+
+
+
+ICC
+
+
+
+## FDA Tips / Principles/ Things to know
+
+* Sparse vs. even grids- mention these, and what types of analysis you can do with each
+* Better to have 20+ measurements per curve- that means using a dense grid of radii
+* Number of knots cannot exceed the number of datapoints per function
