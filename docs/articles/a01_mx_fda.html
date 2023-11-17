@@ -5,13 +5,13 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>mx_fda • mxfda</title>
+<title>mxFDA Object • mxfda</title>
 <!-- jquery --><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script><!-- Bootstrap --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/css/bootstrap.min.css" integrity="sha256-bZLfwXAP04zRMK2BjiO8iu9pf4FbLqX6zitd+tIvLhE=" crossorigin="anonymous">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script><!-- bootstrap-toc --><link rel="stylesheet" href="../bootstrap-toc.css">
 <script src="../bootstrap-toc.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/v4-shims.min.css" integrity="sha256-wZjR52fzng1pJHwx4aV2AO3yyTOXrcDW7jBpJtTwVxw=" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/2.0.6/clipboard.min.js" integrity="sha256-inc5kl9MA1hkeYUt+EC3BhlIgyp/2jDIyBLS6k3UxPI=" crossorigin="anonymous"></script><!-- headroom.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/headroom.min.js" integrity="sha256-AsUX4SJE1+yuDu5+mAVzJbuYNPHj/WroHuZ8Ir/CkE0=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script><!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><meta property="og:title" content="mx_fda">
+<script src="../pkgdown.js"></script><meta property="og:title" content="mxFDA Object">
 <meta property="og:description" content="mxfda">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
@@ -50,7 +50,7 @@
   </a>
   <ul class="dropdown-menu" role="menu">
 <li>
-      <a href="../articles/a01_mx_fda.html">mx_fda</a>
+      <a href="../articles/a01_mx_fda.html">mxFDA Object</a>
     </li>
     <li>
       <a href="../articles/a02_mx_fpca.html">mx_fpca</a>
@@ -58,7 +58,14 @@
   </ul>
 </li>
       </ul>
-<ul class="nav navbar-nav navbar-right"></ul>
+<ul class="nav navbar-nav navbar-right">
+<li>
+  <a href="https://github.com/julia-wrobel/mxfda/" class="external-link">
+    <span class="fab fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
 </div>
 <!--/.nav-collapse -->
   </div>
@@ -71,10 +78,10 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>mx_fda</h1>
+      <h1 data-toc-skip>mxFDA Object</h1>
             
       
-      
+      <small class="dont-index">Source: <a href="https://github.com/julia-wrobel/mxfda/blob/HEAD/vignettes/a01_mx_fda.Rmd" class="external-link"><code>vignettes/a01_mx_fda.Rmd</code></a></small>
       <div class="hidden name"><code>a01_mx_fda.Rmd</code></div>
 
     </div>
@@ -96,52 +103,9 @@ summary functions from multiplex imaging data, see the
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#library(mxfda)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Attaching core tidyverse packages</span> ──────────────────────── tidyverse 2.0.0 ──</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">dplyr    </span> 1.1.3     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">readr    </span> 2.1.4</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">forcats  </span> 1.0.0     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">stringr  </span> 1.5.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">ggplot2  </span> 3.4.4     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tibble   </span> 3.2.1</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">lubridate</span> 1.9.2     <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">tidyr    </span> 1.3.0</span></span>
-<span><span class="co">#&gt; <span style="color: #00BB00;">✔</span> <span style="color: #0000BB;">purrr    </span> 1.0.2     </span></span>
-<span><span class="co">#&gt; ── <span style="font-weight: bold;">Conflicts</span> ────────────────────────────────────────── tidyverse_conflicts() ──</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">filter()</span> masks <span style="color: #0000BB;">stats</span>::filter()</span></span>
-<span><span class="co">#&gt; <span style="color: #BB0000;">✖</span> <span style="color: #0000BB;">dplyr</span>::<span style="color: #00BB00;">lag()</span>    masks <span style="color: #0000BB;">stats</span>::lag()</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Use the conflicted package (<span style="color: #0000BB; font-style: italic;">&lt;http://conflicted.r-lib.org/&gt;</span>) to force all conflicts to become errors</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
 <span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://devtools.r-lib.org/reference/load_all.html" class="external-link">load_all</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">mxfda</span></span></span>
-<span><span class="co">#&gt; Loading required package: spatstat.explore</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: spatstat.data</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: spatstat.geom</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; spatstat.geom 3.2-7</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'spatstat.geom'</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:patchwork':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     area</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: spatstat.random</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; spatstat.random 3.2-1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Loading required package: nlme</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Attaching package: 'nlme'</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; The following object is masked from 'package:dplyr':</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;     collapse</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; spatstat.explore 3.2-5</span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Loading <span style="color: #0000BB;">mxfda</span></span></span></code></pre></div>
 <div class="section level2">
 <h2 id="background-on-functional-data-analysis-for-multiplex-imaging-data">Background on functional data analysis for multiplex imaging
 data<a class="anchor" aria-label="anchor" href="#background-on-functional-data-analysis-for-multiplex-imaging-data"></a>
@@ -182,21 +146,21 @@ cells). Load the data.</p>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="va">lung_df</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
-<h2 id="setting-up-the-mxfun-object">Setting up the mxfun object<a class="anchor" aria-label="anchor" href="#setting-up-the-mxfun-object"></a>
+<h2 id="setting-up-the-mxfda-object">Setting up the mxFDA object<a class="anchor" aria-label="anchor" href="#setting-up-the-mxfda-object"></a>
 </h2>
 <p>The central object used with the <code>mxfda</code> package is the
 <code>mxFDA</code> object. These objects are created with
 <code><a href="../reference/make_mxfda.html">make_mxfda()</a></code> and hold everything from the raw spatial data
 to fit functional cox models using derived spatial summary functions. To
 save space on large samples, the meta data is kept separately from the
-spatial data and when needed, is exported and merged back together.
-Slots in the <code>mxFDA</code> object are as follows</p>
+spatial data and when needed, is exported and merged together. Slots in
+the <code>mxFDA</code> object are as follows:</p>
 <ul>
 <li>
 <code>Metadata</code> - stores sample specific traits that may be
 used as covariate when fitting models</li>
 <li>
-<code>Spatial</code> - a dataframe of cell level information (x, y,
+<code>Spatial</code> - a data frame of cell level information (x, y,
 phenotype, etc) that can be used to calculate spatial summary
 functions</li>
 <li>
@@ -208,8 +172,8 @@ the meta data and spatial data</li>
 <li>
 <code>univariate_summaries</code> and
 <code>bivariate_summaries</code> - list of calculate spatial summary
-functions either imported with <code>XX</code> or calculated with
-<code><a href="../reference/extract_summary_functions.html">extract_summary_functions()</a></code>
+functions either imported with <code><a href="../reference/add_summary_function.html">add_summary_function()</a></code> or
+calculated with <code><a href="../reference/extract_summary_functions.html">extract_summary_functions()</a></code>
 </li>
 <li>
 <code>functional_pca</code> - list of functional principle
@@ -221,6 +185,23 @@ have been fit.</li>
 <div class="section level3">
 <h3 id="make-fdaobject">Make FDAobject<a class="anchor" aria-label="anchor" href="#make-fdaobject"></a>
 </h3>
+<p>Using the <code><a href="../reference/lung_df.html">?lung_df</a></code> in the <code>mxfda</code> package,
+columns with repeated data pertaining to the sample level information
+can be extracted and stored in a data frame called <code>clinical</code>
+while the cell level information can be kept in a long data frame (in
+this instance, but <code><a href="../reference/make_mxfda.html">make_mxfda()</a></code> does accept a list of data
+frames that produced by reading in many data frames of samples). The
+spatial parameter in the <code><a href="../reference/make_mxfda.html">make_mxfda()</a></code> function can be left
+blank if using a spatial metric derived from external functions. The
+final 2 parameters for the <code><a href="../reference/lung_df.html">?lung_df</a></code> <code>mxFDA</code>
+object is the <code>subject_key</code> and the <code>sample_key</code>.
+The <code>sample_key</code> is a column name that appears both in the
+<code>metadata</code> and <code>spatial</code> and is a 1:1 with the
+unique samples while the <code>subject_key</code> is a column name in
+<code>metadata</code> that ties the samples to metadata; if 1 sample per
+subject then <code>sample_key</code> and <code>subject_key</code> is a
+1:1, but if multiple samples per subject, <code>subject_id</code> will
+be repeated.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clinical</span> <span class="op">=</span> <span class="va">lung_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">image_id</span>, <span class="va">patient_id</span>, <span class="va">patientImage_id</span>, <span class="va">gender</span>, <span class="va">age</span>, <span class="va">survival_days</span>, <span class="va">survival_status</span>, <span class="va">stage</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
@@ -245,14 +226,24 @@ to links</p>
 </h3>
 <p>Use text from somewhere else here to describe what these are.</p>
 <p>Below we calculate univariate Ripley’s K for all immune cells in each
-image. Describe that it is using spatstat under the hood. These can be
-calculated with our package or spatialTIME. Options for the edge
-correction when using Ripley’s K include
-<code>"border", "isotropic", "Ripley", "translate"</code>. See
-<code>spatstat.core::Kest</code> for more details. Below we calculate
-the K function across a range of radii from 0 to 300 and use the
-isotropic (“iso”) edge correction. The <code>analysis_vars</code>
-argument retains variables that may be used in downstream analysis</p>
+image. <code>mxfda</code> does this with the function
+<code><a href="../reference/extract_summary_functions.html">extract_summary_functions()</a></code>. Either univariate or bivariate
+can be calculated with this function depending on the function supplied
+to the <code>extract_func</code>. In this case for looking at univariate
+that function is <code><a href="../reference/extract_univariate.html">extract_univariate()</a></code>. The summary function
+that is calculated depends on the function supplied to
+<code>summary_fun</code> which is one of <code><a href="https://rdrr.io/pkg/spatstat.explore/man/Kest.html" class="external-link">Kest()</a></code>,
+<code><a href="https://rdrr.io/pkg/spatstat.explore/man/Gest.html" class="external-link">Gest()</a></code>, or <code><a href="https://rdrr.io/pkg/spatstat.explore/man/Lest.html" class="external-link">Lest()</a></code> from the
+<a href="http://spatstat.org/" class="external-link">spatstat.explore</a> package (<code><a href="https://rdrr.io/pkg/spatstat.explore/man/Kcross.html" class="external-link">Kcross()</a></code>,
+<code><a href="https://rdrr.io/pkg/spatstat.explore/man/Gcross.html" class="external-link">Gcross()</a></code>, or <code><a href="https://rdrr.io/pkg/spatstat.explore/man/Lcross.html" class="external-link">Lcross()</a></code> for bivariate methods).
+Other options include supplying a vector of <em>r</em> values, the edge
+correction method for points that fall less than <em>r</em> from the
+edge of the sample, the column in the spatial data to use for cell
+filtering, and the value which to filter that column to. Other options
+can be provided to the function through its <code>...</code> syntax
+which will be passed to the respective <code>spatstat.explore</code>
+function. Below we calculate the K function across a range of radii from
+0 to 100 and use the isotropic (“iso”) edge correction.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mxFDAobject</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_summary_functions.html">extract_summary_functions</a></span><span class="op">(</span><span class="va">mxFDAobject</span>,</span>
 <span>                                        extract_func <span class="op">=</span> <span class="va">extract_univariate</span>,</span>
@@ -261,7 +252,29 @@ argument retains variables that may be used in downstream analysis</p>
 <span>                                        edge_correction <span class="op">=</span> <span class="st">"iso"</span>,</span>
 <span>                                        markvar <span class="op">=</span> <span class="st">"immune"</span>,</span>
 <span>                                        mark1 <span class="op">=</span> <span class="st">"immune"</span><span class="op">)</span></span></code></pre></div>
-<p>COMMENT ON THESE PLOTS</p>
+<div class="section level4">
+<h4 id="plotting-the-mxfda-object">Plotting the <code>mxFDA</code> object<a class="anchor" aria-label="anchor" href="#plotting-the-mxfda-object"></a>
+</h4>
+<p><a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a> has a few S4 methods implemented that make
+looking at results feel as though it’s part of base R. One method is
+plotting using <code><a href="../reference/plot.mxFDA.html">?plot.mxFDA</a></code> which ties in to
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code>. The first argument is the <code>mxFDA</code> object
+followed by a few options depending on what is wanting to be plotted.
+Here, the we want to plot the univariate summary that we just calculated
+which was the K function. By passing in <code>what = 'uni k'</code>, the
+plot function will extract the univariate K results. We also need to
+tell <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> what column is the y-axis which can be
+<code>'sumfun'</code> for the observed value, <code>'csr'</code> for the
+theoretical value of complete spatial randomness (CSR), or
+<code>'fundiff'</code> which is the difference between the observed K
+measure and the theoretical CSR. The output of <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> is a
+<a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a> object which can then be easily added
+to/manipulated as any ggplot plot would.</p>
+<p><strong>NOTE: These are the columns when calculating using the
+<code>extract_summary_function()</code> of <a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a> but if
+summary data is added from elsewhere with
+<code><a href="../reference/add_summary_function.html">add_summary_function()</a></code> then those column names will have to
+be used.</strong></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni k"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -269,18 +282,22 @@ argument retains variables that may be used in downstream analysis</p>
 <p><img src="a01_mx_fda_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>SAY WHAT YOU DO DIFFERENT TO GET L OR G</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/rm.html" class="external-link">rm</a></span><span class="op">(</span><span class="va">Gcrossdf</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning in rm(Gcrossdf): object 'Gcrossdf' not found</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="co">#rm(Gcrossdf)</span></span></code></pre></div>
+</div>
 </div>
 <div class="section level3">
 <h3 id="bivariate-summary-functions">Bivariate summary functions<a class="anchor" aria-label="anchor" href="#bivariate-summary-functions"></a>
 </h3>
-<p>Use if you want to do bivariate. We will look at relationship between
-T-cells and macrophages. There are a few images that have fewer than 5
-T-cells or macrophages, which makes estimation less stable for those
-images.</p>
-<p>Below we calculate the bivariate G function, but replace Lcross or
-Kcross to do L or K bivariate functions</p>
+<p>As mentioned there is the ability to use
+<code>extract_summary_function()</code> to extact bivariate summaries
+between 2 cell types. We will look at relationship between T-cells and
+macrophages. There are a few images that have fewer than 5 T-cells or
+macrophages, which makes estimation less stable for those images. To
+look at T-cells and macrophages, the data phenotypes and cell locations
+have to be in long format so we first create a variable with the cell
+types (<code>'phenotype'</code>) from the <code>lung_df</code>. Then
+just like above can split it into our metadata and spatial for creating
+a the <code>mxFDA</code> object.</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lung_df</span> <span class="op">=</span> <span class="va">lung_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>phenotype <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/case_when.html" class="external-link">case_when</a></span><span class="op">(</span><span class="va">phenotype_cd8</span> <span class="op">==</span> <span class="st">"CD8+"</span> <span class="op">~</span> <span class="st">"T-cell"</span>,</span>
@@ -301,8 +318,10 @@ Kcross to do L or K bivariate functions</p>
 <span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;fct&gt;</span>             <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> macrophage           20</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> T-cell               27</span></span></code></pre></div>
-<p>Automatically removes images that do not have at least 1 cell of each
-type * Is this behavior we actually want?</p>
+<p>Here we see that there are 20 and 27 samples with less than 5
+macrophages and T-cells, respectively. Things like this need to be
+remembered when interpreting the results and also shows that larger
+samples that capture more cells provide more reliable results.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">spatial</span> <span class="op">=</span> <span class="va">lung_df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">image_id</span>, <span class="op">-</span><span class="va">gender</span>, <span class="op">-</span><span class="va">age</span>, <span class="op">-</span><span class="va">survival_days</span>, <span class="op">-</span><span class="va">survival_status</span>, <span class="op">-</span><span class="va">stage</span><span class="op">)</span></span>
@@ -311,7 +330,16 @@ type * Is this behavior we actually want?</p>
 <span>                         spatial <span class="op">=</span> <span class="va">spatial</span>,</span>
 <span>                         subject_key <span class="op">=</span> <span class="st">"patient_id"</span>,</span>
 <span>                         sample_key <span class="op">=</span> <span class="st">"patientImage_id"</span><span class="op">)</span></span></code></pre></div>
-<p>Running Gcross on T-cells and macrophages</p>
+<p>Below we calculate the bivariate G function, but can replace
+<code><a href="https://rdrr.io/pkg/spatstat.explore/man/Gcross.html" class="external-link">Gcross()</a></code> with <code><a href="https://rdrr.io/pkg/spatstat.explore/man/Lcross.html" class="external-link">Lcross()</a></code> or
+<code><a href="https://rdrr.io/pkg/spatstat.explore/man/Kcross.html" class="external-link">Kcross()</a></code> to do L or K bivariate functions. The column that
+we created above is called <code>'phenotype'</code>, and the 2 cell
+types that we are interested in calculating the bivariate nearest
+neighbor G for are <code>'T-cell'</code> and <code>'macrophage'</code>
+so we provide them to <code>mark1</code> and <code>mark2</code>,
+respectively.</p>
+<p>Automatically removes images that do not have at least 1 cell of each
+type * Is this behavior we actually want?</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mxFDAobject</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_summary_functions.html">extract_summary_functions</a></span><span class="op">(</span><span class="va">mxFDAobject</span>,</span>
 <span>                summary_func <span class="op">=</span> <span class="va">Gcross</span>,</span>
@@ -321,6 +349,13 @@ type * Is this behavior we actually want?</p>
 <span>                markvar <span class="op">=</span> <span class="st">"phenotype"</span>,</span>
 <span>                mark1 <span class="op">=</span> <span class="st">"T-cell"</span>,</span>
 <span>                mark2 <span class="op">=</span> <span class="st">"macrophage"</span><span class="op">)</span></span></code></pre></div>
+<div class="section level4">
+<h4 id="plotting-the-bivariate-g">Plotting the bivariate G<a class="anchor" aria-label="anchor" href="#plotting-the-bivariate-g"></a>
+</h4>
+<p>Just like with the univariate plots, we can use the
+<code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function to plot our <code>mxFDA</code> object
+results. The <code>what</code> now is <code>'bi g'</code>,
+<code>'bivar g'</code>, or <code>'bivariate g'</code>.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"bi g"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
@@ -328,16 +363,151 @@ type * Is this behavior we actually want?</p>
 <p><img src="a01_mx_fda_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 </div>
 </div>
+</div>
 <div class="section level2">
 <h2 id="exploring-the-s4-object">Exploring the S4 object<a class="anchor" aria-label="anchor" href="#exploring-the-s4-object"></a>
 </h2>
-<p>Alex to add other details of neat things he has here.</p>
+<p>Another useful function is <code><a href="../reference/summary.mxFDA.html">?summary.mxFDA</a></code> which feeds
+into the <code><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary()</a></code> method. Either typing the name of the
+object or wrapping it in the summary function will provide information
+like the number of subjects, samples, if spatial summary functions have
+been calculated, and functional analyses that have been run.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mxFDAobject</span></span>
+<span><span class="co">#&gt; mxFDA Object:</span></span>
+<span><span class="co">#&gt;  Subjects: 50</span></span>
+<span><span class="co">#&gt;  Samples: 247</span></span>
+<span><span class="co">#&gt;  Has spatial data</span></span>
+<span><span class="co">#&gt;  Univariate Summaries: None</span></span>
+<span><span class="co">#&gt;  Bivariate Summaries: Gcross</span></span>
+<span><span class="co">#&gt; FPCs not yet calculated</span></span>
+<span><span class="co">#&gt; FCMs not yet calculated</span></span></code></pre></div>
+<p>Other things to mention?</p>
 </div>
 <div class="section level2">
 <h2 id="spatialtime">SpatialTIME<a class="anchor" aria-label="anchor" href="#spatialtime"></a>
 </h2>
-<p>Add example for converting spatialTIME to long format for use with
-mxfda.</p>
+<p>Sometimes other summary functions or normalizations are run outside
+of the <a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a> package but the end goal is to still run
+functional data analysis. Other packages, such as
+<a href="https://github.com/FridleyLab/spatialTIME" class="external-link">spatialTIME</a> provide methods for fast calculation of
+functions in <a href="http://spatstat.org/" class="external-link">spatstat</a> with permutation estimates of
+complete spatial randomness that is more robust than the theoretical,
+especially when spatial samples have holes that violate the assumption
+of a homogeneous point pattern. Lets look at how to perform the
+estimation of univariate nearest neighbor G with
+<a href="https://github.com/FridleyLab/spatialTIME" class="external-link">spatialTIME</a>.</p>
+<p>The central object of <code>spatialTIME</code> is the
+<code>mIF</code> object, that contains a list of spatial data frames, a
+data frame of sample-level summaries, and a data frame for the metadata
+(‘clinical’). From creating the <code>mxFDA</code> object, we have a
+spatial data frame and the clinical data, now we have to convert them
+into something that works with <code>spatialTIME.</code> The steps below
+will be:</p>
+<ol style="list-style-type: decimal">
+<li>convert positive/negative to 1/0 integers</li>
+<li>identify which columns in the spatial data frame are cell types</li>
+<li>convert spatial data frame to a list, where each element is a unique
+sample</li>
+<li>create a summary data frame from the spatial list for the number and
+proportion of positive cells for each phenotype</li>
+</ol>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#Step 1</span></span>
+<span><span class="va">spatialTIME_spatial_df</span> <span class="op">=</span> <span class="va">spatial</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">X.1</span>, <span class="op">-</span><span class="va">X</span>, <span class="op">-</span><span class="va">phenotype</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="va">phenotype_ck</span><span class="op">:</span><span class="va">phenotype_cd4</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"\\+"</span>, <span class="va">.x</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">patientImage_id</span>, .before <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Step 2</span></span>
+<span><span class="va">cell_types</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">spatialTIME_spatial_df</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grep</a></span><span class="op">(</span><span class="st">"phenotype"</span>, <span class="va">.</span>, value <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Step 3</span></span>
+<span><span class="va">spatial_list</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/split.html" class="external-link">split</a></span><span class="op">(</span><span class="va">spatialTIME_spatial_df</span>, <span class="va">spatial</span><span class="op">$</span><span class="va">patientImage_id</span><span class="op">)</span></span>
+<span></span>
+<span><span class="co">#Step 4</span></span>
+<span><span class="va">summary_data</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/lapply.html" class="external-link">lapply</a></span><span class="op">(</span><span class="va">spatial_list</span>, <span class="kw">function</span><span class="op">(</span><span class="va">df</span><span class="op">)</span><span class="op">{</span></span>
+<span>  <span class="va">df</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="co">#group by sample ID to maintain ID column</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">patient_id</span>, <span class="va">patientImage_id</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="co">#find number of positive</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/reframe.html" class="external-link">reframe</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">cell_types</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">.x</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>              `Total Cells` <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/context.html" class="external-link">n</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="co">#calculate proportion</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="op">!</span><span class="op">!</span><span class="va">cell_types</span>, <span class="op">~</span><span class="va">.x</span><span class="op">/</span><span class="va">`Total Cells`</span> <span class="op">*</span> <span class="fl">100</span>, .names <span class="op">=</span> <span class="st">"{.col} %"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="co">#bind the rows together</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/r/base/do.call.html" class="external-link">do.call</a></span><span class="op">(</span><span class="va">bind_rows</span>, <span class="va">.</span><span class="op">)</span></span></code></pre></div>
+<p>With the spatial list, clinical, and summary data the
+<code>mIF</code> object can be constructed. For best computation
+efficiency, use &gt;v1.3.4.</p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/FridleyLab/spatialTIME" class="external-link">spatialTIME</a></span><span class="op">)</span></span>
+<span><span class="co">#&gt; spatialTIME version:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBBBB;">1.3.4.1</span></span></span>
+<span><span class="co">#&gt; If using for publication, please cite our manuscript:</span></span>
+<span><span class="co">#&gt; <span style="color: #BBBBBB;">https://doi.org/10.1093/bioinformatics/btab757</span></span></span>
+<span></span>
+<span><span class="co">#make mif</span></span>
+<span><span class="va">mif</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spatialTIME/man/create_mif.html" class="external-link">create_mif</a></span><span class="op">(</span>clinical_data <span class="op">=</span> <span class="va">clinical</span>,</span>
+<span>                 sample_data <span class="op">=</span> <span class="va">summary_data</span>,</span>
+<span>                 spatial_list <span class="op">=</span> <span class="va">spatial_list</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">50</span><span class="op">]</span>,</span>
+<span>                 patient_id <span class="op">=</span> <span class="st">"patient_id"</span>,</span>
+<span>                 sample_id <span class="op">=</span> <span class="st">"patientImage_id"</span><span class="op">)</span></span></code></pre></div>
+<p>Deriving spatial metrics with the <code>mIF</code> object is really
+easy but does take some time. Will only do 10 permutations here to
+estimate the complete spatial randomness measure of nearest neighbor G
+and a reduced sampling, or <code>'rs'</code>, edge correction. To make
+the run faster, will look at only cytotoxic T cells (CD8+) and helper T
+cells (CD4+).</p>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mif</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/spatialTIME/man/NN_G.html" class="external-link">NN_G</a></span><span class="op">(</span><span class="va">mif</span>, mnames <span class="op">=</span> <span class="va">cell_types</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">6</span><span class="op">)</span><span class="op">]</span>,</span>
+<span>           r_range <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">100</span>, num_permutations <span class="op">=</span> <span class="fl">10</span>, </span>
+<span>           edge_correction <span class="op">=</span> <span class="st">"rs"</span>, keep_permutation_distribution <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>           workers <span class="op">=</span> <span class="fl">5</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span>, xloc <span class="op">=</span> <span class="st">"x"</span>, yloc <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span></code></pre></div>
+<p>With <code>spatialTIME</code>, all cell types (markers) are added to
+the data frame. We can visualize both CD8+ and CD4+ with ggplot.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">mif</span><span class="op">$</span><span class="va">derived</span><span class="op">$</span><span class="va">univariate_NN</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">r</span>, y <span class="op">=</span> <span class="va">`Degree of Clustering Permutation`</span>, color <span class="op">=</span> <span class="va">patientImage_id</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="op">~</span><span class="va">Marker</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 1086 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="a01_mx_fda_files/figure-html/unnamed-chunk-12-1.png" width="700"></p>
+<p>Exporting the spatial summary function data from the <code>mIF</code>
+object is the same as accessing the list object. However, we need to
+make sure that the data that we use with the <code>mxFDA</code> object
+contains only a single cell types results. This is to make sure that
+when modeling we aren’t mixing up different cells. Below is the
+extraction and filtering of the new univariate G results and keeping
+only the cytotoxic T cell results</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">uni_g</span> <span class="op">=</span> <span class="va">mif</span><span class="op">$</span><span class="va">derived</span><span class="op">$</span><span class="va">univariate_NN</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"cd8"</span>, <span class="va">Marker</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p>With the derived univariate nearest neighbor G for CD8+, it can be
+added to an <code>mxFDA</code> object with
+<code><a href="../reference/add_summary_function.html">add_summary_function()</a></code>. To show this, first will create a
+new <code>mxFDA</code> object with an empty spatial slot then add the
+new summary function results.</p>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#make mxFDA object </span></span>
+<span><span class="va">mxFDA_spatialTIME</span> <span class="op">=</span> <span class="fu"><a href="../reference/make_mxfda.html">make_mxfda</a></span><span class="op">(</span>metadata <span class="op">=</span> <span class="va">clinical</span>,</span>
+<span>                               spatial <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>                               subject_key <span class="op">=</span> <span class="st">"patient_id"</span>,</span>
+<span>                               sample_key <span class="op">=</span> <span class="st">"patientImage_id"</span><span class="op">)</span></span>
+<span><span class="co">#add summary data</span></span>
+<span><span class="va">mxFDA_spatialTIME</span> <span class="op">=</span> <span class="fu"><a href="../reference/add_summary_function.html">add_summary_function</a></span><span class="op">(</span><span class="va">mxFDAobject</span>,</span>
+<span>                                         summary_function_data <span class="op">=</span> <span class="va">uni_g</span>,</span>
+<span>                                         metric <span class="op">=</span> <span class="st">"uni g"</span><span class="op">)</span></span></code></pre></div>
+<p>Can now use the <code>mxfda</code> plot method with the new data and
+continue with analyses as would be done if using the internal
+<code>extract_summary_function()</code>.</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDA_spatialTIME</span>, y <span class="op">=</span> <span class="st">"Degree of Clustering Permutation"</span>, what <span class="op">=</span> <span class="st">"uni g"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: Removed 480 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<p><img src="a01_mx_fda_files/figure-html/unnamed-chunk-15-1.png" width="700"></p>
 </div>
 <div class="section level2">
 <h2 id="calculating-and-adding-your-own-spatial-summary-function">Calculating and adding your own spatial summary function<a class="anchor" aria-label="anchor" href="#calculating-and-adding-your-own-spatial-summary-function"></a>
@@ -369,7 +539,7 @@ Wrobel, J., V. Zipunnikov, J. Schrack, and J. Goldsmith. 2019.
 
       <footer><div class="copyright">
   <p></p>
-<p>Developed by Julia Wrobel.</p>
+<p>Developed by Julia Wrobel, Alex Soupir.</p>
 </div>
 
 <div class="pkgdown">

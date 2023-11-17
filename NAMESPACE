@@ -2,9 +2,11 @@
 
 S3method(plot,mxFDA)
 S3method(summary,mxFDA)
+export(Gcross)
 export(Gest)
 export(Kcross)
 export(Kest)
+export(Lcross)
 export(Lest)
 export(add_summary_function)
 export(extract_bivariate)

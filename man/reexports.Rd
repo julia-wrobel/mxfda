@@ -7,6 +7,8 @@
 \alias{Gest}
 \alias{Lest}
 \alias{Kcross}
+\alias{Gcross}
+\alias{Lcross}
 \title{Objects exported from other packages}
 \keyword{internal}
 \description{
@@ -14,6 +16,6 @@ These objects are imported from other packages. Follow the links
 below to see their documentation.
 
 \describe{
-  \item{spatstat.explore}{\code{\link[spatstat.explore]{Gest}}, \code{\link[spatstat.explore]{Kcross}}, \code{\link[spatstat.explore]{Kcross}}, \code{\link[spatstat.explore]{Kcross}}, \code{\link[spatstat.explore]{Kest}}, \code{\link[spatstat.explore]{Lest}}}
+  \item{spatstat.explore}{\code{\link[spatstat.explore]{Gcross}}, \code{\link[spatstat.explore]{Gest}}, \code{\link[spatstat.explore]{Kcross}}, \code{\link[spatstat.explore]{Kest}}, \code{\link[spatstat.explore]{Lcross}}, \code{\link[spatstat.explore]{Lest}}}
 }}
 

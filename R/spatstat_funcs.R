@@ -11,7 +11,7 @@ spatstat.explore::Lest
 spatstat.explore::Kcross
 
 #' @export
-spatstat.explore::Kcross
+spatstat.explore::Gcross
 
 #' @export
-spatstat.explore::Kcross
+spatstat.explore::Lcross

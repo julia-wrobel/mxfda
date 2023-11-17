@@ -26,7 +26,7 @@ extract_spatial_summary = function(mxFDAobject, columns, grouping_columns = NULL
   if(FALSE %in% (grouping_columns %in% colnames(dat)) & !is.null(grouping_columns))
     stop('If providing other grouping columns, need to be in data')
   #check class of columns to see if user did 1/0s or names
-  col_classes = apply(dat[,grouping_columns], 2, class)
+  col_classes = apply(dat[,columns], 2, class)
   if(!("character" %in% col_classes))
     stop("Not yet working with factor 1/0 for cell classes")
 
