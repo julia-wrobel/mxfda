@@ -6,6 +6,12 @@
 #' @return summary of object
 #' @export
 #'
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @examples
+#' #set seed
+#' set.seed(333)
+#'
 summary.mxFDA = function(x, ...){
   #basic object
   cat("mxFDA Object:\n")

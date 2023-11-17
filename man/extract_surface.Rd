@@ -45,5 +45,9 @@ Internal function called by \code{TITLE: regression function} that transforms lo
 # simulate data
 set.seed(1001)
 
+}
+\author{
+Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
 
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

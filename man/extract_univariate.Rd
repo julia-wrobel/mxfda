@@ -42,7 +42,6 @@ Internal function called by \code{extract_summary_functions} to calculate a univ
 # simulate data
 set.seed(1001)
 
-
 }
 \author{
 Julia Wrobel \email{julia.wrobel@emory.edu}

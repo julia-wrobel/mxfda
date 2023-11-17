@@ -8,8 +8,14 @@
 #' @param metric character vector with either 'uni' or 'bi' and 'k', 'l', or 'g'; e.g. 'uni g'
 #'
 #' @return an updated `mxFDA` object with a derived value added
-#' @export
 #'
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @examples
+#' #set seed
+#' set.seed(333)
+#'
+#' @export
 add_summary_function = function(mxFDAobject,
                                 summary_function_data,
                                 metric){

@@ -2,16 +2,6 @@
 #'
 #' Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
 #'
-#' @importFrom tidyr pivot_wider
-#' @import dplyr
-#'
-#' @return A \code{dataframe} with matrix-valued covariates \code{l_int}, \code{t_int}, and \code{func} for use in a linear or additive functional Cox model.
-#'
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
-#'
 #' @param mxfundata Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param id Character string, the name of the variable that identifies each unique subject.
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
@@ -19,6 +9,18 @@
 #' @param knots Number of knots for defining spline basis.
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @param quantile_transform If TRUE, a quantile transformation is applied to the functional predictor before modeling
+#'
+#' @return A \code{dataframe} with matrix-valued covariates \code{l_int}, \code{t_int}, and \code{func} for use in a linear or additive functional Cox model.
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#'
+#' @importFrom tidyr pivot_wider
+#' @import dplyr
+#'
+#' @examples
+#' # simulate data
+#' set.seed(1001)
+#'
 process_fcm <- function(mxfundata,
                        id,
                        r = "r",
@@ -67,17 +69,6 @@ process_fcm <- function(mxfundata,
 #'
 #' Internal function called by \code{TITLE: regression function} that imputes missing data in functional predictors using FPCA.
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
-#' @importFrom refund fpca.face
-#' @importFrom tidyr pivot_wider pivot_longer
-#' @import dplyr
-#'
-#' @return A \code{dataframe} where the missing function values (NA) for the \code{value} variable have been replaced with estimates from FPCA.
-#'
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
 #'
 #' @param mxfundata Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param id Character string, the name of the variable that identifies each unique subject.
@@ -86,6 +77,19 @@ process_fcm <- function(mxfundata,
 #' @param knots Number of knots for defining spline basis.
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @param smooth Option to smooth data using FPCA.
+#'
+#' @return A \code{dataframe} where the missing function values (NA) for the \code{value} variable have been replaced with estimates from FPCA.
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
+#'
+#' @importFrom refund fpca.face
+#' @importFrom tidyr pivot_wider pivot_longer
+#' @import dplyr
+#'
+#' @examples
+#' # simulate data
+#' set.seed(1001)
+#'
 impute_fpca = function(mxfundata,
                        id,
                        r = "r",
@@ -133,10 +137,14 @@ impute_fpca = function(mxfundata,
 #'
 #' Function to calculate c-index from a an AFCM or LFCM fit
 #'
-#' @author Erjia Cui
 #' @param fit fit AFCM or LFCM model fit object.
 #' @param survival_time Vector of survival/censoring times
 #' @param event Survival statust (0 = censored, 1 = event)
+#'
+#' @return c-index
+#'
+#' @author Erjia Cui
+#'
 #' @export
 extract_c <- function(fit, survival_time, event){
   eta <- predict(fit, type = "link")

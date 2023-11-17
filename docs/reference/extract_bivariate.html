@@ -32,7 +32,10 @@
     <span class="caret"></span>
   </a>
   <ul class="dropdown-menu" role="menu"><li>
-      <a href="../articles/mx_fda.html">mx_fda</a>
+      <a href="../articles/a01_mx_fda.html">mxFunctional Data Analysis</a>
+    </li>
+    <li>
+      <a href="../articles/a02_mx_fpca.html">mx_fpca</a>
     </li>
   </ul></li>
       </ul><ul class="nav navbar-nav navbar-right"></ul></div><!--/.nav-collapse -->
@@ -89,12 +92,11 @@ Should have variables <code>x</code> and <code>y</code> to denote x and y spatia
 
 
 <dt>func</dt>
-<dd><p>Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.</p></dd>
+<dd><p>Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.</p></dd>
 
 
 <dt>edge_correction</dt>
-<dd><p>Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
-#'</p></dd>
+<dd><p>Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")</p></dd>
 
 </dl></div>
     <div id="value">
@@ -132,7 +134,6 @@ DOI: 10.1007/s11222-014-9485-x.</p>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># simulate data</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
@@ -143,7 +144,7 @@ DOI: 10.1007/s11222-014-9485-x.</p>
 
 
       <footer><div class="copyright">
-  <p></p><p>Developed by Julia Wrobel.</p>
+  <p></p><p>Developed by Julia Wrobel, Alex Soupir.</p>
 </div>
 
 <div class="pkgdown">

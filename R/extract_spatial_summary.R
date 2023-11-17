@@ -5,8 +5,14 @@
 #' @param grouping_columns character vector of other columns to use as grouping, such as region classification column
 #'
 #' @return data frame with percent of total points per spatial sample `column` are positive for
-#' @export
 #'
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @examples
+#' #set seed
+#' set.seed(333)
+#'
+#' @export
 extract_spatial_summary = function(mxFDAobject, columns, grouping_columns = NULL){
   #set function specific dplyr option to mute summarise
   options(dplyr.summarise.inform = FALSE)

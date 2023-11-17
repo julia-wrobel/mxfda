@@ -20,3 +20,11 @@ an updated \code{mxFDA} object with a derived value added
 Sometimes other ways of calculating summary functions is wanted and is done in other packages,
 in this instance the data can be loaded into the \code{mxFDA} object.
 }
+\examples{
+#set seed
+set.seed(333)
+
+}
+\author{
+Alex Soupir \email{alex.soupir@moffitt.org}
+}

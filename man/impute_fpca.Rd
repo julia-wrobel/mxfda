@@ -39,8 +39,7 @@ Internal function called by \code{TITLE: regression function} that imputes missi
 # simulate data
 set.seed(1001)
 
-
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 }

@@ -11,6 +11,12 @@
 #' @return object compatable with ggplot2
 #' @export
 #'
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @examples
+#' #set seed
+#' set.seed(333)
+#'
 plot.mxFDA = function(x, filter_cols = NULL, ...){
   params = as.list(substitute(list(...)))
   params$what = unlist(strsplit(params$what, split = " "))

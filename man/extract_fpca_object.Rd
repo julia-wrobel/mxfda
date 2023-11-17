@@ -21,3 +21,11 @@ fpca object
 \description{
 Extract FPCA object
 }
+\examples{
+#set seed
+set.seed(333)
+
+}
+\author{
+Alex Soupir \email{alex.soupir@moffitt.org}
+}

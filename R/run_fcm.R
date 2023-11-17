@@ -2,16 +2,6 @@
 #'
 #' Fit a functional Cox regression model.
 #'
-#' @importFrom tidyr pivot_wider
-#' @importFrom mgcv gam cox.ph
-#' @import dplyr
-#'
-#' @return A \code{list} which is a linear or additive functional Cox model fit. See \code{mgcv::gam} for more details.
-#'
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
 #'
 #' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param model_name character string to give the fit model in the functional cox slot
@@ -26,6 +16,20 @@
 #' @param smooth Option to smooth data using FPCA. Defaults to FALSE.
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
+#'
+#' @return A \code{list} which is a linear or additive functional Cox model fit. See \code{mgcv::gam} for more details.
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @importFrom tidyr pivot_wider
+#' @importFrom mgcv gam cox.ph
+#' @import dplyr
+#'
+#' @examples
+#' # simulate data
+#' set.seed(1001)
+#'
 #' @export
 run_fcm <- function(mxFDAobject,
                     model_name,

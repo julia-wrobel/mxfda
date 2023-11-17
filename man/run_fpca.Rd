@@ -49,11 +49,15 @@ This is a wrapper for the function \code{fpca.face} from the \code{refund} packa
 # simulate data
 set.seed(1001)
 
-
 }
 \references{
 Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 Fast covariance estimation for high-dimensional functional data.
 \emph{Statistics and Computing}, 26, 409-421.
 DOI: 10.1007/s11222-014-9485-x.
+}
+\author{
+Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

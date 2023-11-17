@@ -11,28 +11,6 @@
 #' variance (\code{pve}). Families and link functions can be specified using the same
 #' syntax as the \code{family} argument from the \code{lme4::glmer()} function.
 #'
-#'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
-#' @import dplyr
-#' @importFrom tidyr nest unnest
-#' @importFrom purrr map
-#'
-#' @return A \code{data.frame} containing:
-#' \item{image_patient_id}{the unique image id}
-#' \item{r}{the radius of values over which the spatial summary function is evaluated}
-#' \item{sumfun}{the values of the spatial summary function}
-#' \item{csr}{the values of the spatial summary function under complete spatial randomness}
-#' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
-#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
-#' Fast covariance estimation for high-dimensional functional data.
-#' \emph{Statistics and Computing}, 26, 409-421.
-#' DOI: 10.1007/s11222-014-9485-x.
-
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
-#'
 #' @param mxdata Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param extract_func Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.
@@ -42,6 +20,30 @@
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
+#'
+#' @return A \code{data.frame} containing:
+#' \item{image_patient_id}{the unique image id}
+#' \item{r}{the radius of values over which the spatial summary function is evaluated}
+#' \item{sumfun}{the values of the spatial summary function}
+#' \item{csr}{the values of the spatial summary function under complete spatial randomness}
+#' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#'
+#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
+#' Fast covariance estimation for high-dimensional functional data.
+#' \emph{Statistics and Computing}, 26, 409-421.
+#' DOI: 10.1007/s11222-014-9485-x.
+#'
+#' @import dplyr
+#' @import spatstat.explore
+#' @importFrom tidyr nest unnest
+#' @importFrom purrr map
+#'
+#' @examples
+#' # simulate data
+#' set.seed(1001)
+#'
 #' @export
 extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       extract_func = c(extract_univariate, extract_bivariate),

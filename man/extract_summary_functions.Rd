@@ -57,7 +57,6 @@ syntax as the \code{family} argument from the \code{lme4::glmer()} function.
 # simulate data
 set.seed(1001)
 
-
 }
 \references{
 Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).

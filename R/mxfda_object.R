@@ -8,6 +8,12 @@
 #' @return object of class mxFDA
 #' @export
 #'
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @examples
+#' #set seed
+#' set.seed(333)
+#'
 make_mxfda = function(metadata,
                       spatial = NULL,
                       subject_key,

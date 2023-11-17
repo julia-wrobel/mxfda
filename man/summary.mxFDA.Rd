@@ -17,3 +17,11 @@ summary of object
 \description{
 Summary method for object of class \code{mxFDA}
 }
+\examples{
+#set seed
+set.seed(333)
+
+}
+\author{
+Alex Soupir \email{alex.soupir@moffitt.org}
+}

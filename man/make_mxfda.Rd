@@ -21,3 +21,11 @@ object of class mxFDA
 \description{
 Make mxFDA class object
 }
+\examples{
+#set seed
+set.seed(333)
+
+}
+\author{
+Alex Soupir \email{alex.soupir@moffitt.org}
+}

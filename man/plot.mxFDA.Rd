@@ -23,3 +23,11 @@ object compatable with ggplot2
 \description{
 Plot mxFDA object
 }
+\examples{
+#set seed
+set.seed(333)
+
+}
+\author{
+Alex Soupir \email{alex.soupir@moffitt.org}
+}

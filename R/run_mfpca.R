@@ -2,24 +2,6 @@
 #'
 #' This is a wrapper for the function \code{mfpca.face} from the \code{refund} package. EXPAND
 #'
-#' @importFrom refund mfpca.face
-#' @importFrom tibble as_tibble
-#' @importFrom tidyr pivot_wider
-#' @import dplyr
-#'
-#' @return A \code{mxFDA} object containing:
-#' \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
-#' \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
-#'
-#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
-#' Fast covariance estimation for high-dimensional functional data.
-#' \emph{Statistics and Computing}, 26, 409-421.
-#' DOI: 10.1007/s11222-014-9485-x.
-
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
 #'
 #' @param mxFDAobject object of class \code{mxFDA} created by `make_mxfda` with metrics derived with `extract_summary_functions`
 #' @param id Character string, the name of the variable that identifies each unique subject.
@@ -31,6 +13,27 @@
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @param lightweight Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.
 #' @param ... Optional other arguments to be passed to \code{mfpca.face}
+#'
+#' @return A \code{mxFDA} object containing:
+#' \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
+#' \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
+#'
+#' @author unknown \email{first.last@@domain.extension}
+#'
+#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
+#' Fast covariance estimation for high-dimensional functional data.
+#' \emph{Statistics and Computing}, 26, 409-421.
+#' DOI: 10.1007/s11222-014-9485-x.
+#'
+#' @importFrom refund mfpca.face
+#' @importFrom tibble as_tibble
+#' @importFrom tidyr pivot_wider
+#' @import dplyr
+#'
+#' @examples
+#' # simulate data
+#' set.seed(1001)
+#'
 #' @export
 run_mfpca = function(mxFDAobject,
                     id,
@@ -99,16 +102,5 @@ run_mfpca = function(mxFDAobject,
                   mfpc_object = mx_mfpc)
 
   return(fpca_dat)
-
-
-
-  # if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kcross = fpca_dat
-  # if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gcross = fpca_dat
-  # if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lcross = fpca_dat
-  # if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`Functional PCA`$Kest = fpca_dat
-  # if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`Functional PCA`$Gest = fpca_dat
-  # if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`Functional PCA`$Lest = fpca_dat
-  #
-  # return(mxFDAobject)
 
 }

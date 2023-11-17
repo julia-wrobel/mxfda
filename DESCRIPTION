@@ -31,9 +31,9 @@ Imports:
     purrr,
     spatstat.geom,
     reshape2,
-    mgcv
+    mgcv,
+    spatstat.explore
 Depends: 
     R (>= 2.10),
-    spatstat.explore
 LazyData: true
 Config/testthat/edition: 3

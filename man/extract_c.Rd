@@ -13,6 +13,9 @@ extract_c(fit, survival_time, event)
 
 \item{event}{Survival statust (0 = censored, 1 = event)}
 }
+\value{
+c-index
+}
 \description{
 Function to calculate c-index from a an AFCM or LFCM fit
 }

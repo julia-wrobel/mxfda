@@ -2,24 +2,6 @@
 #'
 #' This is a wrapper for the function \code{fpca.face} from the \code{refund} package. EXPAND
 #'
-#' @importFrom refund fpca.face
-#' @importFrom tibble as_tibble
-#' @importFrom tidyr pivot_wider
-#' @import dplyr
-#'
-#' @return A \code{mxFDA} object containing:
-#' \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
-#' \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
-#'
-#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
-#' Fast covariance estimation for high-dimensional functional data.
-#' \emph{Statistics and Computing}, 26, 409-421.
-#' DOI: 10.1007/s11222-014-9485-x.
-
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
 #'
 #' @param mxFDAobject object of class \code{mxFDA} created by `make_mxfda` with metrics derived with `extract_summary_functions`
 #' @param id Character string, the name of the variable that identifies each unique subject.
@@ -31,6 +13,28 @@
 #' @param lightweight Default is FALSE. If TRUE, removes Y and Yhat from returned FPCA object. A good option to select for large datasets.
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
+#'
+#' @return A \code{mxFDA} object containing:
+#' \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
+#' \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
+#' Fast covariance estimation for high-dimensional functional data.
+#' \emph{Statistics and Computing}, 26, 409-421.
+#' DOI: 10.1007/s11222-014-9485-x.
+#'
+#' @importFrom refund fpca.face
+#' @importFrom tibble as_tibble
+#' @importFrom tidyr pivot_wider
+#' @import dplyr
+#'
+#' @examples
+#' # simulate data
+#' set.seed(1001)
+#'
 #' @export
 run_fpca = function(mxFDAobject,
                     metric = "uni k",

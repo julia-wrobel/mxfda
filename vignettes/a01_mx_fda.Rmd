@@ -1,5 +1,5 @@
 ---
-title: "mx_fda"
+title: "mxFunctional Data Analysis"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >

@@ -19,3 +19,11 @@ data frame with percent of total points per spatial sample \code{column} are pos
 \description{
 Summarise spatial data in mxFDA object
 }
+\examples{
+#set seed
+set.seed(333)
+
+}
+\author{
+Alex Soupir \email{alex.soupir@moffitt.org}
+}

@@ -11,6 +11,12 @@ plot_mfpc(obj, pc_choice_level1, pc_choice_level2)
 
 \item{pc_choice}{FPC to be plotted.}
 }
+\value{
+list of objects of class ggplot
+}
 \description{
 Produces a ggplot with mean plus or minus two standard deviations of a selected FPC.
+}
+\author{
+Julia Wrobel \email{julia.wrobel@emory.edu}
 }

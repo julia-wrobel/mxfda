@@ -2,16 +2,6 @@
 #'
 #' Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
 #'
-#' @importFrom reshape2 melt
-#' @importFrom mgcv predict.gam
-#' @import dplyr
-#'
-#' @return A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
-#'
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
 #'
 #' @param mxFDAobject object of class `mxFDA` with model `model` calculated wihtin
 #' @param metric spatial summary function to extract surface for
@@ -23,6 +13,18 @@
 #' @param se Defaults to FALSE, and returns surface. If TRUE, returns coefficient function with standard errors for LFCM, or coefficient surface for AFCM with non NA values that are statistically significant
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #'
+#' @return A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @importFrom reshape2 melt
+#' @importFrom mgcv predict.gam
+#' @import dplyr
+#'
+#' @examples
+#' # simulate data
+#' set.seed(1001)
 #'
 #' @export
 extract_surface = function(mxFDAobject,
