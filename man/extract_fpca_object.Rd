@@ -4,16 +4,12 @@
 \alias{extract_fpca_object}
 \title{Extract FPCA object}
 \usage{
-extract_fpca_object(mxFDAobject, what, r, value)
+extract_fpca_object(mxFDAobject, what)
 }
 \arguments{
 \item{mxFDAobject}{object of class \code{mxFDA}}
 
 \item{what}{what functional PCA data to extract, e.g. 'uni k'}
-
-\item{r}{column id for radii}
-
-\item{value}{value used to calculate fpcs}
 }
 \value{
 fpca object

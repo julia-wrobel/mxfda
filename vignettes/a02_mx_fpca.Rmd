@@ -1,5 +1,5 @@
 ---
-title: "mx_fpca"
+title: "Multiplex FPCA"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
@@ -14,10 +14,11 @@ knitr::opts_chunk$set(
   comment = "#>",
   figs.out = "../figures"
 )
+invisible(suppressPackageStartupMessages(library(tidyverse)))
 ```
 
 
-This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal components analysis can be found in the separate vignette `mx_fpca`. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+This vignette describes the `{mxfda}` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal components analysis can be found in the separate vignette `mx_fpca`. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
 
 
 
@@ -66,8 +67,6 @@ data("ovarian_FDA")
 ovarian_FDA
 ```
 
-
-
 These functions are visualized below.
 
 ```{r}
@@ -110,7 +109,7 @@ Shout out to refund.shiny
 
 ```{r refund.shiny, eval = FALSE}
 G_fpca = extract_fpca_object(ovarian_FDA,
-                             what = "uni g", r = "r", value = "fundiff")
+                             what = "uni g fpca", r = "r")
 class(G_fpca)
 #library(refund.shiny)
 #plot_shiny(G_fpca)
@@ -145,7 +144,7 @@ Explain that there are multiple curves per subject for MFPCA and that's why lung
 
 ### Extract spatial summary functions and visualize data
 
-Here we extract the univariate K function from the lung data. 
+Here we extract the univariate K function from the lung data. With summary functions within the `{mxfda}` package, they use a window created by the subset of cells rather than all cells in a core. This is something to keep in mind.
 
 ```{r}
 data(lung_df)
@@ -190,12 +189,10 @@ Right now this takes the same id in both slots and splits it under the hood. nee
 
 ```{r}
 # see what happens when you use mfpca.sc as an engine
-mfpca_obj <- run_mfpca(mxFDAobject, 
-                       id = "id", 
-                                  image_id = "image_id", 
-                                  metric = "uni k", r = "r", 
-                                  value = "fundiff",
-                                  pve = .99,
+mxFDAobject <- run_mfpca(mxFDAobject, 
+                       metric = "uni k", r = "r", 
+                       value = "fundiff",
+                       pve = .99,
                        lightweight = FALSE)
 ```
 
@@ -203,14 +200,8 @@ mfpca_obj <- run_mfpca(mxFDAobject,
 Explore FPCA object
 
 ```{r}
-mfpca_obj$score_df
-
-dim(mfpca_obj$scores_level2)
-
-mfpca_obj$scores_level2
-
-
-p = plot_mfpc(mfpca_obj$mfpc_object, 1, 3)
+#plot mxFDA object mFPCA
+p = plot(mxFDAobject, what = 'uni k mfpca', level1 = 1, level2 = 3)
 
 p[[1]] + p[[2]]
 

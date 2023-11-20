@@ -48,6 +48,8 @@ setClass("mxFDA", slots = list(
   sample_key = "character",
   `univariate_summaries` = "list", #G, K, L
   `bivariate_summaries` = "list", #G, K, L
-  `functional_pca` = "list", #maybe subset for FDA
-  `functional_cox` = "list"
+  `functional_pca` = "list", #one for 'regular'
+  `functional_mpca` = "list", #one for mixed effects (?)
+  `functional_cox` = "list",
+  `functional_mcox` = "list" #one for mixed effects (?)
 ))

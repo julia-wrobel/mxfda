@@ -2,8 +2,6 @@
 #'
 #' @param mxFDAobject object of class `mxFDA`
 #' @param what what functional PCA data to extract, e.g. 'uni k'
-#' @param r column id for radii
-#' @param value value used to calculate fpcs
 #'
 #' @return fpca object
 #'
@@ -14,12 +12,14 @@
 #' set.seed(333)
 #'
 #' @export
-extract_fpca_object = function(mxFDAobject, what, r, value){
+extract_fpca_object = function(mxFDAobject, what){
   if(!inherits(mxFDAobject, "mxFDA")) stop("supply object of class `mxFDA`")
   #check if object is of class mxFDA
   what = unlist(strsplit(what, split = " "))
 
-  dat = get_data(mxFDAobject, what, type = "fpca")
+  dat = get_data(mxFDAobject, what[1:2], type = what[3])
 
+  if(grepl("m", what[3]))
+    return(dat$mfpc_object)
   return(dat$fpc_object)
 }

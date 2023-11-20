@@ -35,7 +35,20 @@ summary.mxFDA = function(x, ...){
     fpc_slots = names(x@functional_pca)
     cat("FPCs Calculated:\n", sep = "")
     for(f in fpc_slots){
-      cat("\t", f, ": ", ncol(x@functional_pca[[f]]$score_df), " FPCs\n", sep = "")
+      cat("\t", f, ": ", ncol(x@functional_pca[[f]]$score_df), " FPCs describe ",
+          round((ovarian_FDA@functional_pca$Gest$fpc_object$pve * 100), digits = 1), "% variance\n", sep = "")
+    }
+  }
+  #mixed pricipal components
+  if(length(x@functional_mpca) == 0){
+    cat("MFPCs not yet calculated\n", sep = "")
+  } else {
+    fpc_slots = names(x@functional_mpca)
+    cat("MFPCs Calculated:\n", sep = "")
+    for(f in fpc_slots){
+      cat("\t", f, ": ",
+          ncol(x@functional_mpca[[f]]$score_df), " Level1 MFPCs and ",
+          ncol(x@functional_mpca[[f]]$score_df), " Level2 MFPCs", "\n", sep = "") #need to play with the output to determine how to report
     }
   }
   #any models run
@@ -46,6 +59,18 @@ summary.mxFDA = function(x, ...){
     cat("Models Fit:\n", sep = "")
     for(f in f_cox_slots){
       cat("\t", f, ": ", paste0(sapply(x@functional_cox[[f]], function(i){ class(i)[1]}) %>% toupper(),
+                                collapse = ", "),
+          " models\n", sep = "")
+    }
+  }
+  #any models run
+  if(length(x@functional_mcox) == 0){
+    cat("MFCMs not yet calculated\n", sep = "")
+  } else {
+    f_cox_slots = names(x@functional_mcox)
+    cat("Models Fit:\n", sep = "")
+    for(f in f_cox_slots){
+      cat("\t", f, ": ", paste0(sapply(x@functional_mcox[[f]], function(i){ class(i)[1]}) %>% toupper(),#need to play with the output to determine how to report
                                 collapse = ", "),
           " models\n", sep = "")
     }

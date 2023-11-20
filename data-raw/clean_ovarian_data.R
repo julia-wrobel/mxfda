@@ -81,7 +81,7 @@
 #   filter(tissue_category == "Tumor", immune == "immune") %>%
 #   select(patient_id,x, y, age = age_at_diagnosis, immune, survival_time,
 #          event = death, immune)
-#
+
 #
 # #
 # # # enhance signal of original data for illustrating use of the package
@@ -117,7 +117,7 @@
 #
 # ### Make mxFDA object
 # clinical = ovarian_df %>%
-#   select(patient_id, age, survival_time, event) %>% distinct()
+#   select(patient_id, age, survival_time, event) %>% distinct() %>%
 #   mutate(sample_id = patient_id)
 # spatial = ovarian_df %>%
 #   select(-survival_time, -event) %>%

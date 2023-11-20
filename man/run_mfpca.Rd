@@ -6,23 +6,18 @@
 \usage{
 run_mfpca(
   mxFDAobject,
-  id,
-  image_id,
   metric = "uni k",
   r = "r",
   value = "fundiff",
   knots = NULL,
   analysis_vars = NULL,
   lightweight = FALSE,
-  ...
+  ...,
+  twoway = FALSE
 )
 }
 \arguments{
 \item{mxFDAobject}{object of class \code{mxFDA} created by \code{make_mxfda} with metrics derived with \code{extract_summary_functions}}
-
-\item{id}{Character string, the name of the variable that identifies each unique subject.}
-
-\item{image_id}{Character string, the name of the variable that identifies each unique image sample}
 
 \item{metric}{name of calculated spatial metric to use}
 
@@ -37,6 +32,8 @@ run_mfpca(
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.}
 
 \item{...}{Optional other arguments to be passed to \code{mfpca.face}}
+
+\item{twoway}{whether to model within within sample variability (such as )}
 }
 \value{
 A \code{mxFDA} object containing:
@@ -59,4 +56,8 @@ DOI: 10.1007/s11222-014-9485-x.
 }
 \author{
 unknown \email{first.last@domain.extension}
+
+Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

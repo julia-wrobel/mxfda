@@ -71,7 +71,9 @@ The central object used with the `mxfda` package is the `mxFDA` object. These ob
 - `sample_key` - a character string for the columns linking the meta data and spatial data
 - `univariate_summaries` and `bivariate_summaries` - list of calculate spatial summary functions either imported with `add_summary_function()` or calculated with `extract_summary_functions()`
 - `functional_pca` - list of functional principle components for the spatial summary functions 
+- `functional_mpca` - list of functional mixed principle components for the spatial summary functions 
 - `functional_cox` - list of functional cox models that have been fit.
+- `functional_mcox` - list of functional mixed cox models that have been fit.
 
 ## Make FDAobject
 

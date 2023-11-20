@@ -13,7 +13,9 @@
 
 If there are multiple metrics that are included in the derived table, an extra parameter \code{filter_cols}
 in the format of \code{c(Derived_Column = "Level_to_Filter")} will return curves from the \code{Derived_Column}
-with the level \code{Level_to_Filter}}
+with the level \code{Level_to_Filter}
+
+When plotting mFPCA objects, additional arguments \code{level1} and \code{level2} help indicate which FPCA from level 1 and level 2 to plot}
 
 \item{...}{additional paramters including \code{y}, \code{what}, and \code{sampleID} to inform whats to be plotted}
 }
