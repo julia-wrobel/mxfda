@@ -23,11 +23,11 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tidyverse,
-    spatialTIME
+    spatialTIME (>= 1.3.4)
 Imports: 
     magrittr,
     dplyr,
-    refund,
+    refund (>= 0.1-33),
     tibble,
     tidyr,
     purrr,

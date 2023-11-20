@@ -207,6 +207,8 @@ Sometimes other summary functions or normalizations are run outside of the `{mxf
 
 The central object of `spatialTIME` is the `mIF` object, that contains a list of spatial data frames, a data frame of sample-level summaries, and a data frame for the metadata ('clinical'). From creating the `mxFDA` object, we have a spatial data frame and the clinical data, now we have to convert them into something that works with `spatialTIME.` The steps below will be:
 
+@10.1093/bioinformatics/btab757
+
 1. convert positive/negative to 1/0 integers
 2. identify which columns in the spatial data frame are cell types
 3. convert spatial data frame to a list, where each element is a unique sample
@@ -259,7 +261,7 @@ Deriving spatial metrics with the `mIF` object is really easy but does take some
 ```{r}
 mif = NN_G(mif, mnames = cell_types[c(2, 6)],
            r_range = 0:100, num_permutations = 10, 
-           edge_correction = "rs", keep_permutation_distribution = FALSE,
+           edge_correction = "rs", keep_perm_dis = FALSE,
            workers = 5, overwrite = TRUE, xloc = "x", yloc = "y")
 ```
 
@@ -268,7 +270,7 @@ With `spatialTIME`, all cell types (markers) are added to the data frame. We can
 ```{r}
 mif$derived$univariate_NN %>%
     ggplot() +
-    geom_line(aes(x = r, y = `Degree of Clustering Permutation`, color = patientImage_id)) +
+    geom_line(aes(x = r, y = `Degree of Clustering Permutation`, color = patientImage_id), alpha = 0.4) +
     facet_grid(~Marker) +
   theme(legend.position = "none")
 ```

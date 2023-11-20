@@ -3,7 +3,7 @@ title: "mx_fpca"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{mxFPCA}
+  %\VignetteIndexEntry{Multiplex FPCA}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -63,6 +63,7 @@ Here we load data from the Ovarian cancer dataset that where univariate nearest-
 
 ```{r}
 data("ovarian_FDA")
+ovarian_FDA
 ```
 
 
@@ -84,7 +85,7 @@ ovarian_FDA <- run_fpca(ovarian_FDA,
                         metric = "uni g", r = "r", 
                         value = "fundiff",
                         pve = .95)
-
+ovarian_FDA
 ```
 
 Explain each of these plots
