@@ -214,9 +214,9 @@ predictors<a class="anchor" aria-label="anchor" href="#cox-regression-using-func
 </h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ovarian_FDA</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_fcm.html">run_fcm</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, model_name <span class="op">=</span> <span class="st">"fit_lfcm"</span>,</span>
-<span>                      form <span class="op">=</span> <span class="st">"survival_time ~ age"</span>,</span>
+<span>                      formula <span class="op">=</span> <span class="va">survival_time</span> <span class="op">~</span> <span class="va">age</span>, event <span class="op">=</span> <span class="st">"event"</span>,</span>
 <span>                      metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
-<span>                      analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"survival_time"</span>, <span class="st">"event"</span><span class="op">)</span>,</span>
+<span>                      analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"survival_time"</span><span class="op">)</span>,</span>
 <span>                      afcm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span><span class="op">)</span></span>
@@ -263,9 +263,9 @@ predictors<a class="anchor" aria-label="anchor" href="#cox-regression-using-func
 </h4>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ovarian_FDA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_fcm.html">run_fcm</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, model_name <span class="op">=</span> <span class="st">"fit_afcm"</span>, </span>
-<span>                       form <span class="op">=</span> <span class="st">"survival_time ~ age"</span>, metric <span class="op">=</span> <span class="st">"uni g"</span>,</span>
-<span>                       r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
-<span>                       analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"survival_time"</span>, <span class="st">"event"</span><span class="op">)</span>,</span>
+<span>                       formula <span class="op">=</span> <span class="va">survival_time</span> <span class="op">~</span> <span class="va">age</span>, event <span class="op">=</span> <span class="st">"event"</span>,</span>
+<span>                       metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
+<span>                       analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"survival_time"</span><span class="op">)</span>,</span>
 <span>                       afcm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_afcm'</span><span class="op">)</span><span class="op">)</span></span>

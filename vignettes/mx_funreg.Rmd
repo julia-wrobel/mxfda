@@ -119,9 +119,9 @@ Using age and gender and stage as scalar covariates
 
 ```{r}
 ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
-                      form = "survival_time ~ age",
+                      formula = survival_time ~ age, event = "event",
                       metric = "uni g", r = "r", value = "fundiff",
-                      analysis_vars = c("age", "survival_time", "event"),
+                      analysis_vars = c("age", "survival_time"),
                       afcm = FALSE)
 ```
 
@@ -155,9 +155,9 @@ extract_surface(ovarian_FDA, metric = "uni g", model = "fit_lfcm", analysis_vars
 
 ```{r}
 ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm", 
-                       form = "survival_time ~ age", metric = "uni g",
-                       r = "r", value = "fundiff",
-                       analysis_vars = c("age", "survival_time", "event"),
+                       formula = survival_time ~ age, event = "event",
+                       metric = "uni g", r = "r", value = "fundiff",
+                       analysis_vars = c("age", "survival_time"),
                        afcm = TRUE)
 ```
 
