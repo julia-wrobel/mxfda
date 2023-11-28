@@ -26,6 +26,7 @@ Suggests:
     spatialTIME
 Imports: 
     magrittr,
+    stats,
     dplyr,
     refund (>= 0.1-33),
     tibble,

@@ -5,7 +5,8 @@
 #'
 #' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param model_name character string to give the fit model in the functional cox slot
-#' @param form Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
+#' @param formula Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
+#' @param event character string for the column in Metadata that contains 1/0 for the survival event
 #' @param metric name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
@@ -33,12 +34,13 @@
 #' @export
 run_fcm <- function(mxFDAobject,
                     model_name,
-                    form,
+                    formula,
+                    event = "event",
                     metric = "uni k",
                     r = "r",
                     value = "fundiff",
                     afcm = FALSE,
-                    analysis_vars,
+                    analysis_vars = NULL,
                     quantile_transform = FALSE,
                     smooth = FALSE,
                     filter_cols = NULL,
@@ -53,7 +55,15 @@ run_fcm <- function(mxFDAobject,
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols) %>%
     full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
+  #join everything needed to fit the model into a vector for analysis vars
+  analysis_vars = unique(c(analysis_vars,
+                           grep("~", paste0(formula), invert = TRUE, value = TRUE),
+                           event))
 
+  if(!(event %in% colnames(mxFDAobject@Metadata)))
+    stop("`event` needs to be a column name in the metadata")
+  if(!one_zero(mxFDAobject@Metadata[[event]]))
+    stop("The event column needs to be in format 0/1")
   # check for missing values in the functional predictor
   if(smooth){
     mxfundata <- impute_fpca(mxfundata, id = mxFDAobject@sample_key, r = r, value = value,
@@ -65,6 +75,7 @@ run_fcm <- function(mxFDAobject,
                                analysis_vars = analysis_vars, smooth)
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
+  form = deparse(stats::formula(formula))
 
   mxfundata <- process_fcm(mxfundata, mxFDAobject@sample_key, r, value, analysis_vars, quantile_transform)
 

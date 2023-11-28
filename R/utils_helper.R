@@ -52,3 +52,8 @@ metric.exists = function(mxFDAobject, metric){
       stop("Missing summary function provided")
   }
 }
+
+one_zero = function(vec){
+  vec = unique(vec)
+  length(setdiff(vec, c(0, 1))) == 0
+}
