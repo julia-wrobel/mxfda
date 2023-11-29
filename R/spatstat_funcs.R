@@ -1,17 +1,60 @@
+#test files
+#' Kest
+#'
+#' See `spatstat.explore::Kest`
+#'
+#' @name Kest
 #' @export
-spatstat.explore::Kest
+#' @keywords internal
+#' @importFrom spatstat.explore Kest
+NULL
 
+#' Gest
+#'
+#' See `spatstat.explore::Gest`
+#'
+#' @name Gest
 #' @export
-spatstat.explore::Gest
+#' @keywords internal
+#' @importFrom spatstat.explore Gest
+NULL
 
+#' Lest
+#'
+#' See `spatstat.explore::Lest`
+#'
+#' @name Lest
 #' @export
-spatstat.explore::Lest
+#' @keywords internal
+#' @importFrom spatstat.explore Lest
+NULL
 
+#' Kcross
+#'
+#' See `spatstat.explore::Kcross`
+#'
+#' @name Kcross
 #' @export
-spatstat.explore::Kcross
+#' @keywords internal
+#' @importFrom spatstat.explore Kcross
+NULL
 
+#' Gcross
+#'
+#' See `spatstat.explore::Gcross`
+#'
+#' @name Gcross
 #' @export
-spatstat.explore::Gcross
+#' @keywords internal
+#' @importFrom spatstat.explore Gcross
+NULL
 
+#' Lcross
+#'
+#' See `spatstat.explore::Lcross`
+#'
+#' @name Lcross
 #' @export
-spatstat.explore::Lcross
+#' @keywords internal
+#' @importFrom spatstat.explore Lcross
+NULL

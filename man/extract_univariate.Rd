@@ -20,7 +20,9 @@ Should have variables \code{x} and \code{y} to denote x and y spatial locations 
 
 \item{markvar}{The name of the variable that denotes cell type(s) of interest. Character.}
 
-\item{mark1}{Character string that denotes cell type of interest.}
+\item{mark1}{dummy filler, unused}
+
+\item{mark2}{dummy filler, unused}
 
 \item{r_vec}{Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.}
 

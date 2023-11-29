@@ -62,16 +62,18 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">run_fcm</span><span class="op">(</span></span>
 <span>  <span class="va">mxFDAobject</span>,</span>
 <span>  <span class="va">model_name</span>,</span>
-<span>  <span class="va">form</span>,</span>
+<span>  <span class="va">formula</span>,</span>
+<span>  event <span class="op">=</span> <span class="st">"event"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="st">"uni k"</span>,</span>
 <span>  r <span class="op">=</span> <span class="st">"r"</span>,</span>
 <span>  value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
 <span>  afcm <span class="op">=</span> <span class="cn">FALSE</span>,</span>
-<span>  <span class="va">analysis_vars</span>,</span>
+<span>  analysis_vars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  quantile_transform <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  smooth <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  filter_cols <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  <span class="va">...</span>,</span>
+<span>  knots <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -85,8 +87,12 @@
 <dd><p>character string to give the fit model in the functional cox slot</p></dd>
 
 
-<dt>form</dt>
+<dt>formula</dt>
 <dd><p>Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".</p></dd>
+
+
+<dt>event</dt>
+<dd><p>character string for the column in Metadata that contains 1/0 for the survival event</p></dd>
 
 
 <dt>metric</dt>
@@ -137,14 +143,21 @@
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Julia Wrobel <a href="mailto:julia.wrobel@cuanschutz.edu">julia.wrobel@cuanschutz.edu</a></p>
+    <p>Julia Wrobel <a href="mailto:julia.wrobel@emory.edu">julia.wrobel@emory.edu</a></p>
 <p>Alex Soupir <a href="mailto:alex.soupir@moffitt.org">alex.soupir@moffitt.org</a></p>
     </div>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># simulate data</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1001</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#load ovarian mxFDA object</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'ovarian_FDA'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#run ghe lfcm model</span></span></span>
+<span class="r-in"><span><span class="va">ovarian_FDA</span> <span class="op">=</span> <span class="fu">run_fcm</span><span class="op">(</span><span class="va">ovarian_FDA</span>, model_name <span class="op">=</span> <span class="st">"fit_lfcm"</span>,</span></span>
+<span class="r-in"><span>                      formula <span class="op">=</span> <span class="va">survival_time</span> <span class="op">~</span> <span class="va">age</span>, event <span class="op">=</span> <span class="st">"event"</span>,</span></span>
+<span class="r-in"><span>                      metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span></span>
+<span class="r-in"><span>                      analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"survival_time"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      afcm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

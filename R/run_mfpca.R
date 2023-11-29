@@ -29,6 +29,7 @@
 #' @importFrom refund mfpca.face
 #' @importFrom tibble as_tibble
 #' @importFrom tidyr pivot_wider
+#' @importFrom rlang `:=`
 #' @import dplyr
 #'
 #' @examples
@@ -90,10 +91,10 @@ run_mfpca = function(mxFDAobject,
   mx_mfpc$index_range <- index_range
 
   # how do we want to return the scores? Right now returning the level 1 scores and the standard deviation of the level 2 scores
-  score_df <- setNames(as.data.frame(mx_mfpc$scores$level1), paste0("level1_", 1:mx_mfpc$npc$level1))
+  score_df <- stats::setNames(as.data.frame(mx_mfpc$scores$level1), paste0("level1_", 1:mx_mfpc$npc$level1))
   score_df[[mxFDAobject@subject_key]] <- unique(mxfundata[[mxFDAobject@subject_key]])
 
-  scores_level2 <- setNames(as.data.frame(mx_mfpc$scores$level2), paste0("level2_", 1:mx_mfpc$npc$level2))
+  scores_level2 <- stats::setNames(as.data.frame(mx_mfpc$scores$level2), paste0("level2_", 1:mx_mfpc$npc$level2))
   scores_level2 <- scores_level2 %>%
     mutate(!!mxFDAobject@subject_key := mxfundata[[mxFDAobject@subject_key]],
            !!mxFDAobject@sample_key := mxfundata[[mxFDAobject@sample_key]])

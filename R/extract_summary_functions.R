@@ -11,7 +11,7 @@
 #' variance (\code{pve}). Families and link functions can be specified using the same
 #' syntax as the \code{family} argument from the \code{lme4::glmer()} function.
 #'
-#' @param mxdata Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.
+#' @param mxFDAobject object of class `mxFDA`
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param extract_func Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.
 #' @param summary_func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
@@ -19,7 +19,6 @@
 #' @param mark1 Character string that denotes first cell type of interest.
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
-#' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #'
 #' @return A \code{data.frame} containing:
 #' \item{image_patient_id}{the unique image id}
@@ -29,6 +28,7 @@
 #' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
 #'
 #' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
 #' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 #' Fast covariance estimation for high-dimensional functional data.
@@ -36,7 +36,6 @@
 #' DOI: 10.1007/s11222-014-9485-x.
 #'
 #' @import dplyr
-#' @import spatstat.explore
 #' @importFrom tidyr nest unnest
 #' @importFrom purrr map
 #'

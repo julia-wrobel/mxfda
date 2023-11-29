@@ -8,13 +8,26 @@
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
 #' @examples
-#' #set seed
-#' set.seed(333)
+#' #load ovarian mxFDA object
+#' data('ovarian_FDA')
+#'
+#' #run ghe lfcm model
+#' ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+#'                       formula = survival_time ~ age, event = "event",
+#'                       metric = "uni g", r = "r", value = "fundiff",
+#'                       analysis_vars = c("age", "survival_time"),
+#'                       afcm = FALSE)
+#'
+#' #extract uni fpc scores
+#' fpc = extract_fpca_scores(ovarian_FDA, 'uni g fpca')
 #'
 #' @export
 extract_fpca_scores = function(mxFDAobject, what){
-  if(!inherits(mxFDAobject, "mxFDA")) stop("supply object of class `mxFDA`")
   #check if object is of class mxFDA
+  if(!inherits(mxFDAobject, "mxFDA")) stop("supply object of class `mxFDA`")
+  #get the right data
+  if(length(what) != 1)
+    stop("Please provide a single spatial metric to extract surface for")
   what = unlist(strsplit(what, split = " "))
 
   dat = get_data(mxFDAobject, what[1:2], type = what[3])

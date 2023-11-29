@@ -89,8 +89,18 @@
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#set seed</span></span></span>
-<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">333</span><span class="op">)</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#load ovarian mxFDA object</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'ovarian_FDA'</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#run ghe lfcm model</span></span></span>
+<span class="r-in"><span><span class="va">ovarian_FDA</span> <span class="op">=</span> <span class="fu"><a href="run_fcm.html">run_fcm</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, model_name <span class="op">=</span> <span class="st">"fit_lfcm"</span>,</span></span>
+<span class="r-in"><span>                      formula <span class="op">=</span> <span class="va">survival_time</span> <span class="op">~</span> <span class="va">age</span>, event <span class="op">=</span> <span class="st">"event"</span>,</span></span>
+<span class="r-in"><span>                      metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span></span>
+<span class="r-in"><span>                      analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span>, <span class="st">"survival_time"</span><span class="op">)</span>,</span></span>
+<span class="r-in"><span>                      afcm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co">#extract model</span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu">extract_model</span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>

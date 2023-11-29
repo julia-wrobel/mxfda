@@ -17,7 +17,8 @@ run_fcm(
   quantile_transform = FALSE,
   smooth = FALSE,
   filter_cols = NULL,
-  ...
+  ...,
+  knots = NULL
 )
 }
 \arguments{
@@ -56,12 +57,19 @@ A \code{list} which is a linear or additive functional Cox model fit. See \code{
 Fit a functional Cox regression model.
 }
 \examples{
-# simulate data
-set.seed(1001)
+#load ovarian mxFDA object
+data('ovarian_FDA')
+
+#run ghe lfcm model
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+                      formula = survival_time ~ age, event = "event",
+                      metric = "uni g", r = "r", value = "fundiff",
+                      analysis_vars = c("age", "survival_time"),
+                      afcm = FALSE)
 
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 
 Alex Soupir \email{alex.soupir@moffitt.org}
 }

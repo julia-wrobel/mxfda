@@ -3,7 +3,7 @@
 #' Produces a ggplot with mean plus or minus two standard deviations of a selected FPC.
 #'
 #' @param obj fpca object to be plotted.
-#' @param pc_choice FPC to be plotted.
+#' @param pc_choice_level1,pc_choice_level2 FPC to be plotted.
 #'
 #' @return list of objects of class ggplot
 #'

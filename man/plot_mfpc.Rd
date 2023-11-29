@@ -9,7 +9,7 @@ plot_mfpc(obj, pc_choice_level1, pc_choice_level2)
 \arguments{
 \item{obj}{fpca object to be plotted.}
 
-\item{pc_choice}{FPC to be plotted.}
+\item{pc_choice_level1, pc_choice_level2}{FPC to be plotted.}
 }
 \value{
 list of objects of class ggplot

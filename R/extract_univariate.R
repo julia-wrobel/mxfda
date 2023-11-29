@@ -5,7 +5,8 @@
 #' @param mximg Dataframe of cell-level multiplex imaging data for a single image.
 #' Should have variables \code{x} and \code{y} to denote x and y spatial locations of each cell.
 #' @param markvar The name of the variable that denotes cell type(s) of interest. Character.
-#' @param mark1 Character string that denotes cell type of interest.
+#' @param mark1 dummy filler, unused
+#' @param mark2 dummy filler, unused
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
@@ -18,7 +19,6 @@
 #'
 #' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #'
-#' @importFrom spatstat.explore Kest Lest Gest
 #' @importFrom spatstat.geom ppp convexhull.xy
 #' @importFrom tibble as_tibble
 #' @import dplyr

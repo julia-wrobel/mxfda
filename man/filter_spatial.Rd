@@ -4,12 +4,14 @@
 \alias{filter_spatial}
 \title{Filter Spatial data}
 \usage{
-filter_spatial(mxFDAobject, ...)
+filter_spatial(mxFDAobject, ..., force = FALSE)
 }
 \arguments{
 \item{mxFDAobject}{object of class \code{mxFDA}}
 
 \item{...}{expressions that return a logical TRUE/FALSE value when evaluated on columns of the spatial data slot. These expressions get passed to \code{\link[dplyr:filter]{dplyr::filter()}} so must be compatible.}
+
+\item{force}{logical whether or not to return empty spatial data \emph{if} filtering results in 0 rows}
 }
 \value{
 mxFDAobject with updated spatial slot
@@ -18,8 +20,11 @@ mxFDAobject with updated spatial slot
 function to filter the spatial data slot of the \code{mxFDA} object.
 }
 \examples{
-# example code
-set.seed(333)
+#load ovarian mxFDA object
+data(ovarian_FDA)
+
+#filter ages greater than 50
+ovarian_FDA_age50 = filter_spatial(ovarian_FDA, age >= 50)
 
 }
 \references{

@@ -20,16 +20,19 @@
 #'
 #' @return A \code{list} which is a linear or additive functional Cox model fit. See \code{mgcv::gam} for more details.
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
-#' @importFrom tidyr pivot_wider
-#' @importFrom mgcv gam cox.ph
-#' @import dplyr
-#'
 #' @examples
-#' # simulate data
-#' set.seed(1001)
+#' #load ovarian mxFDA object
+#' data('ovarian_FDA')
+#'
+#' #run ghe lfcm model
+#' ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+#'                       formula = survival_time ~ age, event = "event",
+#'                       metric = "uni g", r = "r", value = "fundiff",
+#'                       analysis_vars = c("age", "survival_time"),
+#'                       afcm = FALSE)
 #'
 #' @export
 run_fcm <- function(mxFDAobject,
@@ -44,7 +47,8 @@ run_fcm <- function(mxFDAobject,
                     quantile_transform = FALSE,
                     smooth = FALSE,
                     filter_cols = NULL,
-                    ...){
+                    ...,
+                    knots = NULL){
   #get the right data from the object
   if(length(metric) != 1)
     stop("Please provide a single spatial metric to calculate functional cox models with")
@@ -54,7 +58,7 @@ run_fcm <- function(mxFDAobject,
 
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols) %>%
-    full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
+    dplyr::full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
   #join everything needed to fit the model into a vector for analysis vars
   analysis_vars = unique(c(analysis_vars,
                            grep("~", paste0(formula), invert = TRUE, value = TRUE),
@@ -71,7 +75,7 @@ run_fcm <- function(mxFDAobject,
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
   if(anyNA(mxfundata[[value]])){
-    mxfundata <- impute_fpca(mxfundata, id = mxFDAobject@sample_key , r = r, value = value, knots = NULL,
+    mxfundata <- impute_fpca(mxfundata, id = mxFDAobject@sample_key , r = r, value = value, knots = knots,
                                analysis_vars = analysis_vars, smooth)
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
@@ -83,7 +87,7 @@ run_fcm <- function(mxFDAobject,
   if(afcm){
     form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE))')
 
-    fit_fcm <- mgcv::gam(formula = as.formula(form),
+    fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
                    weights = event,
                    data = mxfundata, family = mgcv::cox.ph())
 

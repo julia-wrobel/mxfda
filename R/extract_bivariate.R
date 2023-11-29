@@ -26,7 +26,6 @@
 #' DOI: 10.1007/s11222-014-9485-x.
 #'
 #' @importFrom spatstat.geom ppp convexhull.xy
-#' @importFrom spatstat.explore Kcross Lcross Gcross
 #' @importFrom tibble as_tibble
 #' @import dplyr
 #'

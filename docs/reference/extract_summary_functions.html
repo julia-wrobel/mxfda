@@ -97,7 +97,11 @@ syntax as the <code>family</code> argument from the <code><a href="https://rdrr.
 
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <dl><dt>r_vec</dt>
+    <dl><dt>mxFDAobject</dt>
+<dd><p>object of class <code>mxFDA</code></p></dd>
+
+
+<dt>r_vec</dt>
 <dd><p>Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.</p></dd>
 
 
@@ -123,14 +127,6 @@ syntax as the <code>family</code> argument from the <code><a href="https://rdrr.
 
 <dt>edge_correction</dt>
 <dd><p>Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")</p></dd>
-
-
-<dt>mxdata</dt>
-<dd><p>Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.</p></dd>
-
-
-<dt>analysis_vars</dt>
-<dd><p>Optional list of variables to be retained for downstream analysis.</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -164,6 +160,7 @@ DOI: 10.1007/s11222-014-9485-x.</p>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Julia Wrobel <a href="mailto:julia.wrobel@cuanschutz.edu">julia.wrobel@cuanschutz.edu</a></p>
+<p>Alex Soupir <a href="mailto:alex.soupir@moffitt.org">alex.soupir@moffitt.org</a></p>
     </div>
 
     <div class="section level2">

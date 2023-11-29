@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Julia Wrobel \email{julia.wrobel@cuanschutz.edu} (\href{https://orcid.org/0000-0001-6783-1421}{ORCID})
+\strong{Maintainer}: Julia Wrobel \email{julia.wrobel@emory.edu} (\href{https://orcid.org/0000-0001-6783-1421}{ORCID})
 
 Authors:
 \itemize{

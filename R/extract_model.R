@@ -11,8 +11,18 @@
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
 #' @examples
-#' #set seed
-#' set.seed(333)
+#' #load ovarian mxFDA object
+#' data('ovarian_FDA')
+#'
+#' #run ghe lfcm model
+#' ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+#'                       formula = survival_time ~ age, event = "event",
+#'                       metric = "uni g", r = "r", value = "fundiff",
+#'                       analysis_vars = c("age", "survival_time"),
+#'                       afcm = FALSE)
+#'
+#' #extract model
+#' mod = extract_model(ovarian_FDA, 'uni g', 'fit_lfcm')
 #'
 #' @export
 extract_model = function(mxFDAobject, what, model_name){

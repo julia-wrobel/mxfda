@@ -4,7 +4,6 @@
 #'
 #'
 #' @param mxFDAobject object of class \code{mxFDA} created by `make_mxfda` with metrics derived with `extract_summary_functions`
-#' @param id Character string, the name of the variable that identifies each unique subject.
 #' @param metric name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
@@ -27,13 +26,15 @@
 #' DOI: 10.1007/s11222-014-9485-x.
 #'
 #' @importFrom refund fpca.face
-#' @importFrom tibble as_tibble
-#' @importFrom tidyr pivot_wider
-#' @import dplyr
 #'
 #' @examples
-#' # simulate data
-#' set.seed(1001)
+#' #load ovarian mxFDA object
+#' data('ovarian_FDA')
+#'
+#' #run the FPCA
+#' ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+#'                        lightweight = TRUE,
+#'                        pve = .99)
 #'
 #' @export
 run_fpca = function(mxFDAobject,
@@ -53,14 +54,19 @@ run_fpca = function(mxFDAobject,
   #get data
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols)
+  #make sure that the selected columns are present to be used for fpca
+  if(!(r %in% colnames(mxfundata)))
+    stop("'r' not in summary data")
+  if(!(value %in% colnames(mxfundata)))
+    stop("'value' not in summary data")
 
   index_range <- range(mxfundata[[r]])
 
   mxfundata <- mxfundata %>%
     dplyr::select(dplyr::all_of(c(mxFDAobject@sample_key, r, value))) %>%
-    tidyr::pivot_wider(names_from = r,
+    tidyr::pivot_wider(names_from =  dplyr::all_of(r),
                 names_prefix = "r_",
-                values_from = value)
+                values_from =  dplyr::all_of(value))
 
   mat <- mxfundata %>%
     dplyr::select(dplyr::starts_with("r_")) %>%
@@ -78,7 +84,7 @@ run_fpca = function(mxFDAobject,
   }
   mx_fpc$index_range <- index_range
 
-  score_df <- setNames(as.data.frame(mx_fpc$scores), paste0("fpc", 1:mx_fpc$npc))
+  score_df <- stats::setNames(as.data.frame(mx_fpc$scores), paste0("fpc", 1:mx_fpc$npc))
 
   # append all FPCA scores to dataframe that has one row per subject, then convert to long format
   mxfundata = dplyr::bind_cols(mxfundata, score_df) %>%

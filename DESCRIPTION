@@ -5,7 +5,7 @@ Date: 2023-08-03
 Authors@R: 
     c(
     person("Julia", "Wrobel", role = c("aut", "cre"), 
-    email = "julia.wrobel@cuanschutz.edu",
+    email = "julia.wrobel@emory.edu",
     comment = c(ORCID = "0000-0001-6783-1421")),
     person("Alex", "Soupir", role = c("aut"),
     comment = c(ORCID = "0000-0003-1251-9179"))
@@ -23,18 +23,24 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tidyverse,
-    spatialTIME
+    spatialTIME,
+    survival,
+    patchwork,
+    broom
 Imports: 
     magrittr,
-    stats,
-    dplyr,
-    refund (>= 0.1-33),
     tibble,
     tidyr,
     purrr,
-    spatstat.geom,
+    dplyr,
+    ggplot2,
+    lifecycle,
+    methods,
+    stats,
+    refund (>= 0.1-33),
     reshape2,
     mgcv,
+    spatstat.geom,
     spatstat.explore
 Depends: 
     R (>= 2.10),

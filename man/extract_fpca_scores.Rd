@@ -18,8 +18,18 @@ fpca object
 Extract FPCA scores
 }
 \examples{
-#set seed
-set.seed(333)
+#load ovarian mxFDA object
+data('ovarian_FDA')
+
+#run ghe lfcm model
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+                      formula = survival_time ~ age, event = "event",
+                      metric = "uni g", r = "r", value = "fundiff",
+                      analysis_vars = c("age", "survival_time"),
+                      afcm = FALSE)
+
+#extract uni fpc scores
+fpc = extract_fpca_scores(ovarian_FDA, 'uni g fpca')
 
 }
 \author{

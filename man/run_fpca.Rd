@@ -34,8 +34,6 @@ run_fpca(
 \item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
-
-\item{id}{Character string, the name of the variable that identifies each unique subject.}
 }
 \value{
 A \code{mxFDA} object containing:
@@ -46,8 +44,13 @@ A \code{mxFDA} object containing:
 This is a wrapper for the function \code{fpca.face} from the \code{refund} package. EXPAND
 }
 \examples{
-# simulate data
-set.seed(1001)
+#load ovarian mxFDA object
+data('ovarian_FDA')
+
+#run the FPCA
+ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+                       lightweight = TRUE,
+                       pve = .99)
 
 }
 \references{

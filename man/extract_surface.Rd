@@ -47,7 +47,7 @@ set.seed(1001)
 
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 
 Alex Soupir \email{alex.soupir@moffitt.org}
 }

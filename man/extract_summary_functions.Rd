@@ -16,6 +16,8 @@ extract_summary_functions(
 )
 }
 \arguments{
+\item{mxFDAobject}{object of class \code{mxFDA}}
+
 \item{r_vec}{Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.}
 
 \item{extract_func}{Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.}
@@ -29,10 +31,6 @@ extract_summary_functions(
 \item{mark2}{Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.}
 
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")}
-
-\item{mxdata}{Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.}
-
-\item{analysis_vars}{Optional list of variables to be retained for downstream analysis.}
 }
 \value{
 A \code{data.frame} containing:
@@ -66,4 +64,6 @@ DOI: 10.1007/s11222-014-9485-x.
 }
 \author{
 Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

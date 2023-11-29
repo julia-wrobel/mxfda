@@ -1,19 +1,35 @@
 #' Make mxFDA class object
 #'
+#' Used to create an object of class `mxFDA` that can be used with the [mxfda] package for functional data analysis.
+#'
 #' @param metadata metadata with column `key` for samples
 #' @param spatial spatial information, either list or df, with column `key`. `spatial` can be empty if inputting data already derived
 #' @param subject_key column name for subject ID
 #' @param sample_key column linking metadata to spatial data
 #'
 #' @return object of class mxFDA
-#' @export
+#'
+#' @details `r lifecycle::badge('stable')`
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
 #' @examples
-#' #set seed
-#' set.seed(333)
+#' #select sample metadata
+#' clinical = lung_df %>%
+#'   dplyr::select(image_id, patient_id, patientImage_id,
+#'                 gender, age, survival_days, survival_status, stage) %>%
+#'   dplyr::distinct()
+#' #select the spatial information
+#' spatial = lung_df %>%
+#'   dplyr::select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)
+#' sample_id_column = "patientImage_id"
+#' #create the mxFDA object
+#' mxFDAobject = make_mxfda(metadata = clinical,
+#'                          spatial = spatial,
+#'                          subject_key = "patient_id",
+#'                          sample_key = sample_id_column)
 #'
+#' @export
 make_mxfda = function(metadata,
                       spatial = NULL,
                       subject_key,
@@ -41,7 +57,7 @@ make_mxfda = function(metadata,
   return(datClass)
 }
 
-setClass("mxFDA", slots = list(
+methods::setClass("mxFDA", slots = list(
   Metadata = "data.frame",
   Spatial = "data.frame",
   subject_key = "character",

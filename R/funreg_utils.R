@@ -6,13 +6,13 @@
 #' @param id Character string, the name of the variable that identifies each unique subject.
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
-#' @param knots Number of knots for defining spline basis.
 #' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @param quantile_transform If TRUE, a quantile transformation is applied to the functional predictor before modeling
 #'
 #' @return A \code{dataframe} with matrix-valued covariates \code{l_int}, \code{t_int}, and \code{func} for use in a linear or additive functional Cox model.
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
 #' @importFrom tidyr pivot_wider
 #' @import dplyr
@@ -31,13 +31,13 @@ process_fcm <- function(mxfundata,
   tind <- sort(unique(mxfundata[[r]]))
 
   mxfundata <- mxfundata %>%
-    select(all_of(c(id, r, value, analysis_vars))) %>%
-    pivot_wider(names_from = r,
+    dplyr::select(dplyr::all_of(c(id, r, value, analysis_vars))) %>%
+    tidyr::pivot_wider(names_from =  dplyr::all_of(r),
                 names_prefix = "r_",
-                values_from = value)
+                values_from =  dplyr::all_of(value))
 
-  func <- mxfundata %>% select(starts_with("r_")) %>% as.matrix()
-  mxfundata <- mxfundata %>% select(-starts_with("r_"))
+  func <- mxfundata %>% dplyr::select(dplyr::all_of(dplyr::starts_with("r_"))) %>% as.matrix()
+  mxfundata <- mxfundata %>% dplyr::select(!dplyr::starts_with("r_"))
 
 
   # set up data for use with the  AFCM
@@ -99,13 +99,13 @@ impute_fpca = function(mxfundata,
                        smooth){
 
   mxfundata <- mxfundata %>%
-    select(all_of(c(id, r, value, analysis_vars))) %>%
-    pivot_wider(names_from = r,
+    dplyr::select(dplyr::all_of(c(id, r, value, analysis_vars))) %>%
+    tidyr::pivot_wider(names_from = r,
                 names_glue = "r_{round(r, 2)}",
                 values_from = value)
 
   mat <- mxfundata %>%
-    select(starts_with("r_")) %>%
+    dplyr::select(dplyr::all_of(starts_with("r_"))) %>%
     as.matrix()
 
   if(is.null(knots)) knots = floor(ncol(mat)/3)
@@ -128,9 +128,9 @@ impute_fpca = function(mxfundata,
     mxfundata[[value]] <- mxfundata$imputed
   }
 
-
-
-  select(mxfundata, -imputed, -Yhat)
+  out = mxfundata %>%
+    dplyr::select(dplyr::all_of(c("imputed", "Yhat")))
+  return(out)
 }
 
 #' extract_c

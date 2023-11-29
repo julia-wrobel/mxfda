@@ -25,8 +25,6 @@ process_fcm(
 \item{analysis_vars}{Optional list of variables to be retained for downstream analysis.}
 
 \item{quantile_transform}{If TRUE, a quantile transformation is applied to the functional predictor before modeling}
-
-\item{knots}{Number of knots for defining spline basis.}
 }
 \value{
 A \code{dataframe} with matrix-valued covariates \code{l_int}, \code{t_int}, and \code{func} for use in a linear or additive functional Cox model.
@@ -40,5 +38,7 @@ set.seed(1001)
 
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

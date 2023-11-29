@@ -15,7 +15,7 @@
 #'
 #' @return A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
 #' @importFrom reshape2 melt
@@ -46,7 +46,12 @@ extract_surface = function(mxFDAobject,
 
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols) %>%
-    dplyr::full_join(mxFDAobject@Metadata)
+    dplyr::full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
+  #make sure that the selected columns are present to be used for fpca
+  if(!(r %in% colnames(mxfundata)))
+    stop("'r' not in summary data")
+  if(!(value %in% colnames(mxfundata)))
+    stop("'value' not in summary data")
 
   #get the model
   if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@functional_cox$Kcross[[model]]
