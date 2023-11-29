@@ -264,7 +264,7 @@ Deriving spatial metrics with the `mIF` object is really easy but does take some
 mif = NN_G(mif, mnames = cell_types[c(2, 6)],
            r_range = 0:100, num_permutations = 10, 
            edge_correction = "rs", keep_perm_dis = FALSE,
-           workers = 5, overwrite = TRUE, xloc = "x", yloc = "y")
+           workers = 1, overwrite = TRUE, xloc = "x", yloc = "y")
 ```
 
 With `spatialTIME`, all cell types (markers) are added to the data frame. We can visualize both CD8+ and CD4+ with ggplot.
