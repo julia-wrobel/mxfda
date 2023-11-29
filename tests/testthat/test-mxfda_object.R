@@ -1,8 +1,5 @@
-test_that("multiplication works", {
-  expect_equal(2 * 2, 4)
-})
-
-test_that("mxFDA object builds", {
+#test outputs of creating the mxFDA object
+test_that("make_mxfda", {
   clinical = lung_df %>%
     dplyr::select(image_id, patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
     dplyr::distinct()
@@ -28,6 +25,12 @@ test_that("mxFDA object builds", {
                           spatial = spatial %>% dplyr::select(-!!sample_id_column),
                           subject_key = "patient_id",
                           sample_key = sample_id_column))
+  expect_error(make_mxfda(metadata = clinical,
+                          spatial = spatial,
+                          sample_key = sample_id_column))
+  expect_error(make_mxfda(metadata = clinical,
+                          spatial = spatial,
+                          subject_key = "patient_id"))
   #should work without the need for spatial information
   expect_no_error(make_mxfda(metadata = clinical %>% dplyr::select(-!!sample_id_column),
                              spatial = NULL,
