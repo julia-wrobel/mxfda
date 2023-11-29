@@ -4,10 +4,10 @@
 \alias{summary.mxFDA}
 \title{Summary method for object of class \code{mxFDA}}
 \usage{
-\method{summary}{mxFDA}(x, ...)
+\method{summary}{mxFDA}(object, ...)
 }
 \arguments{
-\item{x}{object of class \code{mxFDA}}
+\item{object}{object of class \code{mxFDA}}
 
 \item{...}{unused currently}
 }
