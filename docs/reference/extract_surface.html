@@ -67,7 +67,7 @@
 <span>  value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
 <span>  grid_length <span class="op">=</span> <span class="fl">100</span>,</span>
 <span>  <span class="va">analysis_vars</span>,</span>
-<span>  se <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  p <span class="op">=</span> <span class="fl">0.05</span>,</span>
 <span>  filter_cols <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
@@ -100,10 +100,6 @@
 
 <dt>analysis_vars</dt>
 <dd><p>Other variables used in modeling FCM fit.</p></dd>
-
-
-<dt>se</dt>
-<dd><p>Defaults to FALSE, and returns surface. If TRUE, returns coefficient function with standard errors for LFCM, or coefficient surface for AFCM with non NA values that are statistically significant</p></dd>
 
 
 <dt>filter_cols</dt>

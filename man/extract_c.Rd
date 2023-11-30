@@ -22,3 +22,4 @@ Function to calculate c-index from a an AFCM or LFCM fit
 \author{
 Erjia Cui
 }
+\keyword{internal}

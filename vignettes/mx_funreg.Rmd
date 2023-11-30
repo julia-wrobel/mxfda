@@ -137,16 +137,8 @@ summary(extract_model(ovarian_FDA, 'uni g', 'fit_lfcm'))
 Visualize coefficient function
 
 ```{r}
-extract_surface(ovarian_FDA, metric = "uni g", model = "fit_lfcm", analysis_vars = c("age"), se = TRUE) %>%
-  ggplot(aes(r, exp(beta1))) +
-  geom_line()+
-  geom_line(aes(x=r, y = exp(beta1-2*beta1_se)), linetype = 'longdash')+
-  geom_line(aes(x=r, y = exp(beta1+2*beta1_se)), linetype = 'longdash')+
-  geom_hline(yintercept = 1, color = "red", linetype = 3) +
-  ylim(0, 15) +
-  labs(y = expression(e^hat(beta)(r)), title = "LFCM Hazard Ratio") +
-  theme(axis.title = element_text(size = 15))
-
+lfcm_surface = extract_surface(ovarian_FDA, metric = "uni g", model = "fit_lfcm", analysis_vars = c("age"))
+plot(lfcm_surface)
 ```
 
 
@@ -174,18 +166,8 @@ summary(extract_model(ovarian_FDA, 'uni g', 'fit_afcm'))
 Visualize the afcm model
 
 ```{r extract_estimates, fig.with = 12}
-bind_rows(
-  extract_surface(ovarian_FDA, metric = "uni g", model = "fit_afcm", analysis_vars = c("age")) %>% mutate(type = "AFCM surface"),
-  extract_surface(ovarian_FDA, metric = "uni g", model = "fit_afcm", analysis_vars = c("age"), se = TRUE) %>% mutate(type = "p < 0.05")
-) %>%
-  mutate(hr = exp(value)) %>%
-    ggplot(aes(r, sumfun, fill = hr)) +
-  geom_tile() + 
-  labs(y = "G value") +
-  scale_fill_distiller(name = expression(e^hat(F)(.,.)), na.value = "transparent",
-                     type = "div") +
-  facet_wrap(~type, ncol = 2) +
-  theme(strip.text = element_text(size = 16))
+afcm_surface = extract_surface(ovarian_FDA, metric = "uni g", model = "fit_afcm", analysis_vars = c("age"), p = 0.05)
+plot(afcm_surface)
 
 ```
 

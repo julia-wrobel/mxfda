@@ -23,7 +23,6 @@ Suggests:
     rmarkdown,
     testthat (>= 3.0.0),
     tidyverse,
-    spatialTIME,
     survival,
     patchwork,
     broom
@@ -35,6 +34,7 @@ Imports:
     dplyr,
     ggplot2,
     lifecycle,
+    spatialTIME,
     methods,
     stats,
     refund (>= 0.1-33),

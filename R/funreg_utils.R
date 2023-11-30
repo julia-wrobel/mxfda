@@ -11,6 +11,8 @@
 #'
 #' @return A \code{dataframe} with matrix-valued covariates \code{l_int}, \code{t_int}, and \code{func} for use in a linear or additive functional Cox model.
 #'
+#' @keywords internal
+#'
 #' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
@@ -80,6 +82,8 @@ process_fcm <- function(mxfundata,
 #'
 #' @return A \code{dataframe} where the missing function values (NA) for the \code{value} variable have been replaced with estimates from FPCA.
 #'
+#' @keywords internal
+#'
 #' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #'
 #' @importFrom refund fpca.face
@@ -142,6 +146,8 @@ impute_fpca = function(mxfundata,
 #' @param event Survival statust (0 = censored, 1 = event)
 #'
 #' @return c-index
+#'
+#' @keywords internal
 #'
 #' @author Erjia Cui
 #'

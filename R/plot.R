@@ -95,3 +95,58 @@ plot.mxFDA = function(x, filter_cols = NULL, ...){
 
 }
 
+#' Plot lfcm surface
+#'
+#' @param x object of class `lfcmSurface` to be plotted
+#' @param ... currently ignored
+#'
+#' @return object compatable with ggplot2
+#' @export
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @examples
+#' #set seed
+#' set.seed(333)
+#'
+plot.lfcmSurface = function(x, ...){
+  x@Prediction %>%
+    ggplot(aes(r, exp(beta1))) +
+    geom_line()+
+    geom_line(aes(x=r, y = exp(beta1-2*beta1_se)), linetype = 'longdash')+
+    geom_line(aes(x=r, y = exp(beta1+2*beta1_se)), linetype = 'longdash')+
+    geom_hline(yintercept = 1, color = "red", linetype = 3) +
+    ylim(0, 15) +
+    labs(y = expression(e^hat(beta)(r)), title = "LFCM Hazard Ratio") +
+    theme(axis.title = element_text(size = 15))
+}
+
+#' Plot afcm object
+#'
+#' @param x object of class `afcmSurface` to be plotted
+#' @param ... currently ignored
+#'
+#' @return object compatable with ggplot2
+#' @export
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
+#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#'
+#' @examples
+#' #set seed
+#' set.seed(333)
+#'
+plot.afcmSurface = function(x, ...){
+  bind_rows(
+    x@Surface %>% mutate(type = "AFCM surface"),
+    x@Prediction %>% mutate(type = paste0("p < ", x@`P-value`))
+  ) %>%
+    mutate(hr = exp(value)) %>%
+    ggplot(aes(r, sumfun, fill = hr)) +
+    geom_tile() +
+    labs(y = x@Metric) +
+    scale_fill_distiller(name = expression(e^hat(F)(.,.)), na.value = "transparent",
+                         type = "div") +
+    facet_wrap(~type, ncol = 2)
+}

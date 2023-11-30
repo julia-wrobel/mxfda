@@ -12,7 +12,7 @@ extract_surface(
   value = "fundiff",
   grid_length = 100,
   analysis_vars,
-  se = FALSE,
+  p = 0.05,
   filter_cols = NULL
 )
 }
@@ -30,8 +30,6 @@ extract_surface(
 \item{grid_length}{Length of grid on which to evaluate coefficient functions.}
 
 \item{analysis_vars}{Other variables used in modeling FCM fit.}
-
-\item{se}{Defaults to FALSE, and returns surface. If TRUE, returns coefficient function with standard errors for LFCM, or coefficient surface for AFCM with non NA values that are statistically significant}
 
 \item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 }
