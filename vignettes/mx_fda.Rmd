@@ -196,7 +196,7 @@ Sometimes other summary functions or normalizations are run outside of the `{mxf
 
 The central object of `spatialTIME` is the `mIF` object, that contains a list of spatial data frames, a data frame of sample-level summaries, and a data frame for the metadata ('clinical'). From creating the `mxFDA` object, we have a spatial data frame and the clinical data, now we have to convert them into something that works with `spatialTIME.` The steps below will be:
 
-@10.1093/bioinformatics/btab757
+@creed2021
 
 1. convert positive/negative to 1/0 integers
 2. identify which columns in the spatial data frame are cell types
