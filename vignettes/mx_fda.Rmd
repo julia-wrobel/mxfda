@@ -19,65 +19,45 @@ invisible(suppressPackageStartupMessages(library(tidyverse)))
 
 
 
-This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal components analysis can be found in the separate vignette `vignette("mx_fpca")`. To perform functional regression on spatial summary functions from multiplex imaging data, see the `vignette("mx_funreg")` vignette.
+The `mxfda` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal components analysis can be found in the separate vignette `vignette("mx_fpca")`. To perform functional regression on spatial summary functions from multiplex imaging data, see the `vignette("mx_funreg")` vignette.
 
 
 ```{r setup}
 #library(mxfda)
 library(tidyverse)
 library(patchwork)
-devtools::load_all()
+devtools::load_all() # why does it not work without this?
 ```
 
 
-# Background on functional data analysis for multiplex imaging data
-
-What are the goals of mxfda package?
-
-* Make it easier to analyze spatial relationships of cells in multiplex images
-* Use spatial summary functions of point processes to characterize univariate / bivariate clustering
-* Relate spatial summary functions to patient level outcomes
-* Explain how to interpret output from functional data analyses
-* Use completely open source data 
-
-* Add references here to relevant papers. Need to add to the references.bib file then can cite by:
-
-@wrobel_2019
-
 # VectraPolarisData 
 
-All examples in this vignette use data from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
+Examples in this package use data adapted from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
 
-* Describe the two datasets
-* Say this vignette will focus on the lung data
-* Data has been preprocessed and stored directly in the package
-
-
-This data contains (number of subjects, images per subject, number of cells). Load the data.
+Data has been preprocessed and stored directly in the `mxfda` package. Available datasets are `ovarian_FDA` and `lung_df`. This vignette will focus on the `lung_df` dataset, which contains a subset of 50 subjects from a multiplex imaging study of non-small cell lung carcinoma described in @johnson2021cancer. Each subject has 4-5 multiplex images, which come from different regions of interest (ROIs) in the tumor. Each ROI will be considered a "sample" when constructing the `mxfda`  object. We load the lung cancer data below.
 
 ```{r}
-# load processed lung cancer data
 data(lung_df)
 ```
 
 
 # Setting up the mxFDA object
 
-The central object used with the `mxfda` package is the `mxFDA` object. These objects are created with `make_mxfda()` and hold everything from the raw spatial data to fit functional cox models using derived spatial summary functions. To save space on large samples, the meta data is kept separately from the spatial data and when needed, is exported and merged together. Slots in the `mxFDA` object are as follows:
+The central object used with the `mxfda` package is the `mxFDA` object. These objects are created with `make_mxfda()` and hold everything from the raw spatial data to fit functional data models using derived spatial summary functions. To save space on large samples, the metadata is kept separately from the spatial data and when needed, is exported and merged together. Slots in the `mxFDA` object are designated as follows:
 
-- `Metadata` - stores sample specific traits that may be used as covariate when fitting models
-- `Spatial` - a data frame of cell level information (x, y, phenotype, etc) that can be used to calculate spatial summary functions
-- `subject_key` - a character string for the column in the meta data that denotes the subject samples belong to
-- `sample_key` - a character string for the columns linking the meta data and spatial data
-- `univariate_summaries` and `bivariate_summaries` - list of calculate spatial summary functions either imported with `add_summary_function()` or calculated with `extract_summary_functions()`
-- `functional_pca` - list of functional principle components for the spatial summary functions 
-- `functional_mpca` - list of functional mixed principle components for the spatial summary functions 
-- `functional_cox` - list of functional cox models that have been fit.
-- `functional_mcox` - list of functional mixed cox models that have been fit.
+- `Metadata` - stores sample specific traits that may be used as covariates when fitting models
+- `Spatial` - a data frame of cell level information (x and y spatial coordinates, phenotype, etc.) that can be used to calculate spatial summary functions
+- `subject_key` - a character string for the column in the metadata that denotes the unique subject id
+- `sample_key` - a character string for the column in the metadata that denotes the unique sample id. Note that there may be multiple samples per subject, and this id links the metadata and spatial data for each multiplex image sample
+- `univariate_summaries` and `bivariate_summaries` - lists of spatial summary functions either imported with `add_summary_function()` or calculated with `extract_summary_functions()`
+- `functional_pca` - list of results from functional principle component analysis 
+- `functional_mpca` - list of results from multilevel functional principle component analysis
+- `functional_cox` - list of functional cox models that have been fit
+- `functional_mcox` - list of functional mixed cox models that have been fit
 
-## Make FDAobject
+## Make mxFDAobject
 
-Using the `?lung_df` in the `mxfda` package, columns with repeated data pertaining to the sample level information can be extracted and stored in a data frame called `clinical` while the cell level information can be kept in a long data frame (in this instance, but `make_mxfda()` does accept a list of data frames that produced by reading in many data frames of samples). The spatial parameter in the `make_mxfda()` function can be left blank if using a spatial metric derived from external functions. The final 2 parameters for the `?lung_df` `mxFDA` object is the `subject_key` and the `sample_key`. The `sample_key` is a column name that appears both in the `metadata` and `spatial` and is a 1:1 with the unique samples while the `subject_key` is a column name in `metadata` that ties the samples to metadata; if 1 sample per subject then `sample_key` and `subject_key` is a 1:1, but if multiple samples per subject, `subject_id` will be repeated.
+Using the `?lung_df` in the `mxfda` package, columns with repeated data pertaining to the sample-level information are extracted and stored in a data frame called `clinical` while the cell-level information is kept in a long data frame (`make_mxfda()` also accepts cell-level information as a list of data). The spatial parameter in the `make_mxfda()` function can be left blank if using a spatial metric derived from external functions. The final 2 parameters for the `?lung_df` `mxFDA` object are the `subject_key` and the `sample_key`. The `sample_key` is a column name that appears both in the `metadata` and `spatial` and denotes unique samples while the `subject_key` is a column name in `metadata` that ties the samples to metadata; if the data contains one sample per subject then `sample_key` and `subject_key` is a 1:1, but if multiple samples per subject, `subject_id` will be repeated.
 
 ```{r object}
 clinical = lung_df %>%
@@ -93,6 +73,13 @@ mxFDAobject = make_mxfda(metadata = clinical,
                          sample_key = "patientImage_id")
 ```
 
+
+
+Note that the object created has class `mxFDA`. 
+
+```{r}
+class(mxFDAobject)
+```
 
 
 

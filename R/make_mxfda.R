@@ -2,7 +2,7 @@
 #'
 #' Used to create an object of class `mxFDA` that can be used with the [mxfda] package for functional data analysis.
 #'
-#' @param metadata metadata with column `key` for samples
+#' @param metadata metadata with columns `subject_key` and `sample_key`
 #' @param spatial spatial information, either list or df, with column `key`. `spatial` can be empty if inputting data already derived
 #' @param subject_key column name for subject ID
 #' @param sample_key column linking metadata to spatial data
