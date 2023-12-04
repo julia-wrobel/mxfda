@@ -87,8 +87,7 @@ class(mxFDAobject)
 
 The `mxfda` package provides methods for analyzing spatial relationships between cell types in multiplex imaging data based on point
 process theory. The location of cells in multiplex image samples are treated as following a point process, realizations of a point process are called “point patterns”, and point process models seek to understand correlations in the
-spatial distributions of cells. Under the assumption that the rate of a cell is constant over an entire region 
-of interest a point pattern will exhibit complete spatial randomness (CSR), and it is often of interest to model whether cells deviate from CSR either through clustering or repulsion. Spatial summary statistics can be calculated to quantify the clustering and co-occurrence of cells in a circular region with a particular radius r. Typically univariate (one cell type) or bivariate (two cell types) summary statistics are reported, and inference is obtained by comparing the observed spatial summary statistic to that obtained under CSR. A popular quantity is Ripley’s K(r), which studies the number of neighbors to a particular point within radius r, and has univariate and bivariate implementations in the `spatstat` package (@baddeley2015spatial). Ripley’s K is characterized by clustering or repulsion
+spatial distributions of cells. Under the assumption that the rate of a cell is constant over an entire region  of interest a point pattern will exhibit complete spatial randomness (CSR), and it is often of interest to model whether cells deviate from CSR either through clustering or repulsion. Spatial summary statistics can be calculated to quantify the clustering and co-occurrence of cells in a circular region with a particular radius r. Typically univariate (one cell type) or bivariate (two cell types) summary statistics are reported, and inference is obtained by comparing the observed spatial summary statistic to that obtained under CSR. A popular quantity is Ripley’s K(r), which studies the number of neighbors to a particular point within radius r, and has univariate and bivariate implementations in the `spatstat` package (@baddeley2015spatial). Ripley’s K is characterized by clustering or repulsion
 depending on whether it is above or below the theoretical value of $\pi r^2$. Other spatial summary statistics analyze the distance to a neighbor, and can be interpreted as probabilities of observing a particular cell type within a radius r. One of these metrics, G(r), or the nearest neighbor distance distribution, is the cumulative distribution function of an exponential random variable. More detailed overviews of spatial summary functions for multiplex imaging data are provided in @wilson2021challenges and @wrobel2023statistical.
 
 ## Univariate summary functions
@@ -105,9 +104,18 @@ mxFDAobject = extract_summary_functions(mxFDAobject,
                                         mark1 = "immune")
 ```
 
+Running this code will calculate univariate Ripley's K function to measure spatial clustering of immune cells for each sample, and will store these spatial summary functions in the `` slot of the  `mxFDAobject`. To access this slot and view the extracted summary functions, type: 
+
+```{r}
+mxFDAobject@univariate_summaries$Kest
+```
+
+
 ### Plotting the `mxFDA` object
 
-`{mxfda}` has a few S4 methods implemented that make looking at results feel as though it's part of base R. One method is plotting using `?plot.mxFDA` which ties in to `plot()`. The first argument is the `mxFDA` object followed by a few options depending on what is wanting to be plotted. Here, the we want to plot the univariate summary that we just calculated which was the K function. By passing in `what = 'uni k'`, the plot function will extract the univariate K results. We also need to tell `plot()` what column is the y-axis which can be `'sumfun'` for the observed value, `'csr'` for the theoretical value of complete spatial randomness (CSR), or `'fundiff'` which is the difference between the observed K measure and the theoretical CSR. The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would. 
+`{mxfda}` has S4 methods for visualization implemented via the `plot()` function (see `?plot.mxFDA` for details). The first argument is the `mxFDA` object followed by a few options that depend on what plot output is desired. Here, the we want to plot the univariate summary that we just calculated, which was the K function. By passing in `what = 'uni k'`, the plot function will extract the univariate K results. 
+
+We also need to tell `plot()` what column is the y-axis which can be `'sumfun'` for the observed value, `'csr'` for the theoretical value of complete spatial randomness (CSR), or `'fundiff'` which is the difference between the observed K measure and the theoretical CSR. The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would. 
 
 **NOTE: These are the columns when calculating using the `extract_summary_function()` of `{mxfda}` but if summary data is added from elsewhere with `add_summary_function()` then those column names will have to be used.**
 
