@@ -36,7 +36,7 @@ summary.mxFDA = function(object, ...){
     cat("FPCs Calculated:\n", sep = "")
     for(f in fpc_slots){
       cat("\t", f, ": ", ncol(object@functional_pca[[f]]$score_df), " FPCs describe ",
-          round((object@functional_pca$Gest$fpc_object$pve * 100), digits = 1), "% variance\n", sep = "")
+          round((object@functional_pca[[f]]$fpc_object$pve * 100), digits = 1), "% variance\n", sep = "")
     }
   }
   #mixed pricipal components
