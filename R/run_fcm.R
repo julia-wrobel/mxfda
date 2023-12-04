@@ -80,7 +80,6 @@ run_fcm <- function(mxFDAobject,
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
   form = deparse(stats::formula(formula))
-
   mxfundata <- process_fcm(mxfundata, mxFDAobject@sample_key, r, value, analysis_vars, quantile_transform)
 
   # fit linear or additive functional Cox model
@@ -88,8 +87,9 @@ run_fcm <- function(mxFDAobject,
     form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE))')
 
     fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
-                   weights = event,
-                   data = mxfundata, family = mgcv::cox.ph())
+                         weights = mxfundata[[event]],
+                         data = mxfundata,
+                         family = mgcv::cox.ph())
 
     class(fit_fcm) <- append("afcm", class(fit_fcm))
   }else{
@@ -97,7 +97,8 @@ run_fcm <- function(mxFDAobject,
 
     fit_fcm <- mgcv::gam(formula = as.formula(form),
                    weights = event,
-                   data = mxfundata, family = mgcv::cox.ph())
+                   data = mxfundata,
+                   family = mgcv::cox.ph())
 
     class(fit_fcm) <- append("lfcm", class(fit_fcm))
   }
