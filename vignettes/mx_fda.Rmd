@@ -26,7 +26,6 @@ The `mxfda` package contains tools for analyzing single-cell multiplex imaging d
 library(mxfda)
 library(tidyverse)
 library(patchwork)
-#devtools::load_all() # why does it not work without this?
 ```
 
 
