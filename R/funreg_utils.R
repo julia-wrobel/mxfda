@@ -132,8 +132,8 @@ impute_fpca = function(mxfundata,
     mxfundata[[value]] <- mxfundata$imputed
   }
 
-  out = mxfundata %>%
-    dplyr::select(dplyr::all_of(c("imputed", "Yhat")))
+  out = mxfundata #%>%
+    #dplyr::select(dplyr::all_of(c(analysis_vars, "imputed", "Yhat")))
   return(out)
 }
 
