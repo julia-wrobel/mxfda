@@ -61,7 +61,7 @@ run_fcm <- function(mxFDAobject,
     dplyr::full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
   #join everything needed to fit the model into a vector for analysis vars
   analysis_vars = unique(c(analysis_vars,
-                           grep("~", paste0(formula), invert = TRUE, value = TRUE),
+                           all.vars(formula),
                            event))
 
   if(!(event %in% colnames(mxFDAobject@Metadata)))
