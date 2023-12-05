@@ -111,7 +111,8 @@ extract_surface = function(mxFDAobject,
     grid_coef <- data.frame(t_int = tind_pred,
                             func = 1,
                             l_int=1)
-    grid_coef <- cbind(grid_coef, mxfundata[1, analysis_vars])
+    grid_coef <- cbind(grid_coef, mxfundata[1, ] %>%
+                         dplyr::select(!!analysis_vars))
 
     pred <- predict(fit, newdata = grid_coef, type = 'terms', se.fit = TRUE)
 
