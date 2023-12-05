@@ -23,10 +23,10 @@ The `mxfda` package contains tools for analyzing single-cell multiplex imaging d
 
 
 ```{r setup}
-#library(mxfda)
+library(mxfda)
 library(tidyverse)
 library(patchwork)
-devtools::load_all() # why does it not work without this?
+#devtools::load_all() # why does it not work without this?
 ```
 
 
@@ -90,7 +90,7 @@ process theory. The location of cells in multiplex image samples are treated as 
 
 ## Univariate summary functions
 
-Below we calculate univariate Ripley's K to summarize the spatial relationship among immune cells in each image. The `mxfda` package accomplishes this with the function `extract_summary_functions()`. Either univariate or bivariate can be calculated with this function depending on the choice supplied to the `extract_func` argument. To calculate a univariate spatial summary we supply `extract_univariate` to the `extract_func` argument. The summary function that is calculated depends on the function supplied to `summary_fun` which is one of `Kest()`, `Gest()`, or `Lest()` from the `{spatstat.explore}` package (`Kcross()`, `Gcross()`, or `Lcross()` for bivariate methods). Other options include supplying a vector of radius values through `r_vec`, and the a specific edge correction (see @baddeley2015spatial). Below we calculate the K function across a range of radii from 0 to 100 and use the isotropic ("iso") edge correction.
+Below we calculate univariate Ripley's K to summarize the spatial relationship among immune cells in each image. The `mxfda` package accomplishes this with the function `extract_summary_functions()`. Either univariate or bivariate can be calculated with this function depending on the choice supplied to the `extract_func` argument. To calculate a univariate spatial summary we supply `extract_univariate` to the `extract_func` argument. The summary function that is calculated depends on the function supplied to `summary_fun` which is one of `Kest()`, `Gest()`, or `Lest()` from the `{spatstat.explore}` package (`Kcross()`, `Gcross()`, or `Lcross()` for bivariate methods). Other options include supplying a vector of radius values through `r_vec`, and the a specific edge correction (see @baddeley2015spatial). We calculate the K function across a range of radii from 0 to 100 and use the isotropic ("iso") edge correction.
 
 ```{r univariate_k}
 mxFDAobject = extract_summary_functions(mxFDAobject,
@@ -102,18 +102,17 @@ mxFDAobject = extract_summary_functions(mxFDAobject,
                                         mark1 = "immune")
 ```
 
-Running this code will calculate univariate Ripley's K function to measure spatial clustering of immune cells for each sample, and will store these spatial summary functions in the `` slot of the  `mxFDAobject`. To access this slot and view the extracted summary functions, type: 
+Running this code will calculate univariate Ripley's K function to measure spatial clustering of immune cells for each sample, and will store these spatial summary functions in the `univariate_summaries` slot of the  `mxFDAobject`. To access this slot and view the extracted summary functions, type: 
 
 ```{r}
 mxFDAobject@univariate_summaries$Kest
 ```
 
+Note that the summaries are returned as a dataframe. The variable `sumfun` is the estimated summary function value, `csr` is the theoretical value under complete spatial randomness, and `fundiff` = `sumfun`-`csr`; in downstream analysis we will use the `fundiff` covariate. 
 
 ### Plotting the `mxFDA` object
 
-`{mxfda}` has S4 methods for visualization implemented via the `plot()` function (see `?plot.mxFDA` for details). The first argument is the `mxFDA` object followed by a few options that depend on what plot output is desired. Here, the we want to plot the univariate summary that we just calculated, which was the K function. By passing in `what = 'uni k'`, the plot function will extract the univariate K results. 
-
-We also need to tell `plot()` what column is the y-axis which can be `'sumfun'` for the observed value, `'csr'` for the theoretical value of complete spatial randomness (CSR), or `'fundiff'` which is the difference between the observed K measure and the theoretical CSR. The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would. 
+`{mxfda}` has S4 methods for visualization implemented via the `plot()` function (see `?plot.mxFDA` for details). The first argument is the `mxFDA` object followed by a few options that depend on what plot output is desired. Here, the we want to plot the univariate summary that we just calculated, which was the K function. By passing in `what = 'uni k'`, the plot function will extract the univariate K results. We also need to tell `plot()` what column is the y-axis which can be `'sumfun'` for the observed value, `'csr'` for the theoretical value of complete spatial randomness (CSR), or `'fundiff'` which is the difference between the observed K measure and the theoretical CSR. The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would. 
 
 **NOTE: These are the columns when calculating using the `extract_summary_function()` of `{mxfda}` but if summary data is added from elsewhere with `add_summary_function()` then those column names will have to be used.**
 
@@ -122,15 +121,10 @@ plot(mxFDAobject, y = "fundiff", what = "uni k") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
-SAY WHAT YOU DO DIFFERENT TO GET L OR G
-
-```{r}
-#rm(Gcrossdf)
-```
 
 ## Bivariate summary functions
 
-As mentioned there is the ability to use `extract_summary_function()` to extact bivariate summaries between 2 cell types. We will look at relationship between T-cells and macrophages. There are a few images that have fewer than 5 T-cells or macrophages, which makes estimation less stable for those images. To look at T-cells and macrophages, the data phenotypes and cell locations have to be in long format so we first create a variable with the cell types (`'phenotype'`) from the `lung_df`. Then just like above can split it into our metadata and spatial for creating a the `mxFDA` object.
+The `extract_summary_function()` function can also be used to extract bivariate summaries comparing spatial clustering of 2 cell types. We will look at relationship between T-cells and macrophages. There are a few images that have fewer than 5 T-cells or macrophages, which makes estimation of spatial summary functions less stable for those images. To look at T-cells and macrophages, the data phenotypes and cell locations have to be in long format so we first create a variable with the cell types (`'phenotype'`) from the `lung_df`. 
 
 ```{r}
 lung_df = lung_df %>%
@@ -139,17 +133,9 @@ lung_df = lung_df %>%
                                TRUE ~ "other"),
          phenotype = factor(phenotype))
 
-
-lung_df %>%
-  group_by(patientImage_id) %>%
-  count(phenotype) %>%
-  ungroup() %>%
-  filter(phenotype != "other") %>%
-  group_by(phenotype) %>%
-  summarize(sum(n < 5))
 ```
 
-Here we see that there are 20 and 27 samples with less than 5 macrophages and T-cells, respectively. Things like this need to be remembered when interpreting the results and also shows that larger samples that capture more cells provide more reliable results.
+We then recreate the mxFDAobject
 
 ```{r}
 spatial = lung_df %>%
@@ -162,11 +148,7 @@ mxFDAobject = make_mxfda(metadata = clinical,
 ```
 
 
-Below we calculate the bivariate G function, but can replace `Gcross()` with `Lcross()` or `Kcross()` to do L or K bivariate functions. The column that we created above is called `'phenotype'`, and the 2 cell types that we are interested in calculating the bivariate nearest neighbor G for are `'T-cell'` and `'macrophage'` so we provide them to `mark1` and `mark2`, respectively. 
-
-Automatically removes images that do not have at least 1 cell of each type
-  * Is this behavior we actually want?
-
+Now we calculate the bivariate G function, but can replace `Gcross()` with `Lcross()` or `Kcross()` to estimate the L or K bivariate functions instead. The argument `markvar` takes the variable that we created above called `'phenotype'`, and the 2 cell types that we are interested in calculating the bivariate G for are `'T-cell'` and `'macrophage'` so we provide them to `mark1` and `mark2`, respectively. 
 
 ```{r}
 mxFDAobject = extract_summary_functions(mxFDAobject,
@@ -190,13 +172,12 @@ plot(mxFDAobject, y = "fundiff", what = "bi g") +
 
 # Exploring the S4 object
 
-Another useful function is `?summary.mxFDA` which feeds into the `summary()` method. Either typing the name of the object or wrapping it in the summary function will provide information like the number of subjects, samples, if spatial summary functions have been calculated, and functional analyses that have been run.
+Another useful function is `?summary.mxFDA` which feeds into the `summary()` method. Either typing the name of the object or wrapping it in the summary function will provide information like the number of subjects, samples, if spatial summary functions have been calculated, and functional data analyses that have been run.
 
 ```{r summary}
 mxFDAobject
 ```
 
-Other things to mention?
 
 # SpatialTIME
 
