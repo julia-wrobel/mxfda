@@ -1,5 +1,5 @@
 ---
-title: "Multiplex FPCA"
+title: "Functional principal component analysis for spatial summary functions"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
@@ -17,24 +17,19 @@ knitr::opts_chunk$set(
 invisible(suppressPackageStartupMessages(library(tidyverse)))
 ```
 
-
-This vignette describes the `{mxfda}` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal components analysis can be found in the separate vignette `mx_fpca`. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
-
+The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to perform feature extraction using functional principal component analysis and multilevel functional principal component analysis. To set up an `mxFDA` object from spatial single cell imaging data, calculate spatial summary functions, and perform exploratory data analysis and visualization of these spatial summary functions, see `vignette("mx_fda")`. To perform functional regression on spatial summary functions from multiplex imaging data, see  `vignette("mx_funreg")`.
 
 
 ```{r setup}
-#library(mxfda)
+library(mxfda)
 library(tidyverse)
 library(patchwork)
-devtools::load_all()
 ```
 
 
 # Functional data notation
 
-
- The basic unit of observation is the curve $Y_i(t)$ for subjects $i \in \ldots, I$ in the cross-sectional setting and $Y_{ij}(t)$ for subject $i$ at visit $j \in \ldots, J_i$ for the multilevel or longitudinal structure. Methods for functional data are typically presented in terms of continuous functions, but in practice data are observed on a discrete grid that may be sparse or dense at the subject level and that may be the same across subjects or irregular.
-
+The basic unit of observation is the curve $X_i(r)$ for subjects $i \in \ldots, I$ in the cross-sectional setting and $X_{ij}(r)$ for subject $i$ at sample $j \in \ldots, J_i$ for the multilevel structure, which occurs when there are multiple samples for each subject. Methods for functional data are typically presented in terms of continuous functions, but in practice data are observed on a discrete grid, $t$. In the `{mxfda}` package, $X_{ij}(r)$ is the spatial summary function (for example, Ripley's K) value at radius $r$ for sample $j$ from subject $i$.
 
 
 # Functional principal components analysis (FPCA)
@@ -42,25 +37,23 @@ devtools::load_all()
 ## Background on FPCA
 
 
-Background on FPCA
+FPCA characterizes modes of variability by decomposing functional observations into population level basis functions and subject-specific scores. The basis functions have a clear interpretation, analogous to that of PCA: the first basis function explains the largest direction of variation, and each subsequent basis function describes less. The FPCA model is typically written
 
-FPCA characterizes modes of variability by decomposing functional observations into population level basis functions and subject-specific scores \citep{ramsay2005}. The basis functions have a clear interpretation, analogous to that of PCA: the first basis function explains the largest direction of variation, and each subsequent basis function describes less. The FPCA model is typically written
-\beqn
-\label{eq:fpca_model}
-	Y_i(t) = \mu(t) + \sum_{k=1}^{K} c_{ik}\psi_{k}(t) + \epsilon_i(t)
-\eeqn
-\noindent
-where $\mu(t)$ is the population mean,  $\psi_{k}(t)$ are a set of orthonormal population-level basis functions, $c_{ik}$ are subject-specific scores with mean zero and variance $\lambda_k$, and $\epsilon_i(t)$ are residual curves. Estimated basis functions $\widehat{\psi}_1(t), \widehat{\psi}_2(t), \ldots, \widehat{\psi}_{K}(t)$ and corresponding variances $\widehat{\lambda}_1 \geq \widehat{\lambda}_2 \geq \ldots \geq \widehat{\lambda}_K$ are obtained from a truncated Karhunen-Lo\`eve decomposition of the sample covariance $\widehat{\Sigma}(s,t) = \widehat{\mbox{Cov}}(Y_i(s), Y_i(t))$. In practice, the covariance $\widehat{\Sigma}(s,t)$ is often smoothed using a bivariate smoother that omits entries on the main diagonal to avoid a ``nugget effect" attributable to measurement error, and scores are estimated in a mixed model framework \citep{yao2005}. The truncation lag $K$ is often chosen so that the resulting approximation accounts for at least 95\% of observed variance. 
 
+$$
+X_i(r) = \mu(r) + \sum_{k=1}^{K} c_{ik}\psi_{k}(r) + \epsilon_i(r)
+$$
+
+where $\mu(r)$ is the population mean, $\psi_{k}(r)$ are a set of orthonormal population-level functional principal components, $c_{ik}$ are subject-specific scores with mean zero and variance $\lambda_k$, and $\epsilon_i(r)$ are residual curves. Estimated functional principal components $\widehat{\psi}_1(r), \widehat{\psi}_2(r), \ldots, \widehat{\psi}_{K}(r)$ and corresponding variances $\widehat{\lambda}_1 \geq \widehat{\lambda}_2 \geq \ldots \geq \widehat{\lambda}_K$ are obtained from a truncated Karhunen-Lo\`eve decomposition of the sample covariance $\widehat{\Sigma}(s,t) = \widehat{\mbox{Cov}}(Y_i(s), X_i(r))$. The truncation lag $K$ is often chosen so that the resulting approximation accounts for at least 95\% of observed variance (@wrobel2016interactive). 
+
+Conceptually, functional principal components can be thought of as patterns in the data that explain the most variance, and scores $c_{ik}$ are weights that describe how much each functional principal component contributes to the shape of a given subject's spatial summary function.
 
 
 ## Implementing FPCA
 
-
 ### Load and visualize data
 
-Here we load data from the Ovarian cancer dataset that where univariate nearest-neighbor G-functions for immune cells have already been extracted. See the vignette `mxfda::mx_fda` for more details on extracting spatial summary functions.
-
+Here we load data from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) ovarian cancer dataset, which contains tumor microarray data for 128 women with high-grade serous ovarian cancer, where univariate nearest-neighbor G-functions for immune cells have already been extracted. This data has been modified, but the original data and experiment are described in @steinhart2021spatial. Each subject has one image.
 
 ```{r}
 data("ovarian_FDA")
@@ -76,16 +69,38 @@ plot(ovarian_FDA, y = "fundiff", what = "uni g", sampleID = "patient_id") +
   
 ```
 
+Values above the dotted red line are interpreted as having a higher probability of observing a neighboring immune cell at radius $r$ than would be expected under complete spatial randomness. Conversely, values below the dotted line exhibit lower probability of observing a neighboring immune cell than expected under CSR.
 
 ### Run and visualize FPCA
 
+Below we run FPCA on these G-function curves, using the `run_fpca()` function, and store these results in the `mxFDAobject` called `ovarian_FDA`. The argument `metric` is used to specify which spatial summary function to estimate FPCA for- in this case "uni g" specifies the univariate G function, `r` denotes which variable specifies the radius, and `value` denotes which value are the values of the spatial summary function. The argument `pve` takes a number from 0 to 1, and specifies the percent variance explained by the FPCA decomposition. For example, if `pve= 0.98` is selected, the resulting FPCA will return the number of FPCs that explain 98% of variance in the data.
+
 ```{r}
 ovarian_FDA <- run_fpca(ovarian_FDA, 
-                        metric = "uni g", r = "r", 
+                        metric = "uni g", 
+                        r = "r", 
                         value = "fundiff",
                         pve = .95)
-ovarian_FDA
+
 ```
+
+Note that the summary of this object now shows the number of functional principal components (FPCs) that have been calculated:
+
+```{r}
+summary(ovarian_FDA)
+```
+
+
+The FPCA results are stored in the `functional_pca` slot of the  `ovarian_FDA` object. To access this slot directly and view the extracted summary functions, type: 
+
+
+```{r, eval = FALSE}
+ovarian_FDA@functional_pca
+```
+
+
+
+
 
 Explain each of these plots
 
@@ -135,7 +150,7 @@ $$
 $$
 
 \noindent 
-where $\mu(t)$ is the population mean,  $\eta_j(t)$ is the visit-specific shift from the overall mean, $\psi_{k}^{(1)}(t)$ and $\psi_{k}^{(2)}(t)$ are the eigenfunctions for levels 1 and 2, respectively, and $c_{ik}^{(1)}$ and $c^{(2)}_{ijk}$ are the subject-specific and subject-visit-specific scores. Often, visit-specific means $\eta_j(t)$ are not of interest and can be omitted from the model. Estimation for MFPCA extends the approach for FPCA: estimated between- and within-covariances $\widehat{\Sigma}^{(1)}(s,t) = \widehat{\mbox{Cov}}(Y_{ij}(s), Y_{ij'}(t))$ for $j \neq j'$ and $\widehat{\Sigma}^{(2)}(s,t) = \widehat{\mbox{Cov}}(Y_{ij}(s), Y_{ij}(t))$ are derived from the observed data, smoothed, and decomposed to obtain eigenfunctions and values. Given these objects, scores are estimated in a mixed-model framework.
+where $\mu(r)$ is the population mean,  $\eta_j(r)$ is the visit-specific shift from the overall mean, $\psi_{k}^{(1)}(r)$ and $\psi_{k}^{(2)}(r)$ are the eigenfunctions for levels 1 and 2, respectively, and $c_{ik}^{(1)}$ and $c^{(2)}_{ijk}$ are the subject-specific and subject-visit-specific scores. Often, visit-specific means $\eta_j(r)$ are not of interest and can be omitted from the model. Estimation for MFPCA extends the approach for FPCA: estimated between- and within-covariances $\widehat{\Sigma}^{(1)}(s,t) = \widehat{\mbox{Cov}}(Y_{ij}(s), Y_{ij'}(r))$ for $j \neq j'$ and $\widehat{\Sigma}^{(2)}(s,t) = \widehat{\mbox{Cov}}(Y_{ij}(s), X_{ij}(r))$ are derived from the observed data, smoothed, and decomposed to obtain eigenfunctions and values. Given these objects, scores are estimated in a mixed-model framework.
 
 
 ## Implementing MFPCA
