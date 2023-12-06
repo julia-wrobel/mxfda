@@ -1,5 +1,5 @@
 ---
-title: "mx Functional Regression"
+title: "Functional regression with spatial summary functions as covariates"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{mx Functional Regression}
@@ -18,23 +18,16 @@ knitr::opts_chunk$set(
 invisible(suppressPackageStartupMessages(library(tidyverse)))
 ```
 
+The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to perform functional regression using spatial summary functions of multiplex image samples as model covariates. To set up an `mxFDA` object from spatial single cell imaging data, calculate spatial summary functions, and perform exploratory data analysis and visualization of these spatial summary functions, see `vignette("mx_fda")`. To perform feature extraction using functional principal component analysis, see `vignette("mx_fpca")`.
 
-The `mxfda` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal component analysis can be found in the separate vignette `vignette("mx_fpca")`. To perform functional regression on spatial summary functions from multiplex imaging data, see `vignette("mx_funreg")`.
 
+**Note: Right now, the `{mxfda}` package focuses on regression problems with survival outcomes. In the future, the package will be extended to handle other outcome types, including continuous and binary data.**
 
 ```{r setup}
-#library(mxfda)
+library(mxfda)
 library(tidyverse)
 library(patchwork)
-devtools::load_all()
 ```
-
-
-## A note on data formatting
-
-Use of this package requires that data be in a specific format: a long-form data frame with variables `id`, `index`, and `value`, where the `value` column contains functional observations for all subjects, the `id` column identifies which observations belong to which subject, and `index` provides the grid (domain) over which the `value`s are observed.  
-
-The variable `id` should be a unique identifier in that each id identifies a single subject. Since we assume there is only one curve per subject for this package, `id` uniquely identifies each curve as well. Other covariates can be included in the data as long as the variables `id`, `index`, and `value` are present.
 
 
 ## Ovarian cancer multiplex imaging data
