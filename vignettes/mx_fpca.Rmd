@@ -36,7 +36,6 @@ devtools::load_all()
  The basic unit of observation is the curve $Y_i(t)$ for subjects $i \in \ldots, I$ in the cross-sectional setting and $Y_{ij}(t)$ for subject $i$ at visit $j \in \ldots, J_i$ for the multilevel or longitudinal structure. Methods for functional data are typically presented in terms of continuous functions, but in practice data are observed on a discrete grid that may be sparse or dense at the subject level and that may be the same across subjects or irregular.
 
 
-
 # Functional principal components analysis (FPCA)
 
 ## Background on FPCA
