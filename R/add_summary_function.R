@@ -27,6 +27,9 @@ add_summary_function = function(mxFDAobject,
   if(!(mxFDAobject@sample_key %in% colnames(summary_function_data)))
     stop("summary_function_data must have sample_key column name")
 
+  if(!is(summary_function_data, "data.frame"))
+    stop("summary_function_data needs to be a data frame")
+
   #fill slot with new data
   if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@bivariate_summaries$Kcross = summary_function_data
   if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`bivariate_summaries`$Gcross = summary_function_data
