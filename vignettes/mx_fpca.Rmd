@@ -31,7 +31,6 @@ library(patchwork)
 
 The basic unit of observation is the curve $X_i(r)$ for subjects $i \in \ldots, I$ in the cross-sectional setting and $X_{ij}(r)$ for subject $i$ at sample $j \in \ldots, J_i$ for the multilevel structure, which occurs when there are multiple samples for each subject. Methods for functional data are typically presented in terms of continuous functions, but in practice data are observed on a discrete grid, $t$. In the `{mxfda}` package, $X_{ij}(r)$ is the spatial summary function (for example, Ripley's K) value at radius $r$ for sample $j$ from subject $i$.
 
-
 # Functional principal components analysis (FPCA)
 
 ## Background on FPCA

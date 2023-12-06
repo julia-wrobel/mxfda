@@ -61,7 +61,7 @@ run_fcm <- function(mxFDAobject,
     dplyr::full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
   #join everything needed to fit the model into a vector for analysis vars
   analysis_vars = unique(c(analysis_vars,
-                           grep("~", paste0(formula), invert = TRUE, value = TRUE),
+                           all.vars(formula),
                            event))
 
   if(!(event %in% colnames(mxFDAobject@Metadata)))
@@ -96,7 +96,7 @@ run_fcm <- function(mxFDAobject,
     form =  paste0(form, '+ s(t_int, by=l_int*func, bs="cr", k=20)')
 
     fit_fcm <- mgcv::gam(formula = as.formula(form),
-                   weights = event,
+                   weights = mxfundata[[event]],
                    data = mxfundata,
                    family = mgcv::cox.ph())
 
