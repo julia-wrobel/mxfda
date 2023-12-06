@@ -44,7 +44,7 @@ summary.mxFDA = function(object, ...){
     cat("MFPCs not yet calculated\n", sep = "")
   } else {
     fpc_slots = names(object@functional_mpca)
-    cat("MFPCs Calculated:\n", sep = "")
+    cat("FPCs Calculated:\n", sep = "")
     for(f in fpc_slots){
       cat("\t", f, ": ",
           ncol(object@functional_mpca[[f]]$score_df), " Level1 MFPCs and ",
