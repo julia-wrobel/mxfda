@@ -7,9 +7,10 @@
 #' @param subject_key column name for subject ID
 #' @param sample_key column linking metadata to spatial data
 #'
+#' @details `r lifecycle::badge('stable')`
+#'
 #' @return object of class mxFDA
 #'
-#' @details `r lifecycle::badge('stable')`
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
