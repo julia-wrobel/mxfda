@@ -28,6 +28,15 @@ Plot mxFDA object
 \examples{
 #set seed
 set.seed(333)
+#plotting summary
+data("ovarian_FDA")
+plot(ovarian_FDA, y = 'fundiff', what = 'uni g')
+#running fpca
+ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+                       lightweight = TRUE,
+                       pve = .99)
+#plot fpca
+plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 1)
 
 }
 \author{

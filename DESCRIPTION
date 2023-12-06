@@ -25,6 +25,7 @@ Suggests:
     tidyverse,
     survival,
     patchwork,
+    lifecycle,
     broom
 Imports: 
     magrittr,
@@ -33,7 +34,6 @@ Imports:
     purrr,
     dplyr,
     ggplot2,
-    lifecycle,
     spatialTIME,
     methods,
     stats,
