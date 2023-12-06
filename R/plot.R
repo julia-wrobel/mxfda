@@ -18,13 +18,24 @@
 #' @examples
 #' #set seed
 #' set.seed(333)
+#' #plotting summary
+#' data("ovarian_FDA")
+#' plot(ovarian_FDA, y = 'fundiff', what = 'uni g')
+#' #running fpca
+#' ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+#'                        lightweight = TRUE,
+#'                        pve = .99)
+#' #plot fpca
+#' plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 1)
 #'
 plot.mxFDA = function(x, filter_cols = NULL, ...){
   params = as.list(substitute(list(...)))
+  if(is.null(params$what)) stop("need to provide what to plot")
   params$what = unlist(strsplit(params$what, split = " "))
   #return(params)
 
   if(length(params$what) == 2){
+    if(is.null(params$y)) stop("for summary functions, need to provide a column name")
     dat = get_data(x, params$what, type = 'summaries') %>%
       filter_data(filter_cols)
 
@@ -38,6 +49,7 @@ plot.mxFDA = function(x, filter_cols = NULL, ...){
   #non-mixed fpca
   if(grepl("^fpca", params$what[3], ignore.case = TRUE)){
     dat = get_data(x, params$what, type = "fpca")
+    if(is.null(params$pc_choice)) stop("need to provide a numeric principal component to plot")
 
     plus = minus = mu = index = NULL
     obj = dat$fpc_object

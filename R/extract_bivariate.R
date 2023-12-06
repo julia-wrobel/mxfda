@@ -55,7 +55,7 @@ extract_bivariate = function(mximg,
 
   # create ppp object
   pp_obj = ppp(mximg[["x"]], mximg[["y"]], window = w,
-               marks = mximg[[markvar]], checkdup = FALSE)
+               marks = as.factor(mximg[[markvar]]), checkdup = FALSE)
 
   # estimate L using spatstat
   sumfun = func(pp_obj, mark1, mark2,
