@@ -7,7 +7,7 @@
 make_mxfda(metadata, spatial = NULL, subject_key, sample_key)
 }
 \arguments{
-\item{metadata}{metadata with column \code{key} for samples}
+\item{metadata}{metadata with columns \code{subject_key} and \code{sample_key}}
 
 \item{spatial}{spatial information, either list or df, with column \code{key}. \code{spatial} can be empty if inputting data already derived}
 
