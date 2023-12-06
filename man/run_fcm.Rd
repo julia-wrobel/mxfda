@@ -13,7 +13,6 @@ run_fcm(
   r = "r",
   value = "fundiff",
   afcm = FALSE,
-  analysis_vars = NULL,
   quantile_transform = FALSE,
   smooth = FALSE,
   filter_cols = NULL,
@@ -37,8 +36,6 @@ run_fcm(
 \item{value}{Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".}
 
 \item{afcm}{If TRUE, runs additive functional Cox model. If FALSE, runs linear functional cox model. Defaults to linear functional cox model.}
-
-\item{analysis_vars}{List of variables to be retained for downstream analysis, including variables from formula.}
 
 \item{quantile_transform}{Defaults to FALSE. If TRUE, a quantile transformation is applied to the functional predictor before modeling using the \code{process_fcm} function.}
 

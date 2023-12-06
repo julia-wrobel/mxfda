@@ -12,7 +12,6 @@
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param knots Number of knots for defining spline basis.
 #' @param afcm If TRUE, runs additive functional Cox model. If FALSE, runs linear functional cox model. Defaults to linear functional cox model.
-#' @param analysis_vars List of variables to be retained for downstream analysis, including variables from formula.
 #' @param quantile_transform Defaults to FALSE. If TRUE, a quantile transformation is applied to the functional predictor before modeling using the \code{process_fcm} function.
 #' @param smooth Option to smooth data using FPCA. Defaults to FALSE.
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
@@ -43,7 +42,6 @@ run_fcm <- function(mxFDAobject,
                     r = "r",
                     value = "fundiff",
                     afcm = FALSE,
-                    analysis_vars = NULL,
                     quantile_transform = FALSE,
                     smooth = FALSE,
                     filter_cols = NULL,
@@ -60,8 +58,7 @@ run_fcm <- function(mxFDAobject,
     filter_data(filter_cols) %>%
     dplyr::full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
   #join everything needed to fit the model into a vector for analysis vars
-  analysis_vars = unique(c(analysis_vars,
-                           all.vars(formula),
+  analysis_vars = unique(c(all.vars(formula),
                            event))
 
   if(!(event %in% colnames(mxFDAobject@Metadata)))
