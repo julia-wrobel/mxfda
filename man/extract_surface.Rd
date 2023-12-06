@@ -31,6 +31,8 @@ extract_surface(
 
 \item{analysis_vars}{Other variables used in modeling FCM fit.}
 
+\item{p}{numeric p-value used for predicting significant AFCM surface}
+
 \item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 }
 \value{
