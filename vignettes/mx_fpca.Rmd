@@ -98,71 +98,54 @@ The FPCA results are stored in the `functional_pca` slot of the  `ovarian_FDA` o
 ovarian_FDA@functional_pca
 ```
 
-
-
-
-
-Explain each of these plots
-
+We can visualize the results of FPCA using the `plot()` function (see `?plot.mxFDA` for details). The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would.  Below we plot the first two functional principal components from our FPCA analysis of the G summary functions.
 
 
 ```{r fpc_plots, fig.width = 10}
 
 p1 = plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 1)
 p2 = plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 2)
-p3 = plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 3)
-p4 = plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 4)
 
-(p1 + p2)/(p3 + p4)
+(p1 + p2)
 ```
 
+The plots above show $\hat{\mu}(r)\pm \sqrt{\hat{\lambda}_1\hat{\psi_k}(t)}$ for the first and second FPC. The black line in each plot is the mean of the data- this shows that the peak in probability of observing a neighboring immune cell occurs, on average, at about radius $r = 12$. In these plots, the blue and red lines represent one standard deviation of the FPC added (blue) or subtracted (red) from the population mean. For example in the plot for FPC 1, we can interpret the pattern of this FPC as a shift up or down from the population mean. Subjects who have a high score, $c_{i1}$ for FPC 1 have, across radii, a larger probability of observing a neighboring immune cell than average in the dataset. This pattern explains 73.8% of variance in the data.
 
-INTERPRET WHAT YOU LEARNED FROM FPCA- this is an important piece
 
-
-Shout out to refund.shiny
+We can further explore the results of FPCA interactively using the `{refund.shiny}` package from @wrobel2016interactive. Execute the code below to launch a Shiny app with interactive plots.
 
 ```{r refund.shiny, eval = FALSE}
 G_fpca = extract_fpca_object(ovarian_FDA,
                              what = "uni g fpca", r = "r")
-class(G_fpca)
-#library(refund.shiny)
-#plot_shiny(G_fpca)
+
+library(refund.shiny)
+plot_shiny(G_fpca)
 
 ```
 
-
-
-# MFPCA
+# Multilevel functional principal components analysis (MFPCA)
 
 
 ## MFPCA Background 
 
-Background on mfpca
 
-Multilevel functional principal components analysis (MFPCA) extends the ideas of FPCA to functional data with a multilevel structure.
-
-
-Multilevel functional data are increasingly common in practice; in the case of our DTI example, this structure arises from multiple clinical visits made by each subject. MFPCA models the within-subject correlation induced by repeated measures as well as the between-subject correlation modeled by classic FPCA. This leads to a two-level FPC decomposition, where level 1 concerns subject-specific effects and level 2 concerns visit-specific effects. Population-level basis functions and subject-specific scores are calculated for both levels \citep{di2009, di2014}. The MFPCA model is:
+Multilevel functional principal components analysis (MFPCA) extends the ideas of FPCA to functional data with a multilevel structure. In the case of multiplex imaging data, this structure arises from multiple samples or ROIs for each subject. MFPCA models the within-subject correlation induced by repeated measures as well as the between-subject correlation modeled by classic FPCA. This leads to a two-level FPC decomposition, where level 1 concerns subject-specific effects and level 2 concerns sample-specific effects. Population-level basis functions and subject-specific scores are calculated for both levels (@di2009multilevel, @cui2023fast). The MFPCA model is:
 
 $$
-	X_{ij}(r) = \mu(r)  + \sum_{k_1=1}^{K_1} 	c_{ik}^{(1)}\psi_{k}^{(1)}(r) + \sum_{k_2=1}^{K_2}c^{(2)}_{ijk}\psi_{k}^{(2)}(r) + \epsilon_{ij}(r)
+X_{ij}(r) = \mu(r)  + \sum_{k_1=1}^{K_1} 	c_{ik}^{(1)}\psi_{k}^{(1)}(r) + \sum_{k_2=1}^{K_2}c^{(2)}_{ijk}\psi_{k}^{(2)}(r) + \epsilon_{ij}(r)
 $$
 
 \noindent 
-where $\mu(r)$ is the population mean,  $\eta_j(r)$ is the visit-specific shift from the overall mean, $\psi_{k}^{(1)}(r)$ and $\psi_{k}^{(2)}(r)$ are the eigenfunctions for levels 1 and 2, respectively, and $c_{ik}^{(1)}$ and $c^{(2)}_{ijk}$ are the subject-specific and subject-visit-specific scores. Often, visit-specific means $\eta_j(r)$ are not of interest and can be omitted from the model. Estimation for MFPCA extends the approach for FPCA: estimated between- and within-covariances $\widehat{\Sigma}^{(1)}(s,t) = \widehat{\mbox{Cov}}(Y_{ij}(s), Y_{ij'}(r))$ for $j \neq j'$ and $\widehat{\Sigma}^{(2)}(s,t) = \widehat{\mbox{Cov}}(Y_{ij}(s), X_{ij}(r))$ are derived from the observed data, smoothed, and decomposed to obtain eigenfunctions and values. Given these objects, scores are estimated in a mixed-model framework.
+where $\mu(r)$ is the population mean, $\psi_{k}^{(1)}(r)$ and $\psi_{k}^{(2)}(r)$ are the functional principal components for levels 1 and 2, respectively, and $c_{ik}^{(1)}$ and $c^{(2)}_{ijk}$ are the subject-specific and subject-sample-specific scores. $K_1$ and $K_2$ represent the number of FPCs for levels 1 and 2, respectively.
 
 
 ## Implementing MFPCA
 
-Explain that there are multiple curves per subject for MFPCA and that's why lung data is better for mfpca
-
-### Extract spatial summary functions and visualize data
-
-Here we extract the univariate K function from the lung data. With summary functions within the `{mxfda}` package, they use a window created by the subset of cells rather than all cells in a core. This is something to keep in mind.
+For MFPCA we will use the non-small cell lung carcinoma data, since we need multiple samples per subject. Below we extract the univariate K functions from the lung data.
 
 ```{r}
 data(lung_df)
+
 clinical = lung_df %>%
   select(image_id, patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
   distinct()
@@ -183,64 +166,45 @@ mxFDAobject = extract_summary_functions(mxFDAobject,
                                         edge_correction = "iso",
                                         markvar = "immune",
                                         mark1 = "immune")
-
-
 ```
 
 
-Visualize
+These K-functions are visualized below.
 
 ```{r}
 plot(mxFDAobject, y = "fundiff", what = "uni k", sampleID = "patientImage_id") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
-Do some summaries (how many total functions? How many subjects? Range of number of functions per subject?)
+
 
 ### Run and visualize MFPCA
 
-Right now this takes the same id in both slots and splits it under the hood. need to change this behavior
-
+Below we run MFPCA on these K-function curves, using the `run_mfpca()` function, and store these results in the `mxFDAobject` lung cancer data object. Other arguments are the same as the `run_fpca()` function. From the summary of the object we see that 2 level 1 FPCs and 2 level 2 FPCs were calculated.
 
 ```{r}
-# see what happens when you use mfpca.sc as an engine
 mxFDAobject <- run_mfpca(mxFDAobject, 
-                       metric = "uni k", r = "r", 
-                       value = "fundiff",
-                       pve = .99,
-                       lightweight = FALSE)
+                         metric = "uni k", 
+                         r = "r", 
+                         value = "fundiff",
+                         pve = .99)
+
+mxFDAobject
 ```
 
 
-Explore FPCA object
+We can also visualize the results of MFPCA using the `plot()` function (see `?plot.mxFDA` for details).  Below we plot the first FPC for level 1 and the first FPC for level 2.
+
 
 ```{r}
-#plot mxFDA object mFPCA
-p = plot(mxFDAobject, what = 'uni k mfpca', level1 = 1, level2 = 3)
+p = plot(mxFDAobject, what = 'uni k mfpca', level1 = 1, level2 = 1)
 
 p[[1]] + p[[2]]
 
-#library(refund.shiny)
-#plot_shiny(mfpca)
 ```
 
-Calculate variance of level 2 scores. Also, are the 
-
-```{r}
-
-```
+The left plot shows $\hat{\mu}(r)\pm \sqrt{\hat{\lambda}_1^{(1)}}\hat{\psi_1}^{(1)}(t)$, and indicates that the first level 1 FPC explains essentially a shift up or down from the population mean. Subjects who have a high score, $c_{i1}$ for FPC 1 have, across radii, have more spatial clustering of immune cells than average in the dataset. The right plot shows $\hat{\mu}(r)\pm \sqrt{\hat{\lambda}_1^{(2)}}\hat{\psi}_1^{(2)}(t)$. This plot shows the pattern explained by FPC 1 from level 2. Essentially, it is the main pattern of variation explain differences across samples within a given subjects and shows that within a subject, differences are primarily driven by some images having higher overall K-function values and some being lower. 
 
 
-
-
-ICC
-
-
-
-# FDA Tips / Principles/ Things to know
-
-* Sparse vs. even grids- mention these, and what types of analysis you can do with each
-* Better to have 20+ measurements per curve- that means using a dense grid of radii
-* Number of knots cannot exceed the number of datapoints per function
 
 # References
