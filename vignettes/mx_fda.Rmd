@@ -180,11 +180,9 @@ mxFDAobject
 
 # SpatialTIME
 
-Sometimes other summary functions or normalizations are run outside of the `{mxfda}` package but the end goal is to still run functional data analysis. Other packages, such as `{spatialTIME}` provide methods for fast calculation of functions in `{spatstat}` with permutation estimates of complete spatial randomness that is more robust than the theoretical, especially when spatial samples have holes that violate the assumption of a homogeneous point pattern. Lets look at how to perform the estimation of univariate nearest neighbor G with `{spatialTIME}`.
+Sometimes other summary functions or normalizations are run outside of the `{mxfda}` package but the end goal is to still run functional data analysis. Other packages, such as `{spatialTIME}` (@creed2021) provide methods for fast calculation of functions in `{spatstat}` with permutation estimates of complete spatial randomness that is more robust than the theoretical, especially when tissue samples have holes that violate the assumption of a homogeneous point pattern (see @wilson2022tumor). Lets look at how to perform the estimation of univariate nearest neighbor G with `{spatialTIME}`.
 
 The central object of `spatialTIME` is the `mIF` object, that contains a list of spatial data frames, a data frame of sample-level summaries, and a data frame for the metadata ('clinical'). From creating the `mxFDA` object, we have a spatial data frame and the clinical data, now we have to convert them into something that works with `spatialTIME.` The steps below will be:
-
-@creed2021
 
 1. convert positive/negative to 1/0 integers
 2. identify which columns in the spatial data frame are cell types
@@ -279,9 +277,6 @@ Can now use the `mxfda` plot method with the new data and continue with analyses
 plot(mxFDA_spatialTIME, y = "Degree of Clustering Permutation", what = "uni g")
 ```
 
-# Calculating and adding your own spatial summary function
-
-Add example of how to do this.
 
 
 # References
