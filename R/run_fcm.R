@@ -82,7 +82,7 @@ run_fcm <- function(mxFDAobject,
   # fit linear or additive functional Cox model
   if(afcm){
     form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE))')
-
+    weights = mxfundata[[event]]
     fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
                          weights = mxfundata[[event]],
                          data = mxfundata,
@@ -91,9 +91,9 @@ run_fcm <- function(mxFDAobject,
     class(fit_fcm) <- append("afcm", class(fit_fcm))
   }else{
     form =  paste0(form, '+ s(t_int, by=l_int*func, bs="cr", k=20)')
-
+    weights = mxfundata[[event]]
     fit_fcm <- mgcv::gam(formula = as.formula(form),
-                   weights = mxfundata[[event]],
+                   weights = weights,
                    data = mxfundata,
                    family = mgcv::cox.ph())
 
