@@ -17,7 +17,7 @@ devtools::install_github("julia-wrobel/mxfda")
 
 # Vignettes and Function References
 
-If interested in documentation and how-to's, please see https://julia-wrobel.com/mxfda
+If interested in documentation and how-to's, please see http://juliawrobel.com/mxfda/
 
 # GitHub Code
 
