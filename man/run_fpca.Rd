@@ -65,7 +65,7 @@ Fast covariance estimation for high-dimensional functional data.
 DOI: 10.1007/s11222-014-9485-x.
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 
 Alex Soupir \email{alex.soupir@moffitt.org}
 }
