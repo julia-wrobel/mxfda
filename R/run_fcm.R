@@ -84,7 +84,7 @@ run_fcm <- function(mxFDAobject,
     form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE))')
     weights = mxfundata[[event]]
     fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
-                         weights = mxfundata[[event]],
+                         weights = weights,
                          data = mxfundata,
                          family = mgcv::cox.ph())
 
