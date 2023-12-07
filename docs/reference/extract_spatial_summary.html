@@ -25,8 +25,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/mx_fda.html">mxFDA Object</a>
-    <a class="dropdown-item" href="../articles/mx_fpca.html">Multiplex FPCA</a>
-    <a class="dropdown-item" href="../articles/mx_funreg.html">mx Functional Regression</a>
+    <a class="dropdown-item" href="../articles/mx_fpca.html">Functional principal component analysis for spatial summary functions</a>
+    <a class="dropdown-item" href="../articles/mx_funreg.html">Functional regression with spatial summary functions as covariates</a>
   </div>
 </li>
 <li class="nav-item">
@@ -80,7 +80,14 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>data frame with percent of total points per spatial sample <code>column</code> are positive for</p>
+<p>data frame with percent of total points per spatial sample <code>columns</code>. If multiple levels are present in <code>columns</code> columns, multiple output columns will be provided.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="figures/lifecycle-experimental.svg" alt="[Experimental]"></a></p>
+<p>Currently this function is experimental as it only handles data that has text in the columns. Eventually,
+will be able to handle any data inputs such as those from HALO where cells are designated as positive (1) or
+negative (0) for a cell phenotypes.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

@@ -41,8 +41,8 @@ syntax as the family argument from the lme4::glmer() function."><!-- mathjax -->
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/mx_fda.html">mxFDA Object</a>
-    <a class="dropdown-item" href="../articles/mx_fpca.html">Multiplex FPCA</a>
-    <a class="dropdown-item" href="../articles/mx_funreg.html">mx Functional Regression</a>
+    <a class="dropdown-item" href="../articles/mx_fpca.html">Functional principal component analysis for spatial summary functions</a>
+    <a class="dropdown-item" href="../articles/mx_funreg.html">Functional regression with spatial summary functions as covariates</a>
   </div>
 </li>
 <li class="nav-item">
@@ -133,23 +133,12 @@ syntax as the <code>family</code> argument from the <code><a href="https://rdrr.
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A <code>data.frame</code> containing:</p>
-<dl><dt>image_patient_id</dt>
-<dd><p>the unique image id</p></dd>
-
-<dt>r</dt>
-<dd><p>the radius of values over which the spatial summary function is evaluated</p></dd>
-
-<dt>sumfun</dt>
-<dd><p>the values of the spatial summary function</p></dd>
-
-<dt>csr</dt>
-<dd><p>the values of the spatial summary function under complete spatial randomness</p></dd>
-
-<dt>fundiff</dt>
-<dd><p>sumfun - csr, positive values indicate clustering and negative values repulsion</p></dd>
-
-</dl></div>
+<p>an object of class <code>mxFDA</code> containing the corresponding spatial summary function slot filled. See <code><a href="make_mxfda.html">make_mxfda()</a></code> for object structure details.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
+    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
@@ -159,7 +148,7 @@ DOI: 10.1007/s11222-014-9485-x.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Julia Wrobel <a href="mailto:julia.wrobel@cuanschutz.edu">julia.wrobel@cuanschutz.edu</a></p>
+    <p>Julia Wrobel <a href="mailto:julia.wrobel@emory.edu">julia.wrobel@emory.edu</a></p>
 <p>Alex Soupir <a href="mailto:alex.soupir@moffitt.org">alex.soupir@moffitt.org</a></p>
     </div>
 

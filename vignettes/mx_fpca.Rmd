@@ -3,7 +3,7 @@ title: "Functional principal component analysis for spatial summary functions"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{Multiplex FPCA}
+  %\VignetteIndexEntry{Functional principal component analysis for spatial summary functions}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
