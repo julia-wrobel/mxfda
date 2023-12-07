@@ -1,6 +1,6 @@
 #' process_fcm
 #'
-#' Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
+#' Internal function called by \code{run_fcm} that transforms long format functional data for use in a linear or additive functional Cox model.
 #'
 #' @param mxfundata Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param id Character string, the name of the variable that identifies each unique subject.
