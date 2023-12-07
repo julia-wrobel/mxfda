@@ -32,7 +32,7 @@ library(patchwork)
 
 ## Ovarian cancer multiplex imaging data
 
-Here we load data from the Ovarian cancer dataset that where univariate nearest-neighbor G-functions for immune cells have already been extracted. See the vignette `mxfda::mx_fda` for more details on extracting spatial summary functions.
+Here we load data from the Ovarian cancer dataset where univariate nearest-neighbor G-functions for immune cells have already been estimated. See the vignette `mxfda::mx_fda` for more details on extracting spatial summary functions.
 
 
 ```{r load_data}
@@ -40,19 +40,34 @@ data("ovarian_FDA")
 ```
 
 
-Visualize functions below. Interpret.
+We visualize these functions below.
 
 ```{r}
 plot(ovarian_FDA, y = "fundiff", what = "uni g") +
   geom_hline(yintercept = 0, color = "red", linetype = 2) +
-  theme_minimal() 
+  theme_minimal() +
+  ggtitle("Nearest neighbor G-functions for immune cells")
   
 ```
 
 
 ## Functional regression models for survival outcomes
 
+Standard cox regression
+
+  $$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik}$$
+
+General form for Cox regression with a functional predictor
+
+  $$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)$$
+
 ### Cox regression using functional principal components as predictors
+
+$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)$$
+
+
+
+This is the approach used in @vu2023funspace.
 
 Runs FPCA and appends scores that explain up to 99% variance
 
@@ -106,19 +121,24 @@ summary(phmod_fpc)
 
 ### linear and additive functional Cox regression models
 
+This is the approach used in @vu2022spf
+
 Linear functional cox model takes the form: 
 
+$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)$$
 
 Using age and gender and stage as scalar covariates
 
 
 #### LFCM
 
+@gellar2015cox
+
 ```{r}
 ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       formula = survival_time ~ age, event = "event",
                       metric = "uni g", r = "r", value = "fundiff",
-                      analysis_vars = c("age", "survival_time"),
+                      #analysis_vars = c("age", "survival_time"),
                       afcm = FALSE)
 ```
 
@@ -141,6 +161,8 @@ plot(lfcm_surface)
 
 
 #### AFCM
+
+@cui2021additive
 
 ```{r}
 ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm", 
