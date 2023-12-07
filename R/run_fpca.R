@@ -22,8 +22,8 @@
 #' \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
 #' \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 #' Fast covariance estimation for high-dimensional functional data.

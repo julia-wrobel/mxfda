@@ -43,11 +43,6 @@ Internal function called by \code{\link[=extract_summary_functions]{extract_summ
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
-\examples{
-# simulate data
-set.seed(1001)
-
-}
 \author{
 Julia Wrobel \email{julia.wrobel@emory.edu}
 }

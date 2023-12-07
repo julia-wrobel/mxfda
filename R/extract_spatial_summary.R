@@ -11,13 +11,37 @@
 #' will be able to handle any data inputs such as those from HALO where cells are designated as positive (1) or
 #' negative (0) for a cell phenotypes.
 #'
-#' @return data frame with percent of total points per spatial sample `columns`. If multiple levels are present in `columns` columns, multiple output columns will be provided.
+#' @return data frame with percent of total points per spatial sample `columns`.
+#' If multiple levels are present in `columns` columns, multiple output columns will be provided.
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
-#' #set seed
-#' set.seed(333)
+#' #load data
+#' data(lung_df)
+#'
+#' #create data frames for `mxFDA` object
+#' clinical = lung_df %>%
+#'   dplyr::select(image_id, patient_id, patientImage_id, gender,
+#'          age, survival_days, survival_status, stage) %>%
+#'   dplyr::distinct()
+#' #make small, just need to make sure it runs
+#' spatial = lung_df %>%
+#'   dplyr::select(-image_id, -gender, -age, -survival_days, -survival_status, -stage) %>%
+#'   dplyr::filter(patientImage_id %in% clinical$patientImage_id[1:10])
+#'
+#' #create `mxFDA` object
+#' mxFDAobject = make_mxfda(metadata = clinical,
+#'                          spatial = spatial,
+#'                          subject_key = "patient_id",
+#'                          sample_key = "patientImage_id")
+#'
+#' #get markers
+#' markers = colnames(mxFDAobject@Spatial) %>%
+#'   grep("pheno", ., value = TRUE)
+#'
+#' #extract summary
+#' df = extract_spatial_summary(mxFDAobject, markers)
 #'
 #' @export
 extract_spatial_summary = function(mxFDAobject, columns, grouping_columns = NULL){

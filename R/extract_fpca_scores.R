@@ -7,7 +7,7 @@
 #'
 #' @return fpca object
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
 #' #load ovarian mxFDA object

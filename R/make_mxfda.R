@@ -22,7 +22,7 @@
 #' \item{functional_mcox}{slot of class `list` where mixed functional cox model results are stored}
 #'
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
 #' #select sample metadata

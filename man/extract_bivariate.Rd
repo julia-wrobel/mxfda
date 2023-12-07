@@ -43,11 +43,6 @@ Internal function called by \code{extract_summary_functions} to calculate a biva
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
-\examples{
-# simulate data
-set.seed(1001)
-
-}
 \references{
 Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 Fast covariance estimation for high-dimensional functional data.

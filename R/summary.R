@@ -6,14 +6,10 @@
 #' @details `r lifecycle::badge('stable')`
 #'
 #' @return summary of object to the R console
+#'
+#' @author Alex Soupir \email{`r alexsoupir_email`}
+#'
 #' @export
-#'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
-#'
-#' @examples
-#' #set seed
-#' set.seed(333)
-#'
 summary.mxFDA = function(object, ...){
   #basic object
   cat("mxFDA Object:\n")

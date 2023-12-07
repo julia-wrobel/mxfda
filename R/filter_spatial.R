@@ -8,7 +8,7 @@
 #'
 #' @returns object of class `mxFDA` with the spatial slot filtered. See [make_mxfda()] for more details on object
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @references [dplyr::filter()]
 #'

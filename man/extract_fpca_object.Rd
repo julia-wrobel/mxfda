@@ -23,8 +23,16 @@ Function that extracts the FPCA object created either by \code{\link[=run_fpca]{
 Output object can be visualized with \code{\link[refund.shiny:plot_shiny]{refund.shiny::plot_shiny()}}
 }
 \examples{
-#set seed
-set.seed(333)
+#load ovarian mxFDA object
+data('ovarian_FDA')
+
+#run the FPCA
+ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+                       lightweight = TRUE,
+                       pve = .99)
+
+#extract the fpca object
+obj = extract_fpca_object(ovarian_FDA, "uni g fpca")
 
 }
 \author{

@@ -17,11 +17,6 @@ object compatable with ggplot2
 \description{
 Plot lfcm surface
 }
-\examples{
-#set seed
-set.seed(333)
-
-}
 \author{
 Julia Wrobel \email{julia.wrobel@emory.edu}
 

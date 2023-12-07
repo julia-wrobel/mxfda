@@ -9,11 +9,7 @@
 #'
 #' @return an updated `mxFDA` object with a derived value added. See [make_mxfda()] for more details.
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
-#'
-#' @examples
-#' #set seed
-#' set.seed(333)
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @export
 add_summary_function = function(mxFDAobject,
@@ -27,7 +23,7 @@ add_summary_function = function(mxFDAobject,
   if(!(mxFDAobject@sample_key %in% colnames(summary_function_data)))
     stop("summary_function_data must have sample_key column name")
 
-  if(!is(summary_function_data, "data.frame"))
+  if(!inherits(summary_function_data, "data.frame"))
     stop("summary_function_data needs to be a data frame")
 
   #fill slot with new data

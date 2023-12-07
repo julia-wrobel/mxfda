@@ -20,11 +20,6 @@ Summary method for object of class \code{mxFDA}
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
-\examples{
-#set seed
-set.seed(333)
-
-}
 \author{
 Alex Soupir \email{alex.soupir@moffitt.org}
 }

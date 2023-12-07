@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_fcm.R
 \name{run_fcm}
 \alias{run_fcm}
-\title{process_fcm}
+\title{Run Function Cox Models}
 \usage{
 run_fcm(
   mxFDAobject,
@@ -60,7 +60,7 @@ Fit a functional Cox regression model.
 #load ovarian mxFDA object
 data('ovarian_FDA')
 
-#run ghe lfcm model
+#run the lfcm model
 ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       formula = survival_time ~ age, event = "event",
                       metric = "uni g", r = "r", value = "fundiff",

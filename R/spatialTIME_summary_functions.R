@@ -16,9 +16,7 @@
 #'
 #' @keywords internal
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
-#'
-#'
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
 #' # example code

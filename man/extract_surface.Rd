@@ -46,8 +46,20 @@ a 4 element list of either class \code{lfcmSurface} or \code{afcmSurface} depend
 Function that transforms functional models from linear or additive functional cox models into \code{afcmSurface} or \code{lfcmSurface} objects to be plotted.
 }
 \examples{
-# simulate data
-set.seed(1001)
+#load ovarian mxFDA object
+data('ovarian_FDA')
+
+#run the lfcm model
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+                      formula = survival_time ~ age, event = "event",
+                      metric = "uni g", r = "r", value = "fundiff",
+                      analysis_vars = c("age", "survival_time"),
+                      afcm = FALSE)
+
+#extract surface
+model_surface = extract_surface(ovarian_FDA, metric = 'uni g',
+                                model = 'fit_lfcm',
+                                analysis_vars = 'age') #variables in model
 
 }
 \author{

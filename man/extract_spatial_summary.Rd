@@ -14,7 +14,8 @@ extract_spatial_summary(mxFDAobject, columns, grouping_columns = NULL)
 \item{grouping_columns}{character vector of other columns to use as grouping, such as region classification column}
 }
 \value{
-data frame with percent of total points per spatial sample \code{columns}. If multiple levels are present in \code{columns} columns, multiple output columns will be provided.
+data frame with percent of total points per spatial sample \code{columns}.
+If multiple levels are present in \code{columns} columns, multiple output columns will be provided.
 }
 \description{
 Summarise spatial data in mxFDA object
@@ -27,8 +28,31 @@ will be able to handle any data inputs such as those from HALO where cells are d
 negative (0) for a cell phenotypes.
 }
 \examples{
-#set seed
-set.seed(333)
+#load data
+data(lung_df)
+
+#create data frames for `mxFDA` object
+clinical = lung_df \%>\%
+  dplyr::select(image_id, patient_id, patientImage_id, gender,
+         age, survival_days, survival_status, stage) \%>\%
+  dplyr::distinct()
+#make small, just need to make sure it runs
+spatial = lung_df \%>\%
+  dplyr::select(-image_id, -gender, -age, -survival_days, -survival_status, -stage) \%>\%
+  dplyr::filter(patientImage_id \%in\% clinical$patientImage_id[1:10])
+
+#create `mxFDA` object
+mxFDAobject = make_mxfda(metadata = clinical,
+                         spatial = spatial,
+                         subject_key = "patient_id",
+                         sample_key = "patientImage_id")
+
+#get markers
+markers = colnames(mxFDAobject@Spatial) \%>\%
+  grep("pheno", ., value = TRUE)
+
+#extract summary
+df = extract_spatial_summary(mxFDAobject, markers)
 
 }
 \author{

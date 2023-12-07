@@ -26,7 +26,7 @@ Currently only extracts functional cox models not mixed functional cox models.
 #load ovarian mxFDA object
 data('ovarian_FDA')
 
-#run ghe lfcm model
+#run the lfcm model
 ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       formula = survival_time ~ age, event = "event",
                       metric = "uni g", r = "r", value = "fundiff",

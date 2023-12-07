@@ -18,16 +18,28 @@
 #' \item{Metric}{character of the spatial summary function used; helps keep track if running many models}
 #' \item{P-value}{a numeric value of the input p-value}
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @importFrom reshape2 melt
 #' @importFrom mgcv predict.gam
 #' @import dplyr
 #'
 #' @examples
-#' # simulate data
-#' set.seed(1001)
+#' #load ovarian mxFDA object
+#' data('ovarian_FDA')
+#'
+#' #run the lfcm model
+#' ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+#'                       formula = survival_time ~ age, event = "event",
+#'                       metric = "uni g", r = "r", value = "fundiff",
+#'                       analysis_vars = c("age", "survival_time"),
+#'                       afcm = FALSE)
+#'
+#' #extract surface
+#' model_surface = extract_surface(ovarian_FDA, metric = 'uni g',
+#'                                 model = 'fit_lfcm',
+#'                                 analysis_vars = 'age') #variables in model
 #'
 #' @export
 extract_surface = function(mxFDAobject,
@@ -126,14 +138,14 @@ extract_surface = function(mxFDAobject,
   }
 
   if(mod_class[1] == "lfcm"){
-    out_object = new("lfcmSurface",
+    out_object = methods::new("lfcmSurface",
                      Surface = out$Surface,
                      Prediction = out$Prediction,
                      Metric = paste0(toupper(metric[2]), " value"),
                      `P-value` = p)
   } else if(mod_class[1] == "afcm"){
 
-    out_object = new("afcmSurface",
+    out_object = methods::new("afcmSurface",
                      Surface = out$Surface,
                      Prediction = out$Prediction,
                      Metric = paste0(toupper(metric[2]), " value"),

@@ -10,7 +10,6 @@ run_mfpca(
   r = "r",
   value = "fundiff",
   knots = NULL,
-  analysis_vars = NULL,
   lightweight = FALSE,
   ...,
   twoway = FALSE
@@ -26,8 +25,6 @@ run_mfpca(
 \item{value}{Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".}
 
 \item{knots}{Number of knots for defining spline basis.Defaults to the number of measurements per function divided by 2.}
-
-\item{analysis_vars}{Optional list of variables to be retained for downstream analysis.}
 
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.}
 
@@ -47,8 +44,11 @@ This is a wrapper for the function \code{mfpca.face} from the \code{refund} pack
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
-# simulate data
-set.seed(1001)
+#load data
+data(lung_FDA)
+
+#run mixed fpca
+lung_FDA = run_mfpca(lung_FDA, metric = 'uni g')
 
 }
 \references{

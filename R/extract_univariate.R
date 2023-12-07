@@ -19,14 +19,10 @@
 #' \item{csr}{the values of the spatial summary function under complete spatial randomness}
 #' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
 #'
 #' @importFrom spatstat.geom ppp convexhull.xy
 #' @import dplyr
-#'
-#' @examples
-#' # simulate data
-#' set.seed(1001)
 #'
 #' @export
 extract_univariate = function(mximg,

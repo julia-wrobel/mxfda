@@ -15,7 +15,7 @@
 #' @return object of class `ggplot` compatible the `ggplot2` aesthetics
 #' @export
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
 #' #set seed
@@ -117,12 +117,8 @@ plot.mxFDA = function(x, filter_cols = NULL, ...){
 #' @return object compatable with ggplot2
 #' @export
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
-#'
-#' @examples
-#' #set seed
-#' set.seed(333)
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 plot.lfcmSurface = function(x, ...){
   x@Prediction %>%
@@ -144,12 +140,8 @@ plot.lfcmSurface = function(x, ...){
 #' @return object compatable with ggplot2
 #' @export
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
-#'
-#' @examples
-#' #set seed
-#' set.seed(333)
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 plot.afcmSurface = function(x, ...){
   bind_rows(
