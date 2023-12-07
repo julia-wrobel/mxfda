@@ -25,16 +25,17 @@ Suggests:
     tidyverse,
     survival,
     patchwork,
-    lifecycle,
-    broom
+    spatialTIME,
+    tibble,
+    broom,
+    refund.shiny
 Imports: 
     magrittr,
-    tibble,
     tidyr,
     purrr,
     dplyr,
     ggplot2,
-    spatialTIME,
+    lifecycle,
     methods,
     stats,
     refund (>= 0.1-33),

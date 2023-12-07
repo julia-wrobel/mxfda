@@ -14,10 +14,17 @@ extract_spatial_summary(mxFDAobject, columns, grouping_columns = NULL)
 \item{grouping_columns}{character vector of other columns to use as grouping, such as region classification column}
 }
 \value{
-data frame with percent of total points per spatial sample \code{column} are positive for
+data frame with percent of total points per spatial sample \code{columns}. If multiple levels are present in \code{columns} columns, multiple output columns will be provided.
 }
 \description{
 Summarise spatial data in mxFDA object
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#experimental}{\figure{lifecycle-experimental.svg}{options: alt='[Experimental]'}}}{\strong{[Experimental]}}
+
+Currently this function is experimental as it only handles data that has text in the columns. Eventually,
+will be able to handle any data inputs such as those from HALO where cells are designated as positive (1) or
+negative (0) for a cell phenotypes.
 }
 \examples{
 #set seed

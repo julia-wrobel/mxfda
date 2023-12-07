@@ -20,14 +20,11 @@
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
 #'
-#' @return A \code{data.frame} containing:
-#' \item{image_patient_id}{the unique image id}
-#' \item{r}{the radius of values over which the spatial summary function is evaluated}
-#' \item{sumfun}{the values of the spatial summary function}
-#' \item{csr}{the values of the spatial summary function under complete spatial randomness}
-#' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
+#' @details `r lifecycle::badge('stable')`
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @return an object of class `mxFDA` containing the corresponding spatial summary function slot filled. See [make_mxfda()] for object structure details.
+#'
+#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
 #' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).

@@ -2,7 +2,7 @@
 % Please edit documentation in R/extract_surface.R
 \name{extract_surface}
 \alias{extract_surface}
-\title{extract_surface}
+\title{Extract Surface}
 \usage{
 extract_surface(
   mxFDAobject,
@@ -36,10 +36,14 @@ extract_surface(
 \item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 }
 \value{
-A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
+a 4 element list of either class \code{lfcmSurface} or \code{afcmSurface} depending on the class of model
+\item{Surface}{\code{data.frame} for term predictions for the surface of the metric * radius area}
+\item{Prediction}{\code{data.frame} for standard error of the terms for the above surface. AFCM models use the \code{p} to set the upper and lower standard errors of \eqn{\beta_1}}
+\item{Metric}{character of the spatial summary function used; helps keep track if running many models}
+\item{P-value}{a numeric value of the input p-value}
 }
 \description{
-Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
+Function that transforms functional models from linear or additive functional cox models into \code{afcmSurface} or \code{lfcmSurface} objects to be plotted.
 }
 \examples{
 # simulate data

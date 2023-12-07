@@ -33,12 +33,7 @@ extract_summary_functions(
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")}
 }
 \value{
-A \code{data.frame} containing:
-\item{image_patient_id}{the unique image id}
-\item{r}{the radius of values over which the spatial summary function is evaluated}
-\item{sumfun}{the values of the spatial summary function}
-\item{csr}{the values of the spatial summary function under complete spatial randomness}
-\item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
+an object of class \code{mxFDA} containing the corresponding spatial summary function slot filled. See \code{\link[=make_mxfda]{make_mxfda()}} for object structure details.
 }
 \description{
 This is the main function for the fastGFPCA package.
@@ -50,6 +45,9 @@ The number of functional principal components (FPCs) can either be specified
 directly (argument \code{npc}) or chosen based on the explained share of
 variance (\code{pve}). Families and link functions can be specified using the same
 syntax as the \code{family} argument from the \code{lme4::glmer()} function.
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \examples{
 # simulate data

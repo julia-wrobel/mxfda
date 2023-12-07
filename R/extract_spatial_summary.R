@@ -4,7 +4,14 @@
 #' @param columns character vector for column heading for cells to summarise
 #' @param grouping_columns character vector of other columns to use as grouping, such as region classification column
 #'
-#' @return data frame with percent of total points per spatial sample `column` are positive for
+#' @details
+#' `r lifecycle::badge('experimental')`
+#'
+#' Currently this function is experimental as it only handles data that has text in the columns. Eventually,
+#' will be able to handle any data inputs such as those from HALO where cells are designated as positive (1) or
+#' negative (0) for a cell phenotypes.
+#'
+#' @return data frame with percent of total points per spatial sample `columns`. If multiple levels are present in `columns` columns, multiple output columns will be provided.
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'

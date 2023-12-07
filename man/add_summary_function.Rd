@@ -14,7 +14,7 @@ add_summary_function(mxFDAobject, summary_function_data, metric)
 \item{metric}{character vector with either 'uni' or 'bi' and 'k', 'l', or 'g'; e.g. 'uni g'}
 }
 \value{
-an updated \code{mxFDA} object with a derived value added
+an updated \code{mxFDA} object with a derived value added. See \code{\link[=make_mxfda]{make_mxfda()}} for more details.
 }
 \description{
 Sometimes other ways of calculating summary functions is wanted and is done in other packages,

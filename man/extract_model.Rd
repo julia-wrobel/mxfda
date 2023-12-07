@@ -19,6 +19,9 @@ fit functional model
 \description{
 Currently only extracts functional cox models not mixed functional cox models.
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+}
 \examples{
 #load ovarian mxFDA object
 data('ovarian_FDA')

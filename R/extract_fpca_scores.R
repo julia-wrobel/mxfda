@@ -3,6 +3,8 @@
 #' @param mxFDAobject object of class `mxFDA`
 #' @param what what functional PCA data to extract, e.g. 'uni k'
 #'
+#' @details `r lifecycle::badge('stable')`
+#'
 #' @return fpca object
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}

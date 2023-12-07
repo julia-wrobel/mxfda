@@ -6,6 +6,8 @@
 #' @param what what functional PCA data to extract, e.g. 'uni k'
 #' @param model_name character string of the model name to retrieve
 #'
+#' @details `r lifecycle::badge('stable')`
+#'
 #' @return fit functional model
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}

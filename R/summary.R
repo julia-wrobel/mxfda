@@ -3,7 +3,9 @@
 #' @param object object of class `mxFDA`
 #' @param ... unused currently
 #'
-#' @return summary of object
+#' @details `r lifecycle::badge('stable')`
+#'
+#' @return summary of object to the R console
 #' @export
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}

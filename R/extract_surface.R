@@ -1,7 +1,6 @@
-#' extract_surface
+#' Extract Surface
 #'
-#' Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
-#'
+#' Function that transforms functional models from linear or additive functional cox models into `afcmSurface` or `lfcmSurface` objects to be plotted.
 #'
 #' @param mxFDAobject object of class `mxFDA` with model `model` calculated wihtin
 #' @param metric spatial summary function to extract surface for
@@ -13,7 +12,11 @@
 #' @param p numeric p-value used for predicting significant AFCM surface
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #'
-#' @return A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
+#' @return a 4 element list of either class `lfcmSurface` or `afcmSurface` depending on the class of model
+#' \item{Surface}{`data.frame` for term predictions for the surface of the metric * radius area}
+#' \item{Prediction}{`data.frame` for standard error of the terms for the above surface. AFCM models use the `p` to set the upper and lower standard errors of \eqn{\beta_1}}
+#' \item{Metric}{character of the spatial summary function used; helps keep track if running many models}
+#' \item{P-value}{a numeric value of the input p-value}
 #'
 #' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}

@@ -5,6 +5,8 @@
 #' @param obj fpca object to be plotted.
 #' @param pc_choice_level1,pc_choice_level2 FPC to be plotted.
 #'
+#' @details `r lifecycle::badge('superseded')`
+#'
 #' @return list of objects of class ggplot
 #'
 #' @author Julia Wrobel \email{julia.wrobel@@emory.edu}

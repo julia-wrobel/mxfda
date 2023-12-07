@@ -40,6 +40,9 @@ A \code{data.frame} containing:
 \description{
 Internal function called by \code{extract_summary_functions} to calculate a bivariate spatial summary function for a single image.
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+}
 \examples{
 # simulate data
 set.seed(1001)

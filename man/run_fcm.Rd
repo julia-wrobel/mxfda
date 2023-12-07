@@ -53,6 +53,9 @@ A \code{list} which is a linear or additive functional Cox model fit. See \code{
 \description{
 Fit a functional Cox regression model.
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+}
 \examples{
 #load ovarian mxFDA object
 data('ovarian_FDA')

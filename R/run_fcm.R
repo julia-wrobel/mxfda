@@ -17,6 +17,8 @@
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #'
+#' @details `r lifecycle::badge('stable')`
+#'
 #' @return A \code{list} which is a linear or additive functional Cox model fit. See \code{mgcv::gam} for more details.
 #'
 #' @author Julia Wrobel \email{julia.wrobel@@emory.edu}

@@ -6,7 +6,7 @@
 #' @param ... expressions that return a logical TRUE/FALSE value when evaluated on columns of the spatial data slot. These expressions get passed to [dplyr::filter()] so must be compatible.
 #' @param force logical whether or not to return empty spatial data *if* filtering results in 0 rows
 #'
-#' @returns mxFDAobject with updated spatial slot
+#' @returns object of class `mxFDA` with the spatial slot filtered. See [make_mxfda()] for more details on object
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'

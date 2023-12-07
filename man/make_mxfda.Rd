@@ -9,14 +9,24 @@ make_mxfda(metadata, spatial = NULL, subject_key, sample_key)
 \arguments{
 \item{metadata}{metadata with columns \code{subject_key} and \code{sample_key}}
 
-\item{spatial}{spatial information, either list or df, with column \code{key}. \code{spatial} can be empty if inputting data already derived}
+\item{spatial}{spatial information, either list or df, with column \code{sample_key}. \code{Spatial} can be empty if inputting data already derived. See \code{\link[=add_summary_function]{add_summary_function()}} for more details.}
 
-\item{subject_key}{column name for subject ID}
+\item{subject_key}{column name in \code{Metadata} for subject ID}
 
-\item{sample_key}{column linking metadata to spatial data}
+\item{sample_key}{column linking \code{Metadata} to \code{Spatial} data}
 }
 \value{
-object of class mxFDA
+S4 object of class \code{mxFDA}
+\item{Metadata}{slot of class \code{data.frame} that contains sample and subject level information}
+\item{Spatial}{slot of class \code{data.frame} that contains point level information within samples. An example would be cells belonging to TMA cores}
+\item{subject_key}{slot of class \code{character} that corresponds to a column in the \code{Metadata} slot that groups samples at a subject level. An example would be "\emph{patient_id}"}
+\item{sample_key}{slot of class \code{character} that corresponds to a column both in the \code{Metadata} and \code{Spatial} slots that links samples to characteristics}
+\item{univariate_summaries}{slot of class \code{list} where univariate summary functions calculated on \code{Spatial} would be stored}
+\item{bivariate_summaries}{slot of class \code{list} where bivariate summary functions calculated on \code{Spatial} would be stored}
+\item{functional_pca}{slot of class \code{list} where FPCA results are stored}
+\item{functional_mpca}{slot of class \code{list} where MFPCA results are stored}
+\item{functional_cox}{slot of class \code{list} where functional cox model results are stored}
+\item{functional_mcox}{slot of class \code{list} where mixed functional cox model results are stored}
 }
 \description{
 Used to create an object of class \code{mxFDA} that can be used with the \link{mxfda} package for functional data analysis.

@@ -14,7 +14,7 @@ filter_spatial(mxFDAobject, ..., force = FALSE)
 \item{force}{logical whether or not to return empty spatial data \emph{if} filtering results in 0 rows}
 }
 \value{
-mxFDAobject with updated spatial slot
+object of class \code{mxFDA} with the spatial slot filtered. See \code{\link[=make_mxfda]{make_mxfda()}} for more details on object
 }
 \description{
 function to filter the spatial data slot of the \code{mxFDA} object.

@@ -1,9 +1,16 @@
 #' Extract FPCA object
 #'
+#' Function that extracts the FPCA object created either by [run_fpca()] or [run_mfpca()] from the `mxFDA` object
+#'
 #' @param mxFDAobject object of class `mxFDA`
 #' @param what what functional PCA data to extract, e.g. 'uni k'
 #'
-#' @return fpca object
+#' @details
+#' `r lifecycle::badge('stable')`
+#'
+#' Output object can be visualized with [refund.shiny::plot_shiny()]
+#'
+#' @return `fpca` object created with [run_fcm()]
 #'
 #' @author Alex Soupir \email{alex.soupir@@moffitt.org}
 #'
