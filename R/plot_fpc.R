@@ -7,9 +7,11 @@
 #' @param obj fpca object to be plotted.
 #' @param pc_choice FPC to be plotted.
 #'
+#' @details `r lifecycle::badge('superseded')`
+#'
 #' @return object of class ggplot
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
 #'
 #' @import ggplot2
 #'

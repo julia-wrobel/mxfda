@@ -36,12 +36,17 @@ run_fpca(
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
 }
 \value{
-A \code{mxFDA} object containing:
+A \code{mxFDA} object with the \code{functional_pca} slot filled for the respective spatial summary function containing:
 \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
 \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
 }
 \description{
 This is a wrapper for the function \code{fpca.face} from the \code{refund} package. EXPAND
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+The \code{filter_cols} parameter is useful when the summary function was input by the user using \code{\link[=add_summary_function]{add_summary_function()}} and the multiple marks were assessed; a column called "Markers" with tumor infiltrating lymphocytes as well as cytotoxic T cells. This parameter allows for filtering down to include only one or the other.
 }
 \examples{
 #load ovarian mxFDA object
@@ -60,7 +65,7 @@ Fast covariance estimation for high-dimensional functional data.
 DOI: 10.1007/s11222-014-9485-x.
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 
 Alex Soupir \email{alex.soupir@moffitt.org}
 }

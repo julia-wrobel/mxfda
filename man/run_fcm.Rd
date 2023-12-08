@@ -2,7 +2,7 @@
 % Please edit documentation in R/run_fcm.R
 \name{run_fcm}
 \alias{run_fcm}
-\title{process_fcm}
+\title{Run Function Cox Models}
 \usage{
 run_fcm(
   mxFDAobject,
@@ -53,11 +53,14 @@ A \code{list} which is a linear or additive functional Cox model fit. See \code{
 \description{
 Fit a functional Cox regression model.
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+}
 \examples{
 #load ovarian mxFDA object
 data('ovarian_FDA')
 
-#run ghe lfcm model
+#run the lfcm model
 ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       formula = survival_time ~ age, event = "event",
                       metric = "uni g", r = "r", value = "fundiff",

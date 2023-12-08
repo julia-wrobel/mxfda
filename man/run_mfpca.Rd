@@ -10,14 +10,13 @@ run_mfpca(
   r = "r",
   value = "fundiff",
   knots = NULL,
-  analysis_vars = NULL,
   lightweight = FALSE,
   ...,
   twoway = FALSE
 )
 }
 \arguments{
-\item{mxFDAobject}{object of class \code{mxFDA} created by \code{make_mxfda} with metrics derived with \code{extract_summary_functions}}
+\item{mxFDAobject}{object of class \code{mxFDA} created by \code{\link[=make_mxfda]{make_mxfda()}} with metrics derived with \code{\link[=extract_summary_functions]{extract_summary_functions()}}}
 
 \item{metric}{name of calculated spatial metric to use}
 
@@ -27,8 +26,6 @@ run_mfpca(
 
 \item{knots}{Number of knots for defining spline basis.Defaults to the number of measurements per function divided by 2.}
 
-\item{analysis_vars}{Optional list of variables to be retained for downstream analysis.}
-
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.}
 
 \item{...}{Optional other arguments to be passed to \code{mfpca.face}}
@@ -36,16 +33,22 @@ run_mfpca(
 \item{twoway}{whether to model within within sample variability (such as )}
 }
 \value{
-A \code{mxFDA} object containing:
+A \code{mxFDA} object  with the \code{functional_mpca} slot for the respective spatial summary function containing:
 \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
 \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
 }
 \description{
 This is a wrapper for the function \code{mfpca.face} from the \code{refund} package. EXPAND
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+}
 \examples{
-# simulate data
-set.seed(1001)
+#load data
+data(lung_FDA)
+
+#run mixed fpca
+lung_FDA = run_mfpca(lung_FDA, metric = 'uni g')
 
 }
 \references{
@@ -57,7 +60,7 @@ DOI: 10.1007/s11222-014-9485-x.
 \author{
 unknown \email{first.last@domain.extension}
 
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 
 Alex Soupir \email{alex.soupir@moffitt.org}
 }

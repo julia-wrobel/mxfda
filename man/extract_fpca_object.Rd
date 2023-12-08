@@ -12,14 +12,27 @@ extract_fpca_object(mxFDAobject, what)
 \item{what}{what functional PCA data to extract, e.g. 'uni k'}
 }
 \value{
-fpca object
+\code{fpca} object created with \code{\link[=run_fcm]{run_fcm()}}
 }
 \description{
-Extract FPCA object
+Function that extracts the FPCA object created either by \code{\link[=run_fpca]{run_fpca()}} or \code{\link[=run_mfpca]{run_mfpca()}} from the \code{mxFDA} object
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Output object can be visualized with \code{\link[refund.shiny:plot_shiny]{refund.shiny::plot_shiny()}}
 }
 \examples{
-#set seed
-set.seed(333)
+#load ovarian mxFDA object
+data('ovarian_FDA')
+
+#run the FPCA
+ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+                       lightweight = TRUE,
+                       pve = .99)
+
+#extract the fpca object
+obj = extract_fpca_object(ovarian_FDA, "uni g fpca")
 
 }
 \author{

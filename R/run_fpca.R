@@ -13,12 +13,17 @@
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #'
-#' @return A \code{mxFDA} object containing:
+#' @details
+#' `r lifecycle::badge('stable')`
+#'
+#' The `filter_cols` parameter is useful when the summary function was input by the user using [add_summary_function()] and the multiple marks were assessed; a column called "Markers" with tumor infiltrating lymphocytes as well as cytotoxic T cells. This parameter allows for filtering down to include only one or the other.
+#'
+#' @return A \code{mxFDA} object with the `functional_pca` slot filled for the respective spatial summary function containing:
 #' \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
 #' \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 #' Fast covariance estimation for high-dimensional functional data.

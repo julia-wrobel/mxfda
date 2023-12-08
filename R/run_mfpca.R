@@ -3,23 +3,24 @@
 #' This is a wrapper for the function \code{mfpca.face} from the \code{refund} package. EXPAND
 #'
 #'
-#' @param mxFDAobject object of class \code{mxFDA} created by `make_mxfda` with metrics derived with `extract_summary_functions`
+#' @param mxFDAobject object of class \code{mxFDA} created by [make_mxfda()] with metrics derived with [extract_summary_functions()]
 #' @param metric name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param knots Number of knots for defining spline basis.Defaults to the number of measurements per function divided by 2.
-#' @param analysis_vars Optional list of variables to be retained for downstream analysis.
 #' @param lightweight Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.
 #' @param ... Optional other arguments to be passed to \code{mfpca.face}
 #' @param twoway whether to model within within sample variability (such as )
 #'
-#' @return A \code{mxFDA} object containing:
+#' @details `r lifecycle::badge('stable')`
+#'
+#' @return A \code{mxFDA} object  with the `functional_mpca` slot for the respective spatial summary function containing:
 #' \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
 #' \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
 #'
 #' @author unknown \email{first.last@@domain.extension}
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 #' Fast covariance estimation for high-dimensional functional data.
@@ -27,14 +28,16 @@
 #' DOI: 10.1007/s11222-014-9485-x.
 #'
 #' @importFrom refund mfpca.face
-#' @importFrom tibble as_tibble
 #' @importFrom tidyr pivot_wider
 #' @importFrom rlang `:=`
 #' @import dplyr
 #'
 #' @examples
-#' # simulate data
-#' set.seed(1001)
+#' #load data
+#' data(lung_FDA)
+#'
+#' #run mixed fpca
+#' lung_FDA = run_mfpca(lung_FDA, metric = 'uni g')
 #'
 #' @export
 run_mfpca = function(mxFDAobject,
@@ -42,7 +45,6 @@ run_mfpca = function(mxFDAobject,
                     r = "r",
                     value = "fundiff",
                     knots = NULL,
-                    analysis_vars = NULL,
                     lightweight = FALSE,
                     ...,
                     twoway = FALSE){

@@ -38,12 +38,10 @@ A \code{data.frame} containing:
 \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
 }
 \description{
-Internal function called by \code{extract_summary_functions} to calculate a univariate spatial summary function for a single image.
+Internal function called by \code{\link[=extract_summary_functions]{extract_summary_functions()}} to calculate a univariate spatial summary function for a single image.
 }
-\examples{
-# simulate data
-set.seed(1001)
-
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \author{
 Julia Wrobel \email{julia.wrobel@emory.edu}

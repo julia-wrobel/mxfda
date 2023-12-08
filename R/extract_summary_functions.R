@@ -1,15 +1,6 @@
-#' extract_summary_functions
+#' Extract Summary Functions
 #'
-#' This is the main function for the fastGFPCA package.
-#' The function requires input data \code{Y} to be a dataframe in long format with variables
-#' \code{id}, \code{index}, and \code{value} to indicate subject IDs,
-#' observation times on the domain, and observations, respectively.
-#' The \code{index} must contain the same, equally spaced grid points for each subject.
-
-#' The number of functional principal components (FPCs) can either be specified
-#' directly (argument \code{npc}) or chosen based on the explained share of
-#' variance (\code{pve}). Families and link functions can be specified using the same
-#' syntax as the \code{family} argument from the \code{lme4::glmer()} function.
+#' Function to extract spatial summary functions from the `Spatial` slot of an `mxFDA` object
 #'
 #' @param mxFDAobject object of class `mxFDA`
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
@@ -20,28 +11,45 @@
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
 #'
-#' @return A \code{data.frame} containing:
-#' \item{image_patient_id}{the unique image id}
-#' \item{r}{the radius of values over which the spatial summary function is evaluated}
-#' \item{sumfun}{the values of the spatial summary function}
-#' \item{csr}{the values of the spatial summary function under complete spatial randomness}
-#' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
+#' @details `r lifecycle::badge('stable')`
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @return an object of class `mxFDA` containing the corresponding spatial summary function slot filled. See [make_mxfda()] for object structure details.
+#'
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 #' Fast covariance estimation for high-dimensional functional data.
 #' \emph{Statistics and Computing}, 26, 409-421.
 #' DOI: 10.1007/s11222-014-9485-x.
 #'
+#' [spatstat.explore::Kest()]
+#'
+#' [spatstat.explore::Gest()]
+#'
+#' [spatstat.explore::Lest()]
+#'
+#' [spatstat.explore::Kcross()]
+#'
+#' [spatstat.explore::Gcross()]
+#'
+#' [spatstat.explore::Lcross()]
+#'
 #' @import dplyr
 #' @importFrom tidyr nest unnest
 #' @importFrom purrr map
 #'
 #' @examples
-#' # simulate data
-#' set.seed(1001)
+#' #load ovarian FDA object
+#' data('ovarian_FDA')
+#'
+#' #run function
+#' ovarian_FDA = extract_summary_functions(ovarian_FDA, r_vec = 0:100,
+#'                                         extract_func = extract_univariate,
+#'                                         summary_func = Kest,
+#'                                         markvar = "immune",
+#'                                         mark1 = "immune",
+#'                                         edge_correction = "trans")
 #'
 #' @export
 extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),

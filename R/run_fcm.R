@@ -1,7 +1,6 @@
-#' process_fcm
+#' Run Function Cox Models
 #'
 #' Fit a functional Cox regression model.
-#'
 #'
 #' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param model_name character string to give the fit model in the functional cox slot
@@ -17,16 +16,18 @@
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #'
+#' @details `r lifecycle::badge('stable')`
+#'
 #' @return A \code{list} which is a linear or additive functional Cox model fit. See \code{mgcv::gam} for more details.
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
 #' #load ovarian mxFDA object
 #' data('ovarian_FDA')
 #'
-#' #run ghe lfcm model
+#' #run the lfcm model
 #' ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
 #'                       formula = survival_time ~ age, event = "event",
 #'                       metric = "uni g", r = "r", value = "fundiff",
@@ -92,7 +93,7 @@ run_fcm <- function(mxFDAobject,
   }else{
     form =  paste0(form, '+ s(t_int, by=l_int*func, bs="cr", k=20)')
     weights = mxfundata[[event]]
-    fit_fcm <- mgcv::gam(formula = as.formula(form),
+    fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
                    weights = weights,
                    data = mxfundata,
                    family = mgcv::cox.ph())

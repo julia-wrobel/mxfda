@@ -13,7 +13,7 @@ Authors@R:
 Description: More about what it does (maybe more than one line)
     Use four spaces when indenting paragraphs within the Description.
 License: MIT + file LICENSE
-URL: https://github.com/julia-wrobel/mxfda, https://julia-wrobel.github.io/mxfda
+URL: https://github.com/julia-wrobel/mxfda, http://juliawrobel.com/mxfda
 BugReports: https://github.com/julia-wrobel/mxfda/issues
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -25,16 +25,18 @@ Suggests:
     tidyverse,
     survival,
     patchwork,
-    lifecycle,
-    broom
+    spatialTIME,
+    tibble,
+    broom,
+    refund.shiny
 Imports: 
     magrittr,
-    tibble,
+    rlang,
     tidyr,
     purrr,
     dplyr,
     ggplot2,
-    spatialTIME,
+    lifecycle,
     methods,
     stats,
     refund (>= 0.1-33),

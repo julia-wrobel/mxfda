@@ -12,13 +12,15 @@
 #' @param func Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
 #'
+#' @details `r lifecycle::badge('stable')`
+#'
 #' @return A \code{data.frame} containing:
 #' \item{r}{the radius of values over which the spatial summary function is evaluated}
 #' \item{sumfun}{the values of the spatial summary function}
 #' \item{csr}{the values of the spatial summary function under complete spatial randomness}
 #' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
 #'
 #' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 #' Fast covariance estimation for high-dimensional functional data.
@@ -26,12 +28,7 @@
 #' DOI: 10.1007/s11222-014-9485-x.
 #'
 #' @importFrom spatstat.geom ppp convexhull.xy
-#' @importFrom tibble as_tibble
 #' @import dplyr
-#'
-#' @examples
-#' # simulate data
-#' set.seed(1001)
 #'
 #' @export
 extract_bivariate = function(mximg,
@@ -62,7 +59,7 @@ extract_bivariate = function(mximg,
                 r = r_vec,
                 correction = edge_correction)
 
-  df = as_tibble(sumfun) %>%
+  df = data.frame(sumfun) %>%
     select(r, sumfun = all_of(edge_correction), csr = theo) %>%
     mutate(fundiff = sumfun - csr) %>%
     select(r, sumfun, csr, fundiff)

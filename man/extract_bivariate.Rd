@@ -40,10 +40,8 @@ A \code{data.frame} containing:
 \description{
 Internal function called by \code{extract_summary_functions} to calculate a bivariate spatial summary function for a single image.
 }
-\examples{
-# simulate data
-set.seed(1001)
-
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \references{
 Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
@@ -52,5 +50,5 @@ Fast covariance estimation for high-dimensional functional data.
 DOI: 10.1007/s11222-014-9485-x.
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 }

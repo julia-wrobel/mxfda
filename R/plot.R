@@ -4,16 +4,18 @@
 #' @param ... additional paramters including `y`, `what`, and `sampleID` to inform whats to be plotted
 #' @param filter_cols column key to filter
 #'
+#' @details `r lifecycle::badge('stable')`
+#'
 #' If there are multiple metrics that are included in the derived table, an extra parameter `filter_cols`
 #' in the format of `c(Derived_Column = "Level_to_Filter")` will return curves from the `Derived_Column`
 #' with the level `Level_to_Filter`
 #'
 #' When plotting mFPCA objects, additional arguments `level1` and `level2` help indicate which FPCA from level 1 and level 2 to plot
 #'
-#' @return object compatable with ggplot2
+#' @return object of class `ggplot` compatible the `ggplot2` aesthetics
 #' @export
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
 #' #set seed
@@ -115,12 +117,8 @@ plot.mxFDA = function(x, filter_cols = NULL, ...){
 #' @return object compatable with ggplot2
 #' @export
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
-#'
-#' @examples
-#' #set seed
-#' set.seed(333)
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 plot.lfcmSurface = function(x, ...){
   x@Prediction %>%
@@ -142,12 +140,8 @@ plot.lfcmSurface = function(x, ...){
 #' @return object compatable with ggplot2
 #' @export
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
-#'
-#' @examples
-#' #set seed
-#' set.seed(333)
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 plot.afcmSurface = function(x, ...){
   bind_rows(

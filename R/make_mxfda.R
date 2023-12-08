@@ -3,16 +3,26 @@
 #' Used to create an object of class `mxFDA` that can be used with the [mxfda] package for functional data analysis.
 #'
 #' @param metadata metadata with columns `subject_key` and `sample_key`
-#' @param spatial spatial information, either list or df, with column `key`. `spatial` can be empty if inputting data already derived
-#' @param subject_key column name for subject ID
-#' @param sample_key column linking metadata to spatial data
+#' @param spatial spatial information, either list or df, with column `sample_key`. `Spatial` can be empty if inputting data already derived. See [add_summary_function()] for more details.
+#' @param subject_key column name in `Metadata` for subject ID
+#' @param sample_key column linking `Metadata` to `Spatial` data
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
-#' @return object of class mxFDA
+#' @return S4 object of class `mxFDA`
+#' \item{Metadata}{slot of class `data.frame` that contains sample and subject level information}
+#' \item{Spatial}{slot of class `data.frame` that contains point level information within samples. An example would be cells belonging to TMA cores}
+#' \item{subject_key}{slot of class `character` that corresponds to a column in the `Metadata` slot that groups samples at a subject level. An example would be "*patient_id*"}
+#' \item{sample_key}{slot of class `character` that corresponds to a column both in the `Metadata` and `Spatial` slots that links samples to characteristics}
+#' \item{univariate_summaries}{slot of class `list` where univariate summary functions calculated on `Spatial` would be stored}
+#' \item{bivariate_summaries}{slot of class `list` where bivariate summary functions calculated on `Spatial` would be stored}
+#' \item{functional_pca}{slot of class `list` where FPCA results are stored}
+#' \item{functional_mpca}{slot of class `list` where MFPCA results are stored}
+#' \item{functional_cox}{slot of class `list` where functional cox model results are stored}
+#' \item{functional_mcox}{slot of class `list` where mixed functional cox model results are stored}
 #'
 #'
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @examples
 #' #select sample metadata

@@ -25,8 +25,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/mx_fda.html">mxFDA Object</a>
-    <a class="dropdown-item" href="../articles/mx_fpca.html">Multiplex FPCA</a>
-    <a class="dropdown-item" href="../articles/mx_funreg.html">mx Functional Regression</a>
+    <a class="dropdown-item" href="../articles/mx_fpca.html">Functional principal component analysis for spatial summary functions</a>
+    <a class="dropdown-item" href="../articles/mx_funreg.html">Functional regression with spatial summary functions as covariates</a>
   </div>
 </li>
 <li class="nav-item">
@@ -114,7 +114,7 @@
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>A <code>mxFDA</code> object containing:</p>
+<p>A <code>mxFDA</code> object with the <code>functional_pca</code> slot filled for the respective spatial summary function containing:</p>
 <dl><dt>mxfundata</dt>
 <dd><p>The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling</p></dd>
 
@@ -122,6 +122,11 @@
 <dd><p>A list of class "fpca" with elements described in the documentation for  <code><a href="https://rdrr.io/pkg/refund/man/fpca.face.html" class="external-link">refund::fpca.face</a></code></p></dd>
 
 </dl></div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
+<p>The <code>filter_cols</code> parameter is useful when the summary function was input by the user using <code><a href="add_summary_function.html">add_summary_function()</a></code> and the multiple marks were assessed; a column called "Markers" with tumor infiltrating lymphocytes as well as cytotoxic T cells. This parameter allows for filtering down to include only one or the other.</p>
+    </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
     <p>Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
@@ -131,7 +136,7 @@ DOI: 10.1007/s11222-014-9485-x.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
-    <p>Julia Wrobel <a href="mailto:julia.wrobel@cuanschutz.edu">julia.wrobel@cuanschutz.edu</a></p>
+    <p>Julia Wrobel <a href="mailto:julia.wrobel@emory.edu">julia.wrobel@emory.edu</a></p>
 <p>Alex Soupir <a href="mailto:alex.soupir@moffitt.org">alex.soupir@moffitt.org</a></p>
     </div>
 

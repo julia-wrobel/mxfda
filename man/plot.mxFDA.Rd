@@ -9,21 +9,24 @@
 \arguments{
 \item{x}{object of class \code{mxFDA} to be plotted}
 
-\item{filter_cols}{column key to filter
+\item{filter_cols}{column key to filter}
+
+\item{...}{additional paramters including \code{y}, \code{what}, and \code{sampleID} to inform whats to be plotted}
+}
+\value{
+object of class \code{ggplot} compatible the \code{ggplot2} aesthetics
+}
+\description{
+Plot mxFDA object
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
 If there are multiple metrics that are included in the derived table, an extra parameter \code{filter_cols}
 in the format of \code{c(Derived_Column = "Level_to_Filter")} will return curves from the \code{Derived_Column}
 with the level \code{Level_to_Filter}
 
-When plotting mFPCA objects, additional arguments \code{level1} and \code{level2} help indicate which FPCA from level 1 and level 2 to plot}
-
-\item{...}{additional paramters including \code{y}, \code{what}, and \code{sampleID} to inform whats to be plotted}
-}
-\value{
-object compatable with ggplot2
-}
-\description{
-Plot mxFDA object
+When plotting mFPCA objects, additional arguments \code{level1} and \code{level2} help indicate which FPCA from level 1 and level 2 to plot
 }
 \examples{
 #set seed

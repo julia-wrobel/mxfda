@@ -25,8 +25,8 @@
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
     <a class="dropdown-item" href="../articles/mx_fda.html">mxFDA Object</a>
-    <a class="dropdown-item" href="../articles/mx_fpca.html">Multiplex FPCA</a>
-    <a class="dropdown-item" href="../articles/mx_funreg.html">mx Functional Regression</a>
+    <a class="dropdown-item" href="../articles/mx_fpca.html">Functional principal component analysis for spatial summary functions</a>
+    <a class="dropdown-item" href="../articles/mx_funreg.html">Functional regression with spatial summary functions as covariates</a>
   </div>
 </li>
 <li class="nav-item">
@@ -65,27 +65,57 @@
     <div class="section level2">
     <h2 id="arguments">Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
     <dl><dt>metadata</dt>
-<dd><p>metadata with column <code>key</code> for samples</p></dd>
+<dd><p>metadata with columns <code>subject_key</code> and <code>sample_key</code></p></dd>
 
 
 <dt>spatial</dt>
-<dd><p>spatial information, either list or df, with column <code>key</code>. <code>spatial</code> can be empty if inputting data already derived</p></dd>
+<dd><p>spatial information, either list or df, with column <code>sample_key</code>. <code>Spatial</code> can be empty if inputting data already derived. See <code><a href="add_summary_function.html">add_summary_function()</a></code> for more details.</p></dd>
 
 
 <dt>subject_key</dt>
-<dd><p>column name for subject ID</p></dd>
+<dd><p>column name in <code>Metadata</code> for subject ID</p></dd>
 
 
 <dt>sample_key</dt>
-<dd><p>column linking metadata to spatial data</p></dd>
+<dd><p>column linking <code>Metadata</code> to <code>Spatial</code> data</p></dd>
 
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     
 
-<p>object of class mxFDA</p>
-    </div>
+<p>S4 object of class <code>mxFDA</code></p>
+<dl><dt>Metadata</dt>
+<dd><p>slot of class <code>data.frame</code> that contains sample and subject level information</p></dd>
+
+<dt>Spatial</dt>
+<dd><p>slot of class <code>data.frame</code> that contains point level information within samples. An example would be cells belonging to TMA cores</p></dd>
+
+<dt>subject_key</dt>
+<dd><p>slot of class <code>character</code> that corresponds to a column in the <code>Metadata</code> slot that groups samples at a subject level. An example would be "<em>patient_id</em>"</p></dd>
+
+<dt>sample_key</dt>
+<dd><p>slot of class <code>character</code> that corresponds to a column both in the <code>Metadata</code> and <code>Spatial</code> slots that links samples to characteristics</p></dd>
+
+<dt>univariate_summaries</dt>
+<dd><p>slot of class <code>list</code> where univariate summary functions calculated on <code>Spatial</code> would be stored</p></dd>
+
+<dt>bivariate_summaries</dt>
+<dd><p>slot of class <code>list</code> where bivariate summary functions calculated on <code>Spatial</code> would be stored</p></dd>
+
+<dt>functional_pca</dt>
+<dd><p>slot of class <code>list</code> where FPCA results are stored</p></dd>
+
+<dt>functional_mpca</dt>
+<dd><p>slot of class <code>list</code> where MFPCA results are stored</p></dd>
+
+<dt>functional_cox</dt>
+<dd><p>slot of class <code>list</code> where functional cox model results are stored</p></dd>
+
+<dt>functional_mcox</dt>
+<dd><p>slot of class <code>list</code> where mixed functional cox model results are stored</p></dd>
+
+</dl></div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>

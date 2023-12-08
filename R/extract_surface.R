@@ -1,7 +1,6 @@
-#' extract_surface
+#' Extract Surface
 #'
-#' Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
-#'
+#' Function that transforms functional models from linear or additive functional cox models into `afcmSurface` or `lfcmSurface` objects to be plotted.
 #'
 #' @param mxFDAobject object of class `mxFDA` with model `model` calculated wihtin
 #' @param metric spatial summary function to extract surface for
@@ -13,18 +12,34 @@
 #' @param p numeric p-value used for predicting significant AFCM surface
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #'
-#' @return A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
+#' @return a 4 element list of either class `lfcmSurface` or `afcmSurface` depending on the class of model
+#' \item{Surface}{`data.frame` for term predictions for the surface of the metric * radius area}
+#' \item{Prediction}{`data.frame` for standard error of the terms for the above surface. AFCM models use the `p` to set the upper and lower standard errors of \eqn{\beta_1}}
+#' \item{Metric}{character of the spatial summary function used; helps keep track if running many models}
+#' \item{P-value}{a numeric value of the input p-value}
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @importFrom reshape2 melt
 #' @importFrom mgcv predict.gam
 #' @import dplyr
 #'
 #' @examples
-#' # simulate data
-#' set.seed(1001)
+#' #load ovarian mxFDA object
+#' data('ovarian_FDA')
+#'
+#' #run the lfcm model
+#' ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+#'                       formula = survival_time ~ age, event = "event",
+#'                       metric = "uni g", r = "r", value = "fundiff",
+#'                       analysis_vars = c("age", "survival_time"),
+#'                       afcm = FALSE)
+#'
+#' #extract surface
+#' model_surface = extract_surface(ovarian_FDA, metric = 'uni g',
+#'                                 model = 'fit_lfcm',
+#'                                 analysis_vars = 'age') #variables in model
 #'
 #' @export
 extract_surface = function(mxFDAobject,
@@ -123,14 +138,14 @@ extract_surface = function(mxFDAobject,
   }
 
   if(mod_class[1] == "lfcm"){
-    out_object = new("lfcmSurface",
+    out_object = methods::new("lfcmSurface",
                      Surface = out$Surface,
                      Prediction = out$Prediction,
                      Metric = paste0(toupper(metric[2]), " value"),
                      `P-value` = p)
   } else if(mod_class[1] == "afcm"){
 
-    out_object = new("afcmSurface",
+    out_object = methods::new("afcmSurface",
                      Surface = out$Surface,
                      Prediction = out$Prediction,
                      Metric = paste0(toupper(metric[2]), " value"),

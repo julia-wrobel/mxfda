@@ -13,8 +13,8 @@
 #'
 #' @keywords internal
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
-#' @author Alex Soupir \email{alex.soupir@@moffitt.org}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
 #' @importFrom tidyr pivot_wider
 #' @import dplyr
@@ -84,7 +84,7 @@ process_fcm <- function(mxfundata,
 #'
 #' @keywords internal
 #'
-#' @author Julia Wrobel \email{julia.wrobel@@emory.edu}
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
 #'
 #' @importFrom refund fpca.face
 #' @importFrom tidyr pivot_wider pivot_longer
