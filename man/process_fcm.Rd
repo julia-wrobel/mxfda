@@ -30,7 +30,7 @@ process_fcm(
 A \code{dataframe} with matrix-valued covariates \code{l_int}, \code{t_int}, and \code{func} for use in a linear or additive functional Cox model.
 }
 \description{
-Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
+Internal function called by \code{run_fcm} that transforms long format functional data for use in a linear or additive functional Cox model.
 }
 \examples{
 # simulate data

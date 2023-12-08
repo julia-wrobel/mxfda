@@ -1,6 +1,7 @@
 ---
 title: "Functional regression with spatial summary functions as covariates"
 output: rmarkdown::html_vignette
+bibliography: references.bib
 vignette: >
   %\VignetteIndexEntry{mx Functional Regression}
   %\VignetteEngine{knitr::rmarkdown}
@@ -27,6 +28,7 @@ The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging
 library(mxfda)
 library(tidyverse)
 library(patchwork)
+library(broom)
 ```
 
 
@@ -53,23 +55,24 @@ plot(ovarian_FDA, y = "fundiff", what = "uni g") +
 
 ## Functional regression models for survival outcomes
 
-Standard cox regression
+Single-cell multiplex imaging is common in cancer applications, where the analysis goal is to relate cell-level spatial information to patient-level time-to-event outcomes like overall survival or time-to-recurrence. Cox regression is a popular regression technique for assessing the association between covariates and a survival outcome. The standard Cox model is given by
 
-  $$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik}$$
+$$\log h_i(t) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip},$$
 
-General form for Cox regression with a functional predictor
+where $h_i(t)$ is the *hazard rate* for subject $i$ and $h_0(t)$ is an unspecified baseline hazard. Each $Z_{ip}$ is a scalar covariates., and $P$ is the total number of scalar covariates. These are covariates.s like age, sex, treatment group, etc and can be contrasted with spatial summary functions which are known as functional covariates.s. The $\gamma_p$ are regression coefficients; these are interpreted as log hazard ratios.
 
-  $$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)$$
-
-### Cox regression using functional principal components as predictors
-
-$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)$$
+For multiplex imaging data, we have a spatial summary function for each subject (e.g. univariate Ripley's K), $X_i(r)$, that we want to add to the Cox regression model as a functional covariate. Below we provide three different strategies for incorporating $X_i(r)$ into a Cox regression model as a covariate.
 
 
+### Cox regression using functional principal components as covariates
 
-This is the approach used in @vu2023funspace.
+In this approach, we first decompose the spatial summary functions using FPCA, then use subject-specific scores from FPCA as covariates in a Cox regression model. Conceptually, we are fitting the model given by
 
-Runs FPCA and appends scores that explain up to 99% variance
+$$\log h_i(t) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip} + \sum_{k = 1}^K \beta_k c_{ik},$$
+
+where $c_{ik}$ is the $k$th score from functional principle components analysis for the $i$th subject. $K$ represents the number of principle components, usually selected to explain at least 95% of the variance in the spatial summary functions (see `vignette("mx_fpca")`).  The $\beta_k$ are regression coefficients that tell us about the association between overall survival and the $k$th functional principle component. Like the $\gamma_p$, the the $\beta_k$ are interpreted as log hazard ratios, and $e^{\beta_k}$ is a hazard ratio. This is the approach to Cox regression with spatial summary functions as covariates taken in @vu2023funspace.
+
+The code below runs FPCA the the G-functions from the ovarian cancer data and calculates principle componts that explain up to 99% variance using the argument `pve`. The argument `lightweight = TRUE` returns only what is needed for downstream analysis. To return all items calculate by FPCA when using `refund::fpca.face`, use `lightweight = FALSE`.
 
 ```{r}
 ovarian_FDA <- run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
@@ -78,59 +81,63 @@ ovarian_FDA <- run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff
 ovarian_FDA
 ```
 
-visualize
+Six FPCs were returned. Below, we extract the fpca scores from the `ovarian_FDA` object and visualize the relationship between the first two FPC scores and survival time.   
 
 ```{r, fig.height = 8}
 Gdf_fpc = extract_fpca_scores(ovarian_FDA, 'uni g fpca')
 
 p1 = Gdf_fpc %>%
-  ggplot(aes(fpc1, survival_time, color = factor(event))) +
-  geom_point() + ggtitle("fpc1") +
-  theme(legend.position = "none")
+  mutate(event = factor(event, levels = 0:1, labels = c("censored", "died"))) %>%
+  ggplot(aes(fpc1, survival_time, color = event)) +
+  geom_point() + 
+  labs(y = "survival time (days)", title = "fpc1") +
+  theme(legend.position = c(.5, .7))
 
 p2 = Gdf_fpc %>%
-  ggplot(aes(fpc2, survival_time, color = factor(event))) +
-  geom_point() + ggtitle("fpc2") +
+  mutate(event = factor(event, levels = 0:1, labels = c("censored", "died"))) %>%
+  ggplot(aes(fpc2, survival_time, color = event)) +
+  geom_point() + 
+  labs(y = "survival time (days)", title = "fpc2") +
   theme(legend.position = "none")
 
-p3 = Gdf_fpc %>%
-  ggplot(aes(fpc3, survival_time, color = factor(event))) +
-  geom_point() + ggtitle("fpc3") +
-  theme(legend.position = "bottom")
 
-p4 = Gdf_fpc %>%
-  ggplot(aes(fpc4, survival_time, color = factor(event))) +
-  geom_point() + ggtitle("fpc4") +
-  theme(legend.position = "bottom")
-
-(p1 + p2)/(p3 + p4)
+p1 + p2
 ```
 
 
+It appears that subjects with lower scores for FPC 1 tended to have longer survival times.
 
-Use fpc scores in cox regression model
+Next, we use these scores as covariates in a Cox regression model. We also control for age.
 
 ```{r}
 library(survival)
 phmod_fpc = coxph(Surv(survival_time, event) ~ fpc1 + fpc2 + fpc3 + fpc4 + age, 
               data = Gdf_fpc)
+#summary(phmod_fpc)
+```
 
-summary(phmod_fpc)
+The results from this model are printed below. Not that All FPCs except FPC 2 have a statisticaly significant relationship with overall survival. The hazard ratio above 1 for FPC 1 indicates that higher scores are associate with worse survival outcomes, which is consistent with the exploratory analysis in the plot above.
+
+```{r}
+tidy(phmod_fpc, exp = TRUE, conf.int = TRUE) %>%
+  mutate(p.value = format.pval(p.value, digits = 1)) %>%
+  select(term, hazard_ratio = estimate, conf.low, conf.high, p = p.value) %>%
+  knitr::kable(digits = 2)
 ```
 
 
-### linear and additive functional Cox regression models
+### Linear and additive functional Cox regression models
 
 This is the approach used in @vu2022spf
 
 Linear functional cox model takes the form: 
 
-$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)$$
+$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip} + H\left(X_i(r)\right)$$
 
 Using age and gender and stage as scalar covariates
 
 
-#### LFCM
+#### Linear functional Cox model (LFCM)
 
 @gellar2015cox
 
@@ -159,7 +166,7 @@ plot(lfcm_surface)
 
 
 
-#### AFCM
+#### Additive functional Cox model (AFCM)
 
 @cui2021additive
 
