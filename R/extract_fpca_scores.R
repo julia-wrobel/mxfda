@@ -31,6 +31,8 @@ extract_fpca_scores = function(mxFDAobject, what){
   if(length(what) != 1)
     stop("Please provide a single spatial metric to extract surface for")
   what = unlist(strsplit(what, split = " "))
+  if(length(what) != 3)
+    stop("Please provide either FPCA or mFPCA to extract")
 
   dat = get_data(mxFDAobject, what[1:2], type = what[3])
 
@@ -42,6 +44,6 @@ extract_fpca_scores = function(mxFDAobject, what){
   #pretty sure if the number of samples in metadata don't match the number of spatial samples this will not work
   #no alternatiave because score_df doesn't report sample ID with it.
   new_df = mxFDAobject@Metadata %>%
-    dplyr::bind_cols(dat$score_df)
+    dplyr::left_join(dat$score_df)
   return(new_df)
 }
