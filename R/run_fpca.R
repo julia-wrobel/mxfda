@@ -80,6 +80,10 @@ run_fpca = function(mxFDAobject,
   index_range <- range(mxfundata[[r]])
 
   mxfundata <- mxfundata %>%
+    dplyr::filter(get(mxFDAobject@sample_key) %in% #filter out the samples that don't have enough values
+                    (computed_vals %>%
+                       dplyr::filter(Keep == "TRUE") %>%
+                       pull(!!mxFDAobject@sample_key))) %>%
     dplyr::select(dplyr::all_of(c(mxFDAobject@sample_key, r, value))) %>%
     tidyr::pivot_wider(names_from =  dplyr::all_of(r),
                 names_prefix = "r_",
@@ -107,7 +111,7 @@ run_fpca = function(mxFDAobject,
   mxfundata = dplyr::bind_cols(mxfundata, score_df) %>%
     dplyr::select(-dplyr::starts_with("r_"))
 
-  fpca_dat <- list(score_df = score_df,
+  fpca_dat <- list(score_df = mxfundata,
                    fpc_object = mx_fpc)
 
   if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_pca`$Kcross = fpca_dat
