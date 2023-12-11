@@ -1,34 +1,41 @@
 #' Extract FPCA object
 #'
+#' Function that extracts the FPCA object created either by [run_fpca()] or [run_mfpca()] from the `mxFDA` object
+#'
 #' @param mxFDAobject object of class `mxFDA`
 #' @param what what functional PCA data to extract, e.g. 'uni k'
-#' @param id sample id column used in `run_fpca` function
-#' @param r column id for radii
-#' @param value value used to calculate fpcs
 #'
-#' @return fpca object
+#' @details
+#' `r lifecycle::badge('stable')`
+#'
+#' Output object can be visualized with [refund.shiny::plot_shiny()]
+#'
+#' @return `fpca` object created with [run_fcm()]
+#'
+#' @author Alex Soupir \email{`r alexsoupir_email`}
+#'
+#' @examples
+#' #load ovarian mxFDA object
+#' data('ovarian_FDA')
+#'
+#' #run the FPCA
+#' ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+#'                        lightweight = TRUE,
+#'                        pve = .99)
+#'
+#' #extract the fpca object
+#' obj = extract_fpca_object(ovarian_FDA, "uni g fpca")
+#'
 #' @export
-#'
-extract_fpca_object = function(mxFDAobject, what, id, r, value){
-  if(!inherits(mxFDAobject_oneImage, "mxFDA")) stop("supply object of class `mxFDA`")
+extract_fpca_object = function(mxFDAobject, what){
+  if(!inherits(mxFDAobject, "mxFDA")) stop("supply object of class `mxFDA`")
   #check if object is of class mxFDA
   what = unlist(strsplit(what, split = " "))
+  if(length(what) < 3) stop("need to specify FPCA or mFPCA")
 
-  dat = get_data(mxFDAobject, what, type = "fpca")
-  # mxfundata = get_data(mxFDAobject, what, type = "summaries") %>%
-  #   select(all_of(c(id, r, value))) %>%
-  #   pivot_wider(names_from = r,
-  #               names_prefix = "r_",
-  #               values_from = value)
+  dat = get_data(mxFDAobject, what[1:2], type = what[3])
+
+  if(grepl("m", what[3]))
+    return(dat$mfpc_object)
   return(dat$fpc_object)
-
-  #fpca object already has yhat and y, need to be replaced?
-  # fpc_object = dat$fpc_object
-  # fpc_object$Y = dplyr::bind_cols(mxfundata, dat$score_df) %>%
-  #   dplyr::select(dplyr::contains("r_"))
-  # Yhat_dims = dim(fpc_object$Yhat)
-  # fpc_object$Yhat = matrix(rnorm(Yhat_dims[1], Yhat_dims[2]),
-  #                          nrow = Yhat_dims[1],
-  #                          ncol = Yhat_dims[2])
-  # return(fpc_object)
 }

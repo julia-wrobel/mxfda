@@ -7,9 +7,15 @@
 #' @param obj fpca object to be plotted.
 #' @param pc_choice FPC to be plotted.
 #'
-#' @import ggplot2
-#' @export
+#' @details `r lifecycle::badge('superseded')`
 #'
+#' @return object of class ggplot
+#'
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#'
+#' @import ggplot2
+#'
+#' @export
 plot_fpc = function(obj, pc_choice){
 
   ## NULLify global values called in ggplot

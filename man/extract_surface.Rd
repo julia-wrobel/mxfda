@@ -2,22 +2,26 @@
 % Please edit documentation in R/extract_surface.R
 \name{extract_surface}
 \alias{extract_surface}
-\title{extract_surface}
+\title{Extract Surface}
 \usage{
 extract_surface(
-  mxfundata,
-  fit,
+  mxFDAobject,
+  metric,
+  model = NULL,
   r = "r",
   value = "fundiff",
   grid_length = 100,
   analysis_vars,
-  se = FALSE
+  p = 0.05,
+  filter_cols = NULL
 )
 }
 \arguments{
-\item{mxfundata}{Dataframe of spatial summary functions from multiplex imaging data, in long format.}
+\item{mxFDAobject}{object of class \code{mxFDA} with model \code{model} calculated wihtin}
 
-\item{fit}{AFCM or LFCM model fit object}
+\item{metric}{spatial summary function to extract surface for}
+
+\item{model}{character string for the name of the model for \code{metric} data}
 
 \item{r}{Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".}
 
@@ -27,17 +31,39 @@ extract_surface(
 
 \item{analysis_vars}{Other variables used in modeling FCM fit.}
 
-\item{se}{Defaults to FALSE, and returns surface. If TRUE, returns coefficient function with standard errors for LFCM, or coefficient surface for AFCM with non NA values that are statistically significant}
+\item{p}{numeric p-value used for predicting significant AFCM surface}
+
+\item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 }
 \value{
-A \code{dataframe} with predicted surface for AFCM and LFCM fits for use in plotting
+a 4 element list of either class \code{lfcmSurface} or \code{afcmSurface} depending on the class of model
+\item{Surface}{\code{data.frame} for term predictions for the surface of the metric * radius area}
+\item{Prediction}{\code{data.frame} for standard error of the terms for the above surface. AFCM models use the \code{p} to set the upper and lower standard errors of \eqn{\beta_1}}
+\item{Metric}{character of the spatial summary function used; helps keep track if running many models}
+\item{P-value}{a numeric value of the input p-value}
 }
 \description{
-Internal function called by \code{TITLE: regression function} that transforms long format functional data for use in a linear or additive functional Cox model.
+Function that transforms functional models from linear or additive functional cox models into \code{afcmSurface} or \code{lfcmSurface} objects to be plotted.
 }
 \examples{
-# simulate data
-set.seed(1001)
+#load ovarian mxFDA object
+data('ovarian_FDA')
 
+#run the lfcm model
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+                      formula = survival_time ~ age, event = "event",
+                      metric = "uni g", r = "r", value = "fundiff",
+                      analysis_vars = c("age", "survival_time"),
+                      afcm = FALSE)
 
+#extract surface
+model_surface = extract_surface(ovarian_FDA, metric = 'uni g',
+                                model = 'fit_lfcm',
+                                analysis_vars = 'age') #variables in model
+
+}
+\author{
+Julia Wrobel \email{julia.wrobel@emory.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

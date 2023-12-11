@@ -1,0 +1,10 @@
+url: ~
+template:
+  bootstrap: 5
+articles:
+- title: Get Started
+  navbar: ~
+  contents:
+  - mx_fda
+  - mx_fpca
+  - mx_funreg

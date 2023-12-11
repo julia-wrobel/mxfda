@@ -6,20 +6,18 @@
 \usage{
 run_fpca(
   mxFDAobject,
-  id,
   metric = "uni k",
   r = "r",
   value = "fundiff",
   knots = NULL,
   analysis_vars = NULL,
   lightweight = FALSE,
+  filter_cols = NULL,
   ...
 )
 }
 \arguments{
 \item{mxFDAobject}{object of class \code{mxFDA} created by \code{make_mxfda} with metrics derived with \code{extract_summary_functions}}
-
-\item{id}{Character string, the name of the variable that identifies each unique subject.}
 
 \item{metric}{name of calculated spatial metric to use}
 
@@ -33,20 +31,31 @@ run_fpca(
 
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned FPCA object. A good option to select for large datasets.}
 
+\item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
+
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
 }
 \value{
-A \code{mxFDA} object containing:
+A \code{mxFDA} object with the \code{functional_pca} slot filled for the respective spatial summary function containing:
 \item{mxfundata}{The original dataframe of spatial summary functions, with scores from FPCA appended for downstream modeling}
 \item{fpc_object}{A list of class "fpca" with elements described in the documentation for  \code{refund::fpca.face}}
 }
 \description{
 This is a wrapper for the function \code{fpca.face} from the \code{refund} package. EXPAND
 }
-\examples{
-# simulate data
-set.seed(1001)
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 
+The \code{filter_cols} parameter is useful when the summary function was input by the user using \code{\link[=add_summary_function]{add_summary_function()}} and the multiple marks were assessed; a column called "Markers" with tumor infiltrating lymphocytes as well as cytotoxic T cells. This parameter allows for filtering down to include only one or the other.
+}
+\examples{
+#load ovarian mxFDA object
+data('ovarian_FDA')
+
+#run the FPCA
+ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+                       lightweight = TRUE,
+                       pve = .99)
 
 }
 \references{
@@ -54,4 +63,9 @@ Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 Fast covariance estimation for high-dimensional functional data.
 \emph{Statistics and Computing}, 26, 409-421.
 DOI: 10.1007/s11222-014-9485-x.
+}
+\author{
+Julia Wrobel \email{julia.wrobel@emory.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

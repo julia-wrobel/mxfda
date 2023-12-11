@@ -4,16 +4,44 @@
 \alias{plot.mxFDA}
 \title{Plot mxFDA object}
 \usage{
-\method{plot}{mxFDA}(x, ...)
+\method{plot}{mxFDA}(x, filter_cols = NULL, ...)
 }
 \arguments{
 \item{x}{object of class \code{mxFDA} to be plotted}
 
+\item{filter_cols}{column key to filter}
+
 \item{...}{additional paramters including \code{y}, \code{what}, and \code{sampleID} to inform whats to be plotted}
 }
 \value{
-object compatable with ggplot2
+object of class \code{ggplot} compatible the \code{ggplot2} aesthetics
 }
 \description{
 Plot mxFDA object
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+If there are multiple metrics that are included in the derived table, an extra parameter \code{filter_cols}
+in the format of \code{c(Derived_Column = "Level_to_Filter")} will return curves from the \code{Derived_Column}
+with the level \code{Level_to_Filter}
+
+When plotting mFPCA objects, additional arguments \code{level1} and \code{level2} help indicate which FPCA from level 1 and level 2 to plot
+}
+\examples{
+#set seed
+set.seed(333)
+#plotting summary
+data("ovarian_FDA")
+plot(ovarian_FDA, y = 'fundiff', what = 'uni g')
+#running fpca
+ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
+                       lightweight = TRUE,
+                       pve = .99)
+#plot fpca
+plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 1)
+
+}
+\author{
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

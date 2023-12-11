@@ -26,10 +26,9 @@ Should have variables \code{x} and \code{y} to denote x and y spatial locations 
 
 \item{r_vec}{Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.}
 
-\item{func}{Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.}
+\item{func}{Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.}
 
-\item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
-#'}
+\item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")}
 }
 \value{
 A \code{data.frame} containing:
@@ -41,11 +40,8 @@ A \code{data.frame} containing:
 \description{
 Internal function called by \code{extract_summary_functions} to calculate a bivariate spatial summary function for a single image.
 }
-\examples{
-# simulate data
-set.seed(1001)
-
-
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
 \references{
 Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
@@ -54,5 +50,5 @@ Fast covariance estimation for high-dimensional functional data.
 DOI: 10.1007/s11222-014-9485-x.
 }
 \author{
-Julia Wrobel \email{julia.wrobel@cuanschutz.edu}
+Julia Wrobel \email{julia.wrobel@emory.edu}
 }

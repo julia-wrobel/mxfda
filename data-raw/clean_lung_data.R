@@ -1,6 +1,6 @@
-#Data Processing Performed for Data in `mxfda` package
-## this file cleans the lung cancer dataset
-library(tidyverse)
+# #Data Processing Performed for Data in `mxfda` package
+# ## this file cleans the lung cancer dataset
+# library(tidyverse)
 # library(VectraPolarisData) # Bioconductor data package
 #
 # # load lung data
@@ -46,10 +46,7 @@ library(tidyverse)
 # rm(lung, assays_slot, intensities_df, nucleus_intensities_df, membrane_intensities_df, colData_df, spatialCoords_df, patient_level_lung,
 #    cell_level_lung)
 #
-
-# load(url("https://github.com/julia-wrobel/MI_tutorial/raw/main/Data/lung.RDA"))
-# #
-# #
+#
 # # clean data
 # lung_df = lung_df %>%
 #   # subset to only analyze tumor areas
@@ -70,13 +67,14 @@ library(tidyverse)
 # # write.csv(lung_df, file=gzfile("data-raw/lung_df.csv.gz", compression = 9))
 # lung_df = read.csv(gzfile("data-raw/lung_df.csv.gz"))
 #
-# #randomly select patient samples
+# #randomly select 50 subjects and all of their images
 # set.seed(333)
-# remove_patientSamples = sample(unique(lung_df$patientImage_id), size = 180, replace = FALSE)
-# lung_df_small = lung_df %>% filter(patientImage_id %in% remove_patientSamples)
+# ids = sample(unique(lung_df$patient_id), size = 50, replace = FALSE)
+# lung_df_small = lung_df %>% filter(patient_id %in% ids)
 # #save temp files
 # write.csv(lung_df_small, file=gzfile("data-raw/lung_df_small.csv.gz", compression = 9))
-# #create the package data
+
+#create the package data
 lung_df = read.csv(gzfile("data-raw/lung_df_small.csv.gz"))
 
 

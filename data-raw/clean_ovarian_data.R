@@ -81,10 +81,10 @@
 #   filter(tissue_category == "Tumor", immune == "immune") %>%
 #   select(patient_id,x, y, age = age_at_diagnosis, immune, survival_time,
 #          event = death, immune)
+
 #
-#
-#
-# # enhance signal of original data for illustrating use of the package
+# #
+# # # enhance signal of original data for illustrating use of the package
 # add_clustering <- function(mximg){
 #   # create a convex hull as the observation window
 #   w = spatstat.geom::convexhull.xy(mximg[["x"]], mximg[["y"]])
@@ -117,28 +117,31 @@
 #
 # ### Make mxFDA object
 # clinical = ovarian_df %>%
-#   select(patient_id, age, survival_time, event) %>% distinct()
+#   select(patient_id, age, survival_time, event) %>% distinct() %>%
+#   mutate(sample_id = patient_id)
 # spatial = ovarian_df %>%
-#   select(-survival_time, -event)
+#   select(-survival_time, -event) %>%
+#   rename("sample_id" = patient_id)
 #
 # ovarian_FDA = make_mxfda(clinical,
 #                          spatial,
-#                          key = "patient_id")
+#                          subject_key = "patient_id",
+#                          sample_key = "sample_id")
 #
 #
 # # extract gfunctions from the ovarian data
-# ovarian_FDA = extract_summary_functions(ovarian_FDA, "patient_id",
+# ovarian_FDA = extract_summary_functions(ovarian_FDA,
 #                                         extract_func = extract_univariate,
 #                                         summary_func = Gest,
 #                                         r_vec = seq(0, 50, by = 1),
 #                                         edge_correction = "rs",
 #                                         markvar = "immune",
 #                                         mark1 = "immune")
-#
-#
-# write.csv(ovarian_gfun, file=gzfile("data-raw/ovarian_FDA.csv.gz", compression = 9))
-#
-# ovarian_gfun = read.csv(gzfile("data-raw/ovarian_FDA.csv.gz"))
+
+
+# # write.csv(ovarian_gfun, file=gzfile("data-raw/ovarian_FDA.csv.gz", compression = 9))
+# #
+# # ovarian_gfun = read.csv(gzfile("data-raw/ovarian_FDA.csv.gz"))
 
 # add dataset to data folder
 usethis::use_data(ovarian_FDA, overwrite = TRUE)

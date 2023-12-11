@@ -7,16 +7,16 @@
 \format{
 \subsection{\code{ovarian_FDA}}{
 
-A data frame with 12,726 rows and 8 columns:
+An mxFDA object with augmented ovarian cancer multiplex immunofluorescence data, and NN G(r) calculated:
 \describe{
-\item{patient_id}{Unique patient id}
-\item{age}{Patient age at time of cancer diagnosis}
-\item{survival_time}{Survival time from diagnosis, in days}
-\item{event}{Censoring variable, 1 = death, 0 = censor}
-\item{r}{radius}
-\item{sumfun}{Value of G function}
-\item{csr}{Value of G function under assumption of complete spatial randomness}
-\item{fundiff}{sumfun-csr}
+\item{Metadata}{information about the spatial samples with column \code{sample_key} column in both}
+\item{Spatial}{cell-level information with \code{x} and \code{y} columns along with \code{sample_key} to link to \code{Metadata}}
+\item{subject_key}{column in \code{Metadata} that may have multiple \code{sample_key} values for each, akin to patient IDs}
+\item{sample_key}{column in both \code{Metadata} and \code{Spatial} that is a 1:1 with the samples (unique per sample)}
+\item{univariate_summaries}{univariate summary slot with nearest neighbor G calculared}
+\item{bivariate_summaries}{empty slot available for bivariate summaries}
+\item{functional_pca}{empty slot for functional PCA data of summaries}
+\item{functional_cox}{empty slot for functional models}
 }
 }
 }

@@ -2,21 +2,22 @@
 % Please edit documentation in R/run_fcm.R
 \name{run_fcm}
 \alias{run_fcm}
-\title{process_fcm}
+\title{Run Function Cox Models}
 \usage{
 run_fcm(
   mxFDAobject,
   model_name,
-  form,
-  id,
+  formula,
+  event = "event",
   metric = "uni k",
   r = "r",
   value = "fundiff",
   afcm = FALSE,
-  analysis_vars,
   quantile_transform = FALSE,
   smooth = FALSE,
-  ...
+  filter_cols = NULL,
+  ...,
+  knots = NULL
 )
 }
 \arguments{
@@ -24,9 +25,9 @@ run_fcm(
 
 \item{model_name}{character string to give the fit model in the functional cox slot}
 
-\item{form}{Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".}
+\item{formula}{Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".}
 
-\item{id}{Character string, the name of the variable that identifies each unique subject.}
+\item{event}{character string for the column in Metadata that contains 1/0 for the survival event}
 
 \item{metric}{name of calculated spatial metric to use}
 
@@ -36,11 +37,11 @@ run_fcm(
 
 \item{afcm}{If TRUE, runs additive functional Cox model. If FALSE, runs linear functional cox model. Defaults to linear functional cox model.}
 
-\item{analysis_vars}{List of variables to be retained for downstream analysis, including variables from formula.}
-
 \item{quantile_transform}{Defaults to FALSE. If TRUE, a quantile transformation is applied to the functional predictor before modeling using the \code{process_fcm} function.}
 
 \item{smooth}{Option to smooth data using FPCA. Defaults to FALSE.}
+
+\item{filter_cols}{a named vector of factors to filter summary functions to in \code{c(Derived_Column = "Level_to_Filter")} format}
 
 \item{...}{Optional other arguments to be passed to \code{fpca.face}}
 
@@ -52,9 +53,23 @@ A \code{list} which is a linear or additive functional Cox model fit. See \code{
 \description{
 Fit a functional Cox regression model.
 }
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+}
 \examples{
-# simulate data
-set.seed(1001)
+#load ovarian mxFDA object
+data('ovarian_FDA')
 
+#run the lfcm model
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+                      formula = survival_time ~ age, event = "event",
+                      metric = "uni g", r = "r", value = "fundiff",
+                      analysis_vars = c("age", "survival_time"),
+                      afcm = FALSE)
 
+}
+\author{
+Julia Wrobel \email{julia.wrobel@emory.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

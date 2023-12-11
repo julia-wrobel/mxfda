@@ -1,8 +1,9 @@
 ---
-title: "mx_fda"
+title: "mxFDA Object"
 output: rmarkdown::html_vignette
+bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{mx_fda}
+  %\VignetteIndexEntry{mxFDA Object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -13,7 +14,13 @@ knitr::opts_chunk$set(
   comment = "#>",
   figs.out = "../figures"
 )
+invisible(suppressPackageStartupMessages(library(tidyverse)))
 ```
+
+
+
+The `mxfda` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal component analysis can be found in the separate vignette `vignette("mx_fpca")`. To perform functional regression on spatial summary functions from multiplex imaging data, see `vignette("mx_funreg")`.
+
 
 ```{r setup}
 library(mxfda)
@@ -22,38 +29,34 @@ library(patchwork)
 ```
 
 
-This vignette describes the `mxfda` package for analyzing single-cell multiplex imaging data using tools from functional data analysis. This vignette focuses on exploratory data analysis, visualization, and functional principal components analysis. To perform functional regression on spatial summary functions from multiplex imaging data, see the `mx_funreg` vignette.
+# VectraPolarisData 
 
+Examples in this package use data adapted from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
 
-## Goals of `mxfda`
-
-What are the goals of mxfda package?
-
-* Make it easier to analyze spatial relationships of cells in multiplex images
-* Use spatial summary functions of point processes to characterize univariate / bivariate clustering
-* Relate spatial summary functions to patient level outcomes
-* Explain how to interpret output from functional data analyses
-* Use completely open source data 
-
-
-
-## VectraPolarisData 
-
-All examples in this vignette use data from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
-
-* Describe the two datasets
-* Say this one will focus on the lung data
-
-### HumanLungCancer
-
-This data contains (number of subjects, images per subject, number of cells). Load the data from my website.
+Data has been preprocessed and stored directly in the `mxfda` package. Available datasets are `ovarian_FDA` and `lung_df`. This vignette will focus on the `lung_df` dataset, which contains a subset of 50 subjects from a multiplex imaging study of non-small cell lung carcinoma described in @johnson2021cancer. Each subject has 4-5 multiplex images, which come from different regions of interest (ROIs) in the tumor. Each ROI will be considered a "sample" when constructing the `mxfda`  object. We load the lung cancer data below.
 
 ```{r}
-# load processed lung cancer data
 data(lung_df)
 ```
 
-Make FDAobject
+
+# Setting up the mxFDA object
+
+The central object used with the `mxfda` package is the `mxFDA` object. These objects are created with `make_mxfda()` and hold everything from the raw spatial data to fit functional data models using derived spatial summary functions. To save space on large samples, the metadata is kept separately from the spatial data and when needed, is exported and merged together. Slots in the `mxFDA` object are designated as follows:
+
+- `Metadata` - stores sample specific traits that may be used as covariates when fitting models
+- `Spatial` - a data frame of cell level information (x and y spatial coordinates, phenotype, etc.) that can be used to calculate spatial summary functions
+- `subject_key` - a character string for the column in the metadata that denotes the unique subject id
+- `sample_key` - a character string for the column in the metadata that denotes the unique sample id. Note that there may be multiple samples per subject, and this id links the metadata and spatial data for each multiplex image sample
+- `univariate_summaries` and `bivariate_summaries` - lists of spatial summary functions either imported with `add_summary_function()` or calculated with `extract_summary_functions()`
+- `functional_pca` - list of results from functional principle component analysis 
+- `functional_mpca` - list of results from multilevel functional principle component analysis
+- `functional_cox` - list of functional cox models that have been fit
+- `functional_mcox` - list of functional mixed cox models that have been fit
+
+## Make mxFDAobject
+
+Using the `?lung_df` in the `mxfda` package, columns with repeated data pertaining to the sample-level information are extracted and stored in a data frame called `clinical` while the cell-level information is kept in a long data frame (`make_mxfda()` also accepts cell-level information as a list of data). The spatial parameter in the `make_mxfda()` function can be left blank if using a spatial metric derived from external functions. The final 2 parameters for the `?lung_df` `mxFDA` object are the `subject_key` and the `sample_key`. The `sample_key` is a column name that appears both in the `metadata` and `spatial` and denotes unique samples while the `subject_key` is a column name in `metadata` that ties the samples to metadata; if the data contains one sample per subject then `sample_key` and `subject_key` is a 1:1, but if multiple samples per subject, `subject_id` will be repeated.
 
 ```{r object}
 clinical = lung_df %>%
@@ -65,55 +68,61 @@ spatial = lung_df %>%
 
 mxFDAobject = make_mxfda(metadata = clinical,
                          spatial = spatial,
-                         key = "patient_id")
+                         subject_key = "patient_id",
+                         sample_key = "patientImage_id")
 ```
 
 
-Provide background on what type of cells and analyses you are interested in.
+Note that the object created has class `mxFDA`. 
 
-* All immune cells in cancer area
-* Relationship between T-cells and macrophages
-* Plot some pictures of the images that help highlight this
-
-## Spatial summary functions based on point processes
-
-Use text from somewhere else here. Talk about K, g, and G and point to links
-
-### Univariate summary functions
-
-Use text from somewhere else here to describe what these are.
+```{r}
+class(mxFDAobject)
+```
 
 
-Below we calculate univariate Ripley's K for all immune cells in each image. Describe that it is using spatstat under the hood. These can be calculated with our package or spatialTIME. Options for the edge correction when using Ripley's K include `"border", "isotropic", "Ripley", "translate"`.  See `spatstat.core::Kest` for more details. Below we calculate the K function across a range of radii from 0 to 300 and use the isotropic ("iso") edge correction.  The `analysis_vars` argument retains variables that may be used in downstream analysis
 
+# Spatial summary functions based on point processes
 
+The `mxfda` package provides methods for analyzing spatial relationships between cell types in multiplex imaging data based on point
+process theory. The location of cells in multiplex image samples are treated as following a point process, realizations of a point process are called “point patterns”, and point process models seek to understand correlations in the spatial distributions of cells. Under the assumption that the rate of a cell is constant over an entire region  of interest a point pattern will exhibit complete spatial randomness (CSR), and it is often of interest to model whether cells deviate from CSR either through clustering or repulsion. Spatial summary statistics can be calculated to quantify the clustering and co-occurrence of cells in a circular region with a particular radius *r*. Typically univariate (one cell type) or bivariate (two cell types) summary statistics are reported, and inference is obtained by comparing the observed spatial summary statistic to that obtained under CSR. A popular quantity is Ripley’s K(r), which studies the number of neighbors to a particular point within radius *r*, and has univariate and bivariate implementations in the `{spatstat}` package (@baddeley2015spatial). Ripley’s K is characterized by clustering or repulsion depending on whether it is above or below the theoretical value of $\pi r^2$. Other spatial summary statistics analyze the distance to a neighbor, and can be interpreted as probabilities of observing a particular cell type within a radius *r*. One of these metrics, G(*r*), or the nearest neighbor distance distribution, is the cumulative distribution function of an exponential random variable. More detailed overviews of spatial summary functions for multiplex imaging data are provided in @wilson2021challenges and @wrobel2023statistical.
+
+## Univariate summary functions
+
+Below we calculate univariate Ripley's K to summarize the spatial relationship among immune cells in each image. The `mxfda` package accomplishes this with the function `extract_summary_functions()`. Either univariate or bivariate can be calculated with this function depending on the choice supplied to the `extract_func` argument. To calculate a univariate spatial summary we supply `extract_univariate` to the `extract_func` argument. The summary function that is calculated depends on the function supplied to `summary_fun` which is one of `Kest()`, `Gest()`, or `Lest()` from the `{spatstat.explore}` package (`Kcross()`, `Gcross()`, or `Lcross()` for bivariate methods). Other options include supplying a vector of radius values through `r_vec`, and the a specific edge correction (see @baddeley2015spatial). We calculate the K function across a range of radii from 0 to 100 and use the isotropic ("iso") edge correction.
 
 ```{r univariate_k}
-mxFDAobject = extract_summary_functions(mxFDAobject, "patientImage_id",
+mxFDAobject = extract_summary_functions(mxFDAobject,
                                         extract_func = extract_univariate,
                                         summary_func = Kest,
-                                        r_vec = seq(0, 100, by = 10),
+                                        r_vec = seq(0, 100, by = 1),
                                         edge_correction = "iso",
                                         markvar = "immune",
                                         mark1 = "immune")
 ```
 
-COMMENT ON THESE PLOTS
+Running this code will calculate univariate Ripley's K function to measure spatial clustering of immune cells for each sample, and will store these spatial summary functions in the `univariate_summaries` slot of the  `mxFDAobject`. To access this slot and view the extracted summary functions, type: 
 
 ```{r}
-plot(mxFDAobject, y = "fundiff", what = "uni k", sampleID = "patientImage_id") +
+mxFDAobject@univariate_summaries$Kest
+```
+
+Note that the summaries are returned as a dataframe. The variable `sumfun` is the estimated summary function value, `csr` is the theoretical value under complete spatial randomness, and `fundiff` = `sumfun`-`csr`; in downstream analysis we will use the `fundiff` covariate. 
+
+### Plotting the `mxFDA` object
+
+`{mxfda}` has S4 methods for visualization implemented via the `plot()` function (see `?plot.mxFDA` for details). The first argument is the `mxFDA` object followed by a few options that depend on what plot output is desired. Here, the we want to plot the univariate summary that we just calculated, which was the K function. By passing in `what = 'uni k'`, the plot function will extract the univariate K results. We also need to tell `plot()` what column is the y-axis which can be `'sumfun'` for the observed value, `'csr'` for the theoretical value of complete spatial randomness (CSR), or `'fundiff'` which is the difference between the observed K measure and the theoretical CSR. The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would. 
+
+
+**NOTE: These are the columns when calculating using the `extract_summary_function()` of `{mxfda}` but if summary data is added from elsewhere with `add_summary_function()` then those column names will have to be used.**
+
+```{r}
+plot(mxFDAobject, y = "fundiff", what = "uni k") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
+## Bivariate summary functions
 
-SAY WHAT YOU DO DIFFERENT TO GET L OR G
-
-### Bivariate summary functions
-
-Use if you want to do bivariate. We will look at relationship between T-cells and macrophages. There are a few images that have fewer than 5 T-cells or macrophages, which makes estimation less stable for those images.
-
-Below we calculate the bivariate G function, but replace Lcross or Kcross to do L or K bivariate functions
-
+The `extract_summary_function()` function can also be used to extract bivariate summaries comparing spatial clustering of 2 cell types. We will look at relationship between T-cells and macrophages. There are a few images that have fewer than 5 T-cells or macrophages, which makes estimation of spatial summary functions less stable for those images. To look at T-cells and macrophages, the data phenotypes and cell locations have to be in long format so we first create a variable with the cell types (`'phenotype'`) from the `lung_df`. 
 
 ```{r}
 lung_df = lung_df %>%
@@ -122,19 +131,9 @@ lung_df = lung_df %>%
                                TRUE ~ "other"),
          phenotype = factor(phenotype))
 
-
-lung_df %>%
-  group_by(patientImage_id) %>%
-  count(phenotype) %>%
-  ungroup() %>%
-  filter(phenotype != "other") %>%
-  group_by(phenotype) %>%
-  summarize(sum(n < 5))
 ```
 
-
-Automatically removes images that do not have at least 1 cell of each type
-  * Is this behavior we actually want?
+We then recreate the mxFDAobject
 
 ```{r}
 spatial = lung_df %>%
@@ -142,149 +141,141 @@ spatial = lung_df %>%
 
 mxFDAobject = make_mxfda(metadata = clinical,
                          spatial = spatial,
-                         key = "patient_id")
+                         subject_key = "patient_id",
+                         sample_key = "patientImage_id")
 ```
 
-Running Gcross on T-cells and macrophages
+
+Now we calculate the bivariate G function, but can replace `Gcross()` with `Lcross()` or `Kcross()` to estimate the L or K bivariate functions instead. The argument `markvar` takes the variable that we created above called `'phenotype'`, and the 2 cell types that we are interested in calculating the bivariate G for are `'T-cell'` and `'macrophage'` so we provide them to `mark1` and `mark2`, respectively. 
 
 ```{r}
-mxFDAobject = extract_summary_functions(mxFDAobject, "patientImage_id",
+mxFDAobject = extract_summary_functions(mxFDAobject,
                 summary_func = Gcross,
                 extract_func = extract_bivariate,
-                r_vec = seq(0, 100, by = 10),
+                r_vec = seq(0, 100, by = 1),
                 edge_correction = "rs",
                 markvar = "phenotype",
                 mark1 = "T-cell",
                 mark2 = "macrophage")
-
 ```
 
+### Plotting the bivariate G
+
+Just like with the univariate plots, we can use the `plot()` function to plot our `mxFDA` object results. The `what` now is `'bi g'`, `'bivar g'`, or `'bivariate g'`.
 
 ```{r}
-plot(mxFDAobject, y = "fundiff", what = "bi g", sampleID = "patientImage_id") +
+plot(mxFDAobject, y = "fundiff", what = "bi g") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
+# Exploring the S4 object
 
-## Functional principal components analysis
+Another useful function is `?summary.mxFDA` which feeds into the `summary()` method. Either typing the name of the object or wrapping it in the summary function will provide information like the number of subjects, samples, if spatial summary functions have been calculated, and functional data analyses that have been run.
 
-SAY THAT THIS CAN BE DONE WITH ANY OF THE FUNCTIONS CALCULATED ABOVE. FOR CONSISTENCY OF INTERPRATION, I WILL USE THE NEAREST NEIGHBOR G FUNCTION FOR THE REST OF THE VIGNETTE.
+```{r summary}
+mxFDAobject
+```
 
-Assumes one curve per subject.  Do univariate G function of immune cells, select image with highest number of cells for each subject. Do immune cells 
+
+# SpatialTIME
+
+Sometimes other summary functions or normalizations are run outside of the `{mxfda}` package but the end goal is to still run functional data analysis. Other packages, such as `{spatialTIME}` (@creed2021) provide methods for fast calculation of functions in `{spatstat}` with permutation estimates of complete spatial randomness that is more robust than the theoretical, especially when tissue samples have holes that violate the assumption of a homogeneous point pattern (see @wilson2022tumor). Lets look at how to perform the estimation of univariate nearest neighbor G with `{spatialTIME}`.
+
+The central object of `spatialTIME` is the `mIF` object, that contains a list of spatial data frames, a data frame of sample-level summaries, and a data frame for the metadata ('clinical'). From creating the `mxFDA` object, we have a spatial data frame and the clinical data, now we have to convert them into something that works with `spatialTIME.` The steps below will be:
+
+1. convert positive/negative to 1/0 integers
+2. identify which columns in the spatial data frame are cell types
+3. convert spatial data frame to a list, where each element is a unique sample
+3. create a summary data frame from the spatial list for the number and proportion of positive cells for each phenotype
 
 ```{r}
-# take image from each patient with greatest number of immune cells
-lung_oneImage_df = lung_df %>%
-  group_by(patient_id, image_id) %>%
-  mutate(n_immune = sum(immune == "immune")) %>%
-  ungroup() %>%
-  group_by(patient_id) %>%
-  arrange(-n_immune) %>%
-  filter(image_id == first(image_id)) %>%
-  ungroup() %>%
-  select(n_immune, everything())
+#Step 1
+spatialTIME_spatial_df = spatial %>% 
+  select(-X.1, -X, -phenotype) %>%
+  mutate(across(phenotype_ck:phenotype_cd4, ~ ifelse(grepl("\\+", .x), 1, 0))) %>%
+  relocate(patientImage_id, .before = 1)
 
-mxFDAobject_oneImage = make_mxfda(metadata = clinical,
-                         spatial = lung_oneImage_df %>%
-                           select(-image_id, -gender, -age, -survival_days, -survival_status, -stage),
-                         key = "patient_id")
+#Step 2
+cell_types = colnames(spatialTIME_spatial_df) %>% grep("phenotype", ., value = TRUE)
+
+#Step 3
+spatial_list = split(spatialTIME_spatial_df, spatial$patientImage_id)
+
+#Step 4
+summary_data = lapply(spatial_list, function(df){
+  df %>%
+    #group by sample ID to maintain ID column
+    group_by(patient_id, patientImage_id) %>%
+    #find number of positive
+    reframe(across(!!cell_types, ~ sum(.x)),
+              `Total Cells` = n()) %>%
+    #calculate proportion
+    mutate(across(!!cell_types, ~.x/`Total Cells` * 100, .names = "{.col} %"))
+}) %>%
+  #bind the rows together
+  do.call(bind_rows, .)
 ```
 
-
-
-
+With the spatial list, clinical, and summary data the `mIF` object can be constructed. For best computation efficiency, use >v1.3.4.
 
 ```{r}
-mxFDAobject_oneImage = extract_summary_functions(mxFDAobject_oneImage, "patient_id",
-                                extract_func = extract_univariate,
-                                summary_func = Gest,
-                                r_vec = seq(0, 100, by = 1),
-                                edge_correction = "rs",
-                                markvar = "immune",
-                                mark1 = "immune")
 
+library(spatialTIME)
 
+#make mif
+mif = create_mif(clinical_data = clinical,
+                 sample_data = summary_data,
+                 spatial_list = spatial_list[1:50],
+                 patient_id = "patient_id",
+                 sample_id = "patientImage_id")
 ```
 
-INTERPRET NN Distance FUNCTION
+Deriving spatial metrics with the `mIF` object is really easy but does take some time. Will only do 10 permutations here to estimate the complete spatial randomness measure of nearest neighbor G and a reduced sampling, or `'rs'`, edge correction. To make the run faster, will look at only cytotoxic T cells (CD8+) and helper T cells (CD4+).
 
 ```{r}
-plot(mxFDAobject_oneImage, y = "fundiff", what = "uni g", sampleID = "patient_id") +
-  geom_hline(yintercept = 0, color = "red", linetype = 2)
+mif = NN_G(mif, mnames = cell_types[c(2, 6)],
+           r_range = 0:100, num_permutations = 10, 
+           edge_correction = "rs", keep_perm_dis = FALSE,
+           workers = 1, overwrite = TRUE, xloc = "x", yloc = "y")
 ```
 
-
+With `spatialTIME`, all cell types (markers) are added to the data frame. We can visualize both CD8+ and CD4+ with ggplot.
 
 ```{r}
-mxFDAobject_oneImage <- run_fpca(mxFDAobject_oneImage, id = "patient_id", metric = "uni g", r = "r", value = "fundiff",
-                   pve = .95)
-
+mif$derived$univariate_NN %>%
+    ggplot() +
+    geom_line(aes(x = r, y = `Degree of Clustering Permutation`, color = patientImage_id), alpha = 0.4) +
+    facet_grid(~Marker) +
+  theme(legend.position = "none")
 ```
 
-Explore FPCA object
-Explain each of these plots
+Exporting the spatial summary function data from the `mIF` object is the same as accessing the list object. However, we need to make sure that the data that we use with the `mxFDA` object contains only a single cell types results. This is to make sure that when modeling we aren't mixing up different cells. Below is the extraction and filtering of the new univariate G results and keeping only the cytotoxic T cell results
 
-
-
-```{r fpc_plots, fig.width = 10}
-
-p1 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 1)
-p2 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 2)
-p3 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 3)
-p4 = plot(mxFDAobject_oneImage, what = 'uni g fpca', pc_choice = 4)
-
-(p1 + p2)/(p3 + p4)
+```{r}
+uni_g = mif$derived$univariate_NN %>%
+  filter(grepl("cd8", Marker))
 ```
 
+With the derived univariate nearest neighbor G for CD8+, it can be added to an `mxFDA` object with `add_summary_function()`. To show this, first will create a new `mxFDA` object with an empty spatial slot then add the new summary function results.
 
-INTERPRET WHAT YOU LEARNED FROM FPCA- this is an important piece
+```{r}
+#make mxFDA object 
+mxFDA_spatialTIME = make_mxfda(metadata = clinical,
+                               spatial = NULL,
+                               subject_key = "patient_id",
+                               sample_key = "patientImage_id")
+#add summary data
+mxFDA_spatialTIME = add_summary_function(mxFDAobject,
+                                         summary_function_data = uni_g,
+                                         metric = "uni g")
+```
 
+Can now use the `mxfda` plot method with the new data and continue with analyses as would be done if using the internal `extract_summary_function()`.
 
-Shout out to refund.shiny
-
-```{r refund.shiny, eval = FALSE}
-G_fpca = extract_fpca_object(mxFDAobject_oneImage,
-                             what = "uni g",
-                             id = "patient_id", r = "r", value = "fundiff")
-
-library(refund.shiny)
-plot_shiny(G_fpca)
-
+```{r}
+plot(mxFDA_spatialTIME, y = "Degree of Clustering Permutation", what = "uni g")
 ```
 
 
 
-### MFPCA
-
-ICC
-
-
-
-
-## How to structure data for use in the `mxfda` package
-
-Add text here about what format data needs to be in for use in this package, so that users can create their own spatial summary functions. Functions are evaluated over a specific set of radii.  The data needs to be a `data.frame` or `tbl_df` object in long format, where each row represents the value of a spatial summary function for a particular image at a particular radius. Data should have the following variables (though you may give them different names)
-
-* `id`: should should identify each unique image from each patient (we will need to add a patient and image id, since many datasets will have multiple images per patient )
-* `r`: radius value
-* `value`: value of the spatial summary function
-
-Let's look at an example, using the cross G functions estimated in code above.
-
-
-```{r, eval = FALSE}
-head(Gcrossdf)
-```
-
-In this data, `patientImage_id` is the `id` variable, `r` is the radius value, and either `sumfun` or `fundiff` can be used as the function value `value` for downstream analysis. Here `sumfun` represents the value of the Gcross function at a particular radius, and $fundiff = sumfun -csr$- this is Gcross centered at it's value under complete spatial randomness, so that values above zero can be interpreted as clustering and values below zero can be interpreted as repulsion, more or less. 
-
-### SpatialTIME
-
-Add example for converting spatialTIME to long format for use with mxfda
-
-
-## FDA Tips / Principles/ Things to know
-
-* Sparse vs. even grids- mention these, and what types of analysis you can do with each
-* Better to have 20+ measurements per curve- that means using a dense grid of radii
-* Number of knots cannot exceed the number of datapoints per function
+# References

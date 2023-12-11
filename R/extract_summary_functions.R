@@ -1,40 +1,8 @@
-#' extract_summary_functions
+#' Extract Summary Functions
 #'
-#' This is the main function for the fastGFPCA package.
-#' The function requires input data \code{Y} to be a dataframe in long format with variables
-#' \code{id}, \code{index}, and \code{value} to indicate subject IDs,
-#' observation times on the domain, and observations, respectively.
-#' The \code{index} must contain the same, equally spaced grid points for each subject.
-
-#' The number of functional principal components (FPCs) can either be specified
-#' directly (argument \code{npc}) or chosen based on the explained share of
-#' variance (\code{pve}). Families and link functions can be specified using the same
-#' syntax as the \code{family} argument from the \code{lme4::glmer()} function.
+#' Function to extract spatial summary functions from the `Spatial` slot of an `mxFDA` object
 #'
-#'
-#' @author Julia Wrobel \email{julia.wrobel@@cuanschutz.edu}
-#' @import dplyr
-#' @importFrom tidyr nest unnest
-#' @importFrom purrr map
-#'
-#' @return A \code{data.frame} containing:
-#' \item{image_patient_id}{the unique image id}
-#' \item{r}{the radius of values over which the spatial summary function is evaluated}
-#' \item{sumfun}{the values of the spatial summary function}
-#' \item{csr}{the values of the spatial summary function under complete spatial randomness}
-#' \item{fundiff}{sumfun - csr, positive values indicate clustering and negative values repulsion}
-#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
-#' Fast covariance estimation for high-dimensional functional data.
-#' \emph{Statistics and Computing}, 26, 409-421.
-#' DOI: 10.1007/s11222-014-9485-x.
-
-#' @examples
-#' # simulate data
-#' set.seed(1001)
-#'
-#'
-#' @param mxdata Dataframe of cell-level multiplex imaging data. Should have variables x and y to denote x and y spatial locations of each cell.
-#' @param image_patient_id The name of the variable that identifies each unique image.
+#' @param mxFDAobject object of class `mxFDA`
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param extract_func Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.
 #' @param summary_func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
@@ -42,9 +10,49 @@
 #' @param mark1 Character string that denotes first cell type of interest.
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
-#' @param analysis_vars Optional list of variables to be retained for downstream analysis.
+#'
+#' @details `r lifecycle::badge('stable')`
+#'
+#' @return an object of class `mxFDA` containing the corresponding spatial summary function slot filled. See [make_mxfda()] for object structure details.
+#'
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
+#'
+#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
+#' Fast covariance estimation for high-dimensional functional data.
+#' \emph{Statistics and Computing}, 26, 409-421.
+#' DOI: 10.1007/s11222-014-9485-x.
+#'
+#' [spatstat.explore::Kest()]
+#'
+#' [spatstat.explore::Gest()]
+#'
+#' [spatstat.explore::Lest()]
+#'
+#' [spatstat.explore::Kcross()]
+#'
+#' [spatstat.explore::Gcross()]
+#'
+#' [spatstat.explore::Lcross()]
+#'
+#' @import dplyr
+#' @importFrom tidyr nest unnest
+#' @importFrom purrr map
+#'
+#' @examples
+#' #load ovarian FDA object
+#' data('ovarian_FDA')
+#'
+#' #run function
+#' ovarian_FDA = extract_summary_functions(ovarian_FDA, r_vec = 0:100,
+#'                                         extract_func = extract_univariate,
+#'                                         summary_func = Kest,
+#'                                         markvar = "immune",
+#'                                         mark1 = "immune",
+#'                                         edge_correction = "trans")
+#'
 #' @export
-extract_summary_functions <- function(mxFDAobject, image_patient_id, r_vec = seq(0, 100, by = 10),
+extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       extract_func = c(extract_univariate, extract_bivariate),
                                       summary_func = c(Kest, Lest, Gest),
                                       markvar,
@@ -52,11 +60,14 @@ extract_summary_functions <- function(mxFDAobject, image_patient_id, r_vec = seq
                                       mark2 = NULL,
                                       edge_correction
                                       ){
-
-
+  if(!inherits(mxFDAobject, "mxFDA"))
+    stop("Object must be of class `mxFDA`.")
+  #need spatial data to calculate spatial summary functions
+  if(nrow(mxFDAobject@Spatial) == 0)
+    stop("No summary function to be calculated - missing spatial")
 
   df_nest = mxFDAobject@Spatial %>%
-    select(all_of(image_patient_id), x, y, all_of(markvar)) %>%
+    select(all_of(mxFDAobject@sample_key), x, y, all_of(markvar)) %>%
     filter(get(markvar) %in% c(mark1, mark2)) %>%
     nest(data = c(x, y, all_of(markvar)))
 
@@ -71,13 +82,13 @@ extract_summary_functions <- function(mxFDAobject, image_patient_id, r_vec = seq
      unnest(sumfuns)
 
    if(deparse(substitute(extract_func)) == "extract_univariate"){
-     if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`Univariate Summaries`$Kest = ndat
-     if(deparse(substitute(summary_func)) == "Lest") mxFDAobject@`Univariate Summaries`$Lest = ndat
-     if(deparse(substitute(summary_func)) == "Gest") mxFDAobject@`Univariate Summaries`$Gest = ndat
+     if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`univariate_summaries`$Kest = ndat
+     if(deparse(substitute(summary_func)) == "Lest") mxFDAobject@`univariate_summaries`$Lest = ndat
+     if(deparse(substitute(summary_func)) == "Gest") mxFDAobject@`univariate_summaries`$Gest = ndat
    } else {
-     if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`Bivariate Summaries`$Kcross = ndat
-     if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`Bivariate Summaries`$Lcross = ndat
-     if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`Bivariate Summaries`$Gcross = ndat
+     if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`bivariate_summaries`$Kcross = ndat
+     if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`bivariate_summaries`$Lcross = ndat
+     if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`bivariate_summaries`$Gcross = ndat
    }
    return(mxFDAobject)
 }

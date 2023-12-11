@@ -11,6 +11,15 @@ plot_fpc(obj, pc_choice)
 
 \item{pc_choice}{FPC to be plotted.}
 }
+\value{
+object of class ggplot
+}
 \description{
 Produces a ggplot with mean plus or minus two standard deviations of a selected FPC.
+}
+\details{
+\ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#superseded}{\figure{lifecycle-superseded.svg}{options: alt='[Superseded]'}}}{\strong{[Superseded]}}
+}
+\author{
+Julia Wrobel \email{julia.wrobel@emory.edu}
 }

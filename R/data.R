@@ -30,16 +30,43 @@
 #' Spatial relationship is summarized using the nearest neighbor G function.
 #'
 #' @format ## `ovarian_FDA`
-#' A data frame with 12,726 rows and 8 columns:
+#' An mxFDA object with augmented ovarian cancer multiplex immunofluorescence data, and NN G(r) calculated:
 #' \describe{
-#'   \item{patient_id}{Unique patient id}
-#'   \item{age}{Patient age at time of cancer diagnosis}
-#'   \item{survival_time}{Survival time from diagnosis, in days}
-#'   \item{event}{Censoring variable, 1 = death, 0 = censor}
-#'   \item{r}{radius}
-#'   \item{sumfun}{Value of G function}
-#'   \item{csr}{Value of G function under assumption of complete spatial randomness}
-#'   \item{fundiff}{sumfun-csr}
+#'   \item{Metadata}{information about the spatial samples with column `sample_key` column in both}
+#'   \item{Spatial}{cell-level information with `x` and `y` columns along with `sample_key` to link to `Metadata`}
+#'   \item{subject_key}{column in `Metadata` that may have multiple `sample_key` values for each, akin to patient IDs}
+#'   \item{sample_key}{column in both `Metadata` and `Spatial` that is a 1:1 with the samples (unique per sample)}
+#'   \item{univariate_summaries}{univariate summary slot with nearest neighbor G calculared}
+#'   \item{bivariate_summaries}{empty slot available for bivariate summaries}
+#'   \item{functional_pca}{empty slot for functional PCA data of summaries}
+#'   \item{functional_cox}{empty slot for functional models}
 #' }
 #' @source <https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html>
 "ovarian_FDA"
+
+#' Multiplex imaging data from a non-small cell lung cancer study
+#'
+#' This data is adapted from the VectraPolarisData Bioconductor package. There are multiple ROIs for each patient.
+#'
+#' Spatial summary functions of lung cancer multiplex imaging data.
+#'
+#' This data is adapted from the VectraPolarisData Bioconductor package.
+#' Signal between the survival outcome and spatial summary functions has been augmented for teaching purposes.
+#' Spatial relationship is summarized using the nearest neighbor G function.
+#'
+#' Includes only spatial samples that had 10 or more radii with calculable G function
+#'
+#' @format ## `lung_FDA`
+#' An mxFDA object with augmented non-small cel lung cancer multiplex immunofluorescence data, and NN G(r) calculated:
+#' \describe{
+#'   \item{Metadata}{information about the spatial samples with column `sample_key` column in both}
+#'   \item{Spatial}{cell-level information with `x` and `y` columns along with `sample_key` to link to `Metadata`}
+#'   \item{subject_key}{column in `Metadata` that may have multiple `sample_key` values for each, akin to patient IDs}
+#'   \item{sample_key}{column in both `Metadata` and `Spatial` that is a 1:1 with the samples (unique per sample)}
+#'   \item{univariate_summaries}{univariate summary slot with nearest neighbor G calculared}
+#'   \item{bivariate_summaries}{empty slot available for bivariate summaries}
+#'   \item{functional_pca}{empty slot for functional PCA data of summaries}
+#'   \item{functional_cox}{empty slot for functional models}
+#' }
+#' @source <https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html>
+"lung_FDA"
