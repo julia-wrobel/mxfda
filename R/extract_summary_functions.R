@@ -81,6 +81,15 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
      select(-data) %>%
      unnest(sumfuns)
 
+   cell_counts = mxFDAobject@Spatial %>%
+     dplyr::filter(get(markvar) %in% !!c(mark1, mark2)) %>%
+     dplyr::group_by(across(!!c(mxFDAobject@sample_key, markvar))) %>%
+     dplyr::summarise(counts = dplyr::n()) %>%
+     dplyr::mutate(!!markvar := paste0(markvar, " cells")) %>%
+     tidyr::spread(key = markvar, value = 'counts')
+
+   ndat = full_join(ndat, cell_counts, by = mxFDAobject@sample_key)
+
    if(deparse(substitute(extract_func)) == "extract_univariate"){
      if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`univariate_summaries`$Kest = ndat
      if(deparse(substitute(summary_func)) == "Lest") mxFDAobject@`univariate_summaries`$Lest = ndat
