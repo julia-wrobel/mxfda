@@ -115,7 +115,7 @@ We can further explore the results of FPCA interactively using the `{refund.shin
 
 ```{r refund.shiny, eval = FALSE}
 G_fpca = extract_fpca_object(ovarian_FDA,
-                             what = "uni g fpca", r = "r")
+                             what = "uni g fpca")
 
 library(refund.shiny)
 plot_shiny(G_fpca)
