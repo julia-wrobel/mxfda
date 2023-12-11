@@ -10,7 +10,6 @@
 #' @param knots Number of knots for defining spline basis.Defaults to the number of measurements per function divided by 2.
 #' @param lightweight Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.
 #' @param ... Optional other arguments to be passed to \code{mfpca.face}
-#' @param twoway whether to model within within sample variability (such as )
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -46,8 +45,7 @@ run_mfpca = function(mxFDAobject,
                     value = "fundiff",
                     knots = NULL,
                     lightweight = FALSE,
-                    ...,
-                    twoway = FALSE){
+                    ...){
   #get the right data
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
   metric = unlist(strsplit(metric, split = " "))
