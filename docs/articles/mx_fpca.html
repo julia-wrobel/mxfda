@@ -176,9 +176,9 @@ experiment are described in <span class="citation">Steinhart et al.
 <p><img src="mx_fpca_files/figure-html/unnamed-chunk-3-1.png" width="700"></p>
 <p>Values above the dotted red line are interpreted as having a higher
 probability of observing a neighboring immune cell at radius <span class="math inline">\(r\)</span> than would be expected under complete
-spatial randomness. Conversely, values below the dotted line exhibit
-lower probability of observing a neighboring immune cell than expected
-under CSR.</p>
+spatial randomness (CSR). Conversely, values below the dotted line
+exhibit lower probability of observing a neighboring immune cell than
+expected under CSR.</p>
 </div>
 <div class="section level4">
 <h4 id="run-and-visualize-fpca">Run and visualize FPCA<a class="anchor" aria-label="anchor" href="#run-and-visualize-fpca"></a>
@@ -187,13 +187,13 @@ under CSR.</p>
 <code><a href="../reference/run_fpca.html">run_fpca()</a></code> function, and store these results in the
 <code>mxFDAobject</code> called <code>ovarian_FDA</code>. The argument
 <code>metric</code> is used to specify which spatial summary function to
-estimate FPCA for- in this case “uni g” specifies the univariate G
-function, <code>r</code> denotes which variable specifies the radius,
-and <code>value</code> denotes which value are the values of the spatial
-summary function. The argument <code>pve</code> takes a number from 0 to
-1, and specifies the percent variance explained by the FPCA
-decomposition. For example, if <code>pve= 0.98</code> is selected, the
-resulting FPCA will return the number of FPCs that explain 98% of
+estimate FPCA for - in this case <code>"uni g"</code> specifies the
+univariate G function, <code>r</code> denotes which variable specifies
+the radius, and <code>value</code> denotes which value are the values of
+the spatial summary function. The argument <code>pve</code> takes a
+number from 0 to 1, and specifies the percent variance explained by the
+FPCA decomposition. For example, if <code>pve = 0.98</code> is selected,
+the resulting FPCA will return the number of FPCs that explain 98% of
 variance in the data.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ovarian_FDA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_fpca.html">run_fpca</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, </span>
@@ -245,14 +245,14 @@ population mean. For example in the plot for FPC 1, we can interpret the
 pattern of this FPC as a shift up or down from the population mean.
 Subjects who have a high score, <span class="math inline">\(c_{i1}\)</span> for FPC 1 have, across radii, a
 larger probability of observing a neighboring immune cell than average
-in the dataset. This pattern explains 73.8% of variance in the data.</p>
+in the dataset. This pattern explains 76.2% of variance in the data.</p>
 <p>We can further explore the results of FPCA interactively using the
 <code>{refund.shiny}</code> package from <span class="citation">Wrobel
 et al. (2016)</span>. Execute the code below to launch a Shiny app with
 interactive plots.</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">G_fpca</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_fpca_object.html">extract_fpca_object</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>,</span>
-<span>                             what <span class="op">=</span> <span class="st">"uni g fpca"</span>, r <span class="op">=</span> <span class="st">"r"</span><span class="op">)</span></span>
+<span>                             what <span class="op">=</span> <span class="st">"uni g fpca"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">refund.shiny</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/pkg/refund.shiny/man/plot_shiny.html" class="external-link">plot_shiny</a></span><span class="op">(</span><span class="va">G_fpca</span><span class="op">)</span></span></code></pre></div>

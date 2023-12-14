@@ -68,11 +68,11 @@ plot(ovarian_FDA, y = "fundiff", what = "uni g", sampleID = "patient_id") +
   
 ```
 
-Values above the dotted red line are interpreted as having a higher probability of observing a neighboring immune cell at radius $r$ than would be expected under complete spatial randomness. Conversely, values below the dotted line exhibit lower probability of observing a neighboring immune cell than expected under CSR.
+Values above the dotted red line are interpreted as having a higher probability of observing a neighboring immune cell at radius $r$ than would be expected under complete spatial randomness (CSR). Conversely, values below the dotted line exhibit lower probability of observing a neighboring immune cell than expected under CSR.
 
 ### Run and visualize FPCA
 
-Below we run FPCA on these G-function curves, using the `run_fpca()` function, and store these results in the `mxFDAobject` called `ovarian_FDA`. The argument `metric` is used to specify which spatial summary function to estimate FPCA for- in this case "uni g" specifies the univariate G function, `r` denotes which variable specifies the radius, and `value` denotes which value are the values of the spatial summary function. The argument `pve` takes a number from 0 to 1, and specifies the percent variance explained by the FPCA decomposition. For example, if `pve= 0.98` is selected, the resulting FPCA will return the number of FPCs that explain 98% of variance in the data.
+Below we run FPCA on these G-function curves, using the `run_fpca()` function, and store these results in the `mxFDAobject` called `ovarian_FDA`. The argument `metric` is used to specify which spatial summary function to estimate FPCA for - in this case `"uni g"` specifies the univariate G function, `r` denotes which variable specifies the radius, and `value` denotes which value are the values of the spatial summary function. The argument `pve` takes a number from 0 to 1, and specifies the percent variance explained by the FPCA decomposition. For example, if `pve = 0.98` is selected, the resulting FPCA will return the number of FPCs that explain 98% of variance in the data.
 
 ```{r}
 ovarian_FDA <- run_fpca(ovarian_FDA, 
@@ -108,7 +108,7 @@ p2 = plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 2)
 (p1 + p2)
 ```
 
-The plots above show $\hat{\mu}(r)\pm \sqrt{\hat{\lambda}_1\hat{\psi_k}(t)}$ for the first and second FPC. The black line in each plot is the mean of the data- this shows that the peak in probability of observing a neighboring immune cell occurs, on average, at about radius $r = 12$. In these plots, the blue and red lines represent one standard deviation of the FPC added (blue) or subtracted (red) from the population mean. For example in the plot for FPC 1, we can interpret the pattern of this FPC as a shift up or down from the population mean. Subjects who have a high score, $c_{i1}$ for FPC 1 have, across radii, a larger probability of observing a neighboring immune cell than average in the dataset. This pattern explains 73.8% of variance in the data.
+The plots above show $\hat{\mu}(r)\pm \sqrt{\hat{\lambda}_1\hat{\psi_k}(t)}$ for the first and second FPC. The black line in each plot is the mean of the data- this shows that the peak in probability of observing a neighboring immune cell occurs, on average, at about radius $r = 12$. In these plots, the blue and red lines represent one standard deviation of the FPC added (blue) or subtracted (red) from the population mean. For example in the plot for FPC 1, we can interpret the pattern of this FPC as a shift up or down from the population mean. Subjects who have a high score, $c_{i1}$ for FPC 1 have, across radii, a larger probability of observing a neighboring immune cell than average in the dataset. This pattern explains 76.2% of variance in the data.
 
 
 We can further explore the results of FPCA interactively using the `{refund.shiny}` package from @wrobel2016interactive. Execute the code below to launch a Shiny app with interactive plots.
