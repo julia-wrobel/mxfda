@@ -70,9 +70,9 @@ In this approach, we first decompose the spatial summary functions using FPCA, t
 
 $$\log h_i(t) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip} + \sum_{k = 1}^K \beta_k c_{ik},$$
 
-where $c_{ik}$ is the $k$th score from functional principle components analysis for the $i$th subject. $K$ represents the number of principle components, usually selected to explain at least 95% of the variance in the spatial summary functions (see `vignette("mx_fpca")`).  The $\beta_k$ are regression coefficients that tell us about the association between overall survival and the $k$th functional principle component. Like the $\gamma_p$, the the $\beta_k$ are interpreted as log hazard ratios, and $e^{\beta_k}$ is a hazard ratio. This is the approach to Cox regression with spatial summary functions as covariates taken in @vu2023funspace.
+where $c_{ik}$ is the $k$th score from functional principal components analysis for the $i$th subject. $K$ represents the number of principal components, usually selected to explain at least 95% of the variance in the spatial summary functions (see `vignette("mx_fpca")`).  The $\beta_k$ are regression coefficients that tell us about the association between overall survival and the $k$th functional principal component. Like the $\gamma_p$, the the $\beta_k$ are interpreted as log hazard ratios, and $e^{\beta_k}$ is a hazard ratio. This is the approach to Cox regression with spatial summary functions as covariates taken in @vu2023funspace.
 
-The code below runs FPCA the the G-functions from the ovarian cancer data and calculates principle componts that explain up to 99% variance using the argument `pve`. The argument `lightweight = TRUE` returns only what is needed for downstream analysis. To return all items calculate by FPCA when using `refund::fpca.face`, use `lightweight = FALSE`.
+The code below runs FPCA the G-functions from the ovarian cancer data and calculates principal components that explain up to 99% variance using the argument `pve`. The argument `lightweight = TRUE` returns only what is needed for downstream analysis. To return all items calculate by FPCA when using `refund::fpca.face`, use `lightweight = FALSE`.
 
 ```{r}
 ovarian_FDA <- run_fpca(ovarian_FDA, metric = "uni g", r = "r", value = "fundiff",
@@ -113,10 +113,9 @@ Next, we use these scores as covariates in a Cox regression model. We also contr
 library(survival)
 phmod_fpc = coxph(Surv(survival_time, event) ~ fpc1 + fpc2 + fpc3 + fpc4 + age, 
               data = Gdf_fpc)
-#summary(phmod_fpc)
 ```
 
-The results from this model are printed below. Not that All FPCs except FPC 2 have a statisticaly significant relationship with overall survival. The hazard ratio above 1 for FPC 1 indicates that higher scores are associate with worse survival outcomes, which is consistent with the exploratory analysis in the plot above.
+The results from this model are printed below in a tidy format. Note that all FPCs except FPC 2 have a statistically significant relationship with overall survival. The hazard ratio above 1 for FPC 1 indicates that higher scores are associate with worse survival outcomes, which is consistent with the exploratory analysis in the plot above.
 
 ```{r}
 tidy(phmod_fpc, exp = TRUE, conf.int = TRUE) %>%
@@ -128,18 +127,16 @@ tidy(phmod_fpc, exp = TRUE, conf.int = TRUE) %>%
 
 ### Linear and additive functional Cox regression models
 
-This is the approach used in @vu2022spf
+Linear and additive functional Cox regression models were used in @vu2022spf to model the relationship between survival and spatial summary functions without having to first decompose the spatial summary functions using FPCA. Linear functional cox regression was first introduced by @gellar2015cox and takes the form: 
 
-Linear functional cox model takes the form: 
+$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip} + \int_{r = 0}^R \beta(r)X_i(r)dr,$$
 
-$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip} + H\left(X_i(r)\right)$$
-
-Using age and gender and stage as scalar covariates
+where $X_i(r)$ is the spatial summary function for subject $i$, and $\beta(r)$ is a *coefficient function*. For this model, the coefficient function is a log hazard ratio for the spatial summary function at radius $r$. In effect, this allows us to model the association between of spatial clustering and survival at many different radii simultaneously. Here $X_i(r)$ is considered a *functional covariate*, and the $Z_{ip}$ are *scalar covariates*. 
 
 
 #### Linear functional Cox model (LFCM)
 
-@gellar2015cox
+The code below runs an LFCM for the G-functions from the ovarian cancer data with age as a scalar covariate. Setting the argument `afcm = FALSE` runs an LFCM instead of an AFCM.
 
 ```{r}
 ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
@@ -147,6 +144,8 @@ ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       metric = "uni g", r = "r", value = "fundiff",
                       afcm = FALSE)
 ```
+
+Below we print the class and summary of the extracted model.
 
 ```{r}
 class(extract_model(ovarian_FDA, 'uni g', 'fit_lfcm'))
@@ -157,10 +156,11 @@ class(extract_model(ovarian_FDA, 'uni g', 'fit_lfcm'))
 summary(extract_model(ovarian_FDA, 'uni g', 'fit_lfcm'))
 ```
 
-Visualize coefficient function
+Finally, we visualized the estimated coefficient function, $\hat{\beta}(r)$, from this model. The code below extracts this quantity, then plots $\hat{\beta}(r)$ as a solid black line and 95% pointwise confidence intervals as dotted black lines. Values of the radius $r$ where the 95% confidence interval does not contain zero are statistically significant.
 
 ```{r}
 lfcm_surface = extract_surface(ovarian_FDA, metric = "uni g", model = "fit_lfcm", analysis_vars = c("age"))
+
 plot(lfcm_surface)
 ```
 
@@ -168,7 +168,13 @@ plot(lfcm_surface)
 
 #### Additive functional Cox model (AFCM)
 
-@cui2021additive
+Additive functional cox regression was first introduced by @cui2021additive and takes the form: 
+
+$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip} + \int_{r = 0}^R F\left(r, X_i(r)\right)dr.$$
+
+This model is slightly more flexible than the LFCM, in that it allows the relationship between $X_i(r)$ and survival to vary nonlinearly with $r$.
+
+The code below runs an AFCM with age as a scalar covariate. Setting the argument `afcm = TRUE` runs an AFCM.
 
 ```{r}
 ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm", 
@@ -186,8 +192,7 @@ class(extract_model(ovarian_FDA, 'uni g', 'fit_afcm'))
 summary(extract_model(ovarian_FDA, 'uni g', 'fit_afcm'))
 ```
 
-
-Visualize the afcm model
+The AFCM model produces a *coefficient surface*, $\hat{F}\left(r, X_i(r)\right)$, rather than a coefficient function. The code below extracts this estimated surface, then on the left plots the surface, and on the right plots regions of the surface that are statistically significant at the 95% confidence level. 
 
 ```{r extract_estimates, fig.with = 12}
 afcm_surface = extract_surface(ovarian_FDA, metric = "uni g", model = "fit_afcm", analysis_vars = c("age"), p = 0.05)
@@ -197,46 +202,19 @@ plot(afcm_surface)
 
 ## Model summaries and C-index 
 
-C-index is a good way to compare across models, especially when incorporating cross validation.
+C-index is a good way to compare across models, especially when incorporating cross validation. Larger c-index is indicative of a better predictive model. Below, we calculate the c-index for each model.
 
 ```{r}
-# calculate overall p value for fpca
-#fit_fpc_null = coxph(Surv(survival_time, event) ~  age, data = Gdf_fpc)
-#p_fpc = anova(fit_fpc_null, phmod_fpc)
-
 fit_afcm = extract_model(ovarian_FDA, 'uni g', 'fit_afcm')
 fit_lfcm = extract_model(ovarian_FDA, 'uni g', 'fit_lfcm')
 
 c_index = c(
-  rep(phmod_fpc$concordance[["concordance"]], times = 4),
+  phmod_fpc$concordance[["concordance"]], 
   extract_c(fit_lfcm, Gdf_fpc$survival_time, Gdf_fpc$event),
   extract_c(fit_afcm, Gdf_fpc$survival_time, Gdf_fpc$event)
 )
 
-
-est_fpca = broom::tidy(phmod_fpc, exp = TRUE) %>%
-  mutate(model = "fpca", edf = NA) %>%
-  select(model,  term, "hazard ratio" = estimate, edf, p = p.value)
-
-est_lfcm = bind_rows(broom::tidy(fit_lfcm) %>% 
-  mutate("hazard ratio" = NA, p = NA, model = "lfcm") %>%
-  select(model, term, "hazard ratio", edf, p),
-  broom::tidy(fit_lfcm, parametric = TRUE, exp = TRUE) %>% 
-  mutate(edf = NA, model = "lfcm") %>%
-  select(model, term, "hazard ratio" = estimate, edf, p = p.value)
-)
-
-est_afcm = bind_rows(broom::tidy(fit_afcm) %>% 
-  mutate("hazard ratio" = NA, p = NA, model = "afcm") %>%
-  select(model, term, "hazard ratio", edf, p),
-  broom::tidy(fit_afcm, parametric = TRUE, exp = TRUE) %>% 
-  mutate(edf = NA, model = "afcm") %>%
-  select(model, term, "hazard ratio" = estimate, edf, p = p.value)
-)
-
-bind_rows(est_fpca, est_lfcm, est_afcm) %>%
-  filter(term != "age") %>%
-  mutate(p = format.pval(p, digits = 1),
-         "c-index" = c_index) %>%
+tibble(model = c("fpc", "lfcm", "afcm"), c_index) %>%
   knitr::kable(digits = 2)
+
 ```
