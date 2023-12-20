@@ -44,5 +44,8 @@ extract_model = function(mxFDAobject, what, model_name){
   if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) fit = mxFDAobject@functional_cox$Gest[[model_name]]
   if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) fit = mxFDAobject@functional_cox$Lest[[model_name]]
 
+  if(is.null(fit))
+    stop("Model ", model_name, " doesn't exist")
+
   return(fit)
 }

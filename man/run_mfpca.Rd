@@ -11,8 +11,7 @@ run_mfpca(
   value = "fundiff",
   knots = NULL,
   lightweight = FALSE,
-  ...,
-  twoway = FALSE
+  ...
 )
 }
 \arguments{
@@ -29,8 +28,6 @@ run_mfpca(
 \item{lightweight}{Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.}
 
 \item{...}{Optional other arguments to be passed to \code{mfpca.face}}
-
-\item{twoway}{whether to model within within sample variability (such as )}
 }
 \value{
 A \code{mxFDA} object  with the \code{functional_mpca} slot for the respective spatial summary function containing:

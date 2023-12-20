@@ -1,3 +1,8 @@
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/julia-wrobel/mxfda/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/julia-wrobel/mxfda/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://github.com/julia-wrobel/mxfda/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/julia-wrobel/mxfda/actions/workflows/test-coverage.yaml)
+<!-- badges: end -->
+
 # mxFDA
 
 A functional data analysis package for point pattern data

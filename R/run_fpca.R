@@ -59,6 +59,18 @@ run_fpca = function(mxFDAobject,
   #get data
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols)
+
+  computed_vals = mxfundata %>%
+    dplyr::group_by(dplyr::across(!!mxFDAobject@sample_key)) %>%
+    dplyr::summarise(number_computable = sum(!is.na(get(value)))) %>% #number of radii with value
+    dplyr::mutate(Keep = ifelse(number_computable < 4, FALSE, TRUE),
+                  Keep = factor(Keep, levels = c(TRUE, FALSE))) #true means keep %>%
+  cvs = table(computed_vals$Keep) %>% data.frame() #calculated values summed
+  #let user know what is kept/removed
+  message(paste0(cvs[cvs$Var1 == "TRUE", "Freq"],
+                 " sample have >= 4 values for FPCA; removing ",
+                 cvs[cvs$Var1 == "FALSE", "Freq"], " samples"))
+
   #make sure that the selected columns are present to be used for fpca
   if(!(r %in% colnames(mxfundata)))
     stop("'r' not in summary data")
@@ -68,6 +80,10 @@ run_fpca = function(mxFDAobject,
   index_range <- range(mxfundata[[r]])
 
   mxfundata <- mxfundata %>%
+    dplyr::filter(get(mxFDAobject@sample_key) %in% #filter out the samples that don't have enough values
+                    (computed_vals %>%
+                       dplyr::filter(Keep == "TRUE") %>%
+                       pull(!!mxFDAobject@sample_key))) %>%
     dplyr::select(dplyr::all_of(c(mxFDAobject@sample_key, r, value))) %>%
     tidyr::pivot_wider(names_from =  dplyr::all_of(r),
                 names_prefix = "r_",
@@ -95,7 +111,7 @@ run_fpca = function(mxFDAobject,
   mxfundata = dplyr::bind_cols(mxfundata, score_df) %>%
     dplyr::select(-dplyr::starts_with("r_"))
 
-  fpca_dat <- list(score_df = score_df,
+  fpca_dat <- list(score_df = mxfundata,
                    fpc_object = mx_fpc)
 
   if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_pca`$Kcross = fpca_dat

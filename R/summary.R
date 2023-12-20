@@ -42,11 +42,13 @@ summary.mxFDA = function(object, ...){
     cat("MFPCs not yet calculated\n", sep = "")
   } else {
     fpc_slots = names(object@functional_mpca)
-    cat("FPCs Calculated:\n", sep = "")
+    cat("MFPCs Calculated:\n", sep = "")
     for(f in fpc_slots){
       cat("\t", f, ": ",
           ncol(object@functional_mpca[[f]]$score_df), " Level1 MFPCs and ",
-          ncol(object@functional_mpca[[f]]$score_df), " Level2 MFPCs", "\n", sep = "") #need to play with the output to determine how to report
+          ncol(object@functional_mpca[[f]]$scores_level2), " Level2 MFPCs explaining ",
+          round((object@functional_mpca[[f]]$mfpc_object$pve * 100), digits = 1),
+          "% variance\n", sep = "") #need to play with the output to determine how to report
     }
   }
   #any models run

@@ -65,6 +65,22 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
   #need spatial data to calculate spatial summary functions
   if(nrow(mxFDAobject@Spatial) == 0)
     stop("No summary function to be calculated - missing spatial")
+  #check correction methods
+  k_l_correction = c("border", "isotropic", "Ripley", "translate")
+  gest_correction = c("rs", "km", "han")
+  #check function
+  if(identical(all.equal(Kest, summary_func), TRUE) |
+     identical(all.equal(Kcross, summary_func), TRUE) |
+     identical(all.equal(Lest, summary_func), TRUE) |
+     identical(all.equal(Lcross, summary_func), TRUE)){
+    if(!any(grepl(edge_correction, k_l_correction)))#will capture short names like iso and trans
+      stop("edge correction must match summary function")
+  }
+  if(identical(all.equal(Gest, summary_func), TRUE) |
+     identical(all.equal(Gcross, summary_func), TRUE) ){
+    if(!any(grepl(edge_correction, gest_correction)))
+      stop("edge correction must match summary function")
+  }
 
   df_nest = mxFDAobject@Spatial %>%
     select(all_of(mxFDAobject@sample_key), x, y, all_of(markvar)) %>%
@@ -80,6 +96,15 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                     edge_correction = edge_correction)) %>%
      select(-data) %>%
      unnest(sumfuns)
+
+   cell_counts = mxFDAobject@Spatial %>%
+     dplyr::filter(get(markvar) %in% !!c(mark1, mark2)) %>%
+     dplyr::group_by(across(!!c(mxFDAobject@sample_key, markvar))) %>%
+     dplyr::summarise(counts = dplyr::n()) %>%
+     dplyr::mutate(!!markvar := paste0(markvar, " cells")) %>%
+     tidyr::spread(key = markvar, value = 'counts')
+
+   ndat = full_join(ndat, cell_counts, by = mxFDAobject@sample_key)
 
    if(deparse(substitute(extract_func)) == "extract_univariate"){
      if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`univariate_summaries`$Kest = ndat

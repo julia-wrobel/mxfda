@@ -10,7 +10,6 @@
 #' @param knots Number of knots for defining spline basis.Defaults to the number of measurements per function divided by 2.
 #' @param lightweight Default is FALSE. If TRUE, removes Y and Yhat from returned mFPCA object. A good option to select for large datasets.
 #' @param ... Optional other arguments to be passed to \code{mfpca.face}
-#' @param twoway whether to model within within sample variability (such as )
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -46,8 +45,7 @@ run_mfpca = function(mxFDAobject,
                     value = "fundiff",
                     knots = NULL,
                     lightweight = FALSE,
-                    ...,
-                    twoway = FALSE){
+                    ...){
   #get the right data
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
   metric = unlist(strsplit(metric, split = " "))
@@ -60,6 +58,17 @@ run_mfpca = function(mxFDAobject,
   mxfundata = mxFDAobject@Metadata %>%
     dplyr::select(dplyr::all_of(c(mxFDAobject@subject_key, mxFDAobject@sample_key))) %>%
     dplyr::right_join(mxfundata, by = mxFDAobject@sample_key)
+
+  computed_vals = mxfundata %>%
+    dplyr::group_by(dplyr::across(!!mxFDAobject@sample_key)) %>%
+    dplyr::summarise(number_computable = sum(!is.na(get(value)))) %>% #number of radii with value
+    dplyr::mutate(Keep = ifelse(number_computable < 4, FALSE, TRUE),
+                  Keep = factor(Keep, levels = c(TRUE, FALSE))) #true means keep %>%
+  cvs = table(computed_vals$Keep) %>% data.frame() #calculated values summed
+  #let user know what is kept/removed
+  message(paste0(cvs[cvs$Var1 == "TRUE", "Freq"],
+                 " sample have >= 4 values for FPCA; removing ",
+                 cvs[cvs$Var1 == "FALSE", "Freq"], " samples"))
 
   # NEED TO CHANGE THIS BEHAVIOR- WHAT DO WE DO IF WE HAVE AN NA FOR THE IMAGE SUMMARY FUNCTION
   mxfundata = mxfundata %>% filter(!is.na(r))
