@@ -10,13 +10,12 @@ Authors@R:
     person("Alex", "Soupir", role = c("aut"),
     comment = c(ORCID = "0000-0003-1251-9179"))
     )
-Description:  The `mxfda` package contains tools for analyzing spatial point process data
-using methods from functional data analysis. While examples in vignettes illustrate 
-the use of the package for single-cell multiplex imaging data, the package can handle
-analysis of other types of point process data as well, 
-including repeated samples of spatial transcriptomics and geospatial data.
-Analyses for this package are executed and stored using an S4 object of class `mxFDA`. 
-
+Description: The `mxfda` package contains tools for analyzing spatial point process data
+  using methods from functional data analysis. While examples in vignettes illustrate 
+  the use of the package for single-cell multiplex imaging data, the package can handle
+  analysis of other types of point process data as well, 
+  including repeated samples of spatial transcriptomics and geospatial data.
+  Analyses for this package are executed and stored using an S4 object of class `mxFDA`. 
 License: MIT + file LICENSE
 URL: https://github.com/julia-wrobel/mxfda, http://juliawrobel.com/mxfda
 BugReports: https://github.com/julia-wrobel/mxfda/issues

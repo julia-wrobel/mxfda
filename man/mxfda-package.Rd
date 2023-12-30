@@ -4,9 +4,9 @@
 \name{mxfda-package}
 \alias{mxfda}
 \alias{mxfda-package}
-\title{mxfda: What the Package Does (Title Case- stuff)}
+\title{mxfda: A functional data analysis package for spatial point pattern data}
 \description{
-More about what it does (maybe more than one line) Use four spaces when indenting paragraphs within the Description.
+The `mxfda` package contains tools for analyzing spatial point process data using methods from functional data analysis. While examples in vignettes illustrate the use of the package for single-cell multiplex imaging data, the package can handle analysis of other types of point process data as well, including repeated samples of spatial transcriptomics and geospatial data. Analyses for this package are executed and stored using an S4 object of class `mxFDA`.
 }
 \seealso{
 Useful links:
