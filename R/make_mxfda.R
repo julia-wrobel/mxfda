@@ -20,7 +20,7 @@
 #' \item{functional_mpca}{slot of class `list` where MFPCA results are stored}
 #' \item{functional_cox}{slot of class `list` where functional cox model results are stored}
 #' \item{functional_mcox}{slot of class `list` where mixed functional cox model results are stored}
-#'
+#' \item{scalar_on_function}{slot of class `list` where functional models are fit to scalar responses}
 #'
 #' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
@@ -78,5 +78,6 @@ methods::setClass("mxFDA", slots = list(
   `functional_pca` = "list", #one for 'regular'
   `functional_mpca` = "list", #one for mixed effects (?)
   `functional_cox` = "list",
-  `functional_mcox` = "list" #one for mixed effects (?)
+  `functional_mcox` = "list", #one for mixed effects (?)
+  `scalar_on_functional` = "list"
 ))
