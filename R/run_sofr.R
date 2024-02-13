@@ -1,19 +1,19 @@
-#' Run Function Cox Models
+#' Run Scalar on Function Regression
 #'
-#' Fit a functional Cox regression model.
+#' Fit a scalar-on-function regression model. Uses refund::pfr under the hood for computations, and stores results in the mxfda object.
 #'
 #' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
 #' @param model_name character string to give the fit model in the functional cox slot
 #' @param formula Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
-#' @param event character string for the column in Metadata that contains 1/0 for the survival event
 #' @param metric name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param knots Number of knots for defining spline basis.
-#' @param afcm If TRUE, runs additive functional Cox model. If FALSE, runs linear functional cox model. Defaults to linear functional cox model.
 #' @param smooth Option to smooth data using FPCA. Defaults to FALSE.
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
+#'
+#' @importFrom refund pfr
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -26,21 +26,19 @@
 #' #load ovarian mxFDA object
 #' data('ovarian_FDA')
 #'
-#' #run the lfcm model
-#' ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
-#'                       formula = survival_time ~ age, event = "event",
-#'                       metric = "uni g", r = "r", value = "fundiff",
-#'                       afcm = FALSE)
+#' #run the scalar on function regression model with a continuous outcome (age)
+#' ovarian_FDA = run_sofr(ovarian_FDA,
+#'                        model_name = "fit_sofr",
+#'                        formula = age~stage,
+#'                        metric = "uni g", r = "r", value = "fundiff")
 #'
 #' @export
-run_fcm <- function(mxFDAobject,
+run_sofr <- function(mxFDAobject,
                     model_name,
                     formula,
-                    event = "event",
                     metric = "uni k",
                     r = "r",
                     value = "fundiff",
-                    afcm = FALSE,
                     smooth = FALSE,
                     filter_cols = NULL,
                     ...,
@@ -55,15 +53,10 @@ run_fcm <- function(mxFDAobject,
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols) %>%
     dplyr::full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
-  #join everything needed to fit the model into a vector for analysis vars
-  analysis_vars = unique(c(all.vars(formula),
-                           event))
 
-  if(!(event %in% colnames(mxFDAobject@Metadata)))
-    stop("`event` needs to be a column name in the metadata")
-  if(!one_zero(mxFDAobject@Metadata[[event]]))
-    stop("The event column needs to be in format 0/1")
-  # check for missing values in the functional predictor
+  analysis_vars = unique(c(all.vars(formula)))
+
+  # check for missing values in the functional predictor- these must be removed
   if(smooth){
     mxfundata <- impute_fpca(mxfundata, id = mxFDAobject@sample_key, r = r, value = value,
                              analysis_vars = analysis_vars, smooth = TRUE)
@@ -74,36 +67,38 @@ run_fcm <- function(mxFDAobject,
                                analysis_vars = analysis_vars, smooth)
     message("Functional predictor contains NA values that were imputed using FPCA")
   }
+
+  mxfundata <- mxfundata %>%
+    select(dplyr::all_of(c(mxFDAobject@sample_key, r, value, analysis_vars))) %>%
+    tidyr::pivot_wider(names_from =  dplyr::all_of(r),
+                       names_prefix = "r_",
+                       values_from =  dplyr::all_of(value))
+
+  mat <- mxfundata %>%
+    dplyr::select(dplyr::starts_with("r_")) %>%
+    as.matrix()
+
+  mxfundata = mxfundata %>% select(-contains("r_"))
+  mxfundata$xmat = mat
+
+  if(is.null(knots)) knots = floor(ncol(mat)/3)
+  if(knots > ncol(mat) - 5) knots = floor(ncol(mat)/3)
+  if(knots < 3) knots = 5
+
   form = deparse(stats::formula(formula))
-  mxfundata <- process_fcm(mxfundata, mxFDAobject@sample_key, r, value, analysis_vars)
+  form =  paste0(form, ' + lf(xmat, k=', knots, ")")
 
-  # fit linear or additive functional Cox model
-  if(afcm){
-    form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE))')
-    weights = mxfundata[[event]]
-    fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
-                         weights = weights,
-                         data = mxfundata,
-                         family = mgcv::cox.ph())
+  fit_sofr <- pfr(formula = stats::as.formula(form),
+                  data = mxfundata)
 
-    class(fit_fcm) <- append("afcm", class(fit_fcm))
-  }else{
-    form =  paste0(form, '+ s(t_int, by=l_int*func, bs="cr", k=20)')
-    weights = mxfundata[[event]]
-    fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
-                   weights = weights,
-                   data = mxfundata,
-                   family = mgcv::cox.ph())
+  class(fit_sofr) <- append("sofr", class(fit_sofr))
 
-    class(fit_fcm) <- append("lfcm", class(fit_fcm))
-  }
-
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_cox`$Kcross[[model_name]] = fit_fcm
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`functional_cox`$Gcross[[model_name]] = fit_fcm
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`functional_cox`$Lcross[[model_name]] = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_cox`$Kest[[model_name]] = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`functional_cox`$Gest[[model_name]] = fit_fcm
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`functional_cox`$Lest[[model_name]] = fit_fcm
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`sofr`$Kcross[[model_name]] = fit_sofr
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`sofr`$Gcross[[model_name]] = fit_sofr
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`sofr`$Lcross[[model_name]] = fit_sofr
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`sofr`$Kest[[model_name]] = fit_sofr
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`sofr`$Gest[[model_name]] = fit_sofr
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`sofr`$Lest[[model_name]] = fit_sofr
 
  return(mxFDAobject)
 }
