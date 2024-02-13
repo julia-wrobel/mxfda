@@ -61,8 +61,6 @@
 # ##load processed ovarian cancer data
 # load(url("https://github.com/julia-wrobel/MI_tutorial/raw/main/Data/ovarian.RDA"))
 #
-#
-#
 # # clean data
 # ovarian_df_full = ovarian_df %>%
 #   # subset to only analyze tumor areas
@@ -80,10 +78,10 @@
 #          y = y/1000) %>%
 #   filter(tissue_category == "Tumor", immune == "immune") %>%
 #   select(patient_id,x, y, age = age_at_diagnosis, immune, survival_time,
-#          event = death, immune)
-
+#          event = death, immune, stage = stage_bin)
 #
 # #
+# # #
 # # # enhance signal of original data for illustrating use of the package
 # add_clustering <- function(mximg){
 #   # create a convex hull as the observation window
@@ -117,10 +115,10 @@
 #
 # ### Make mxFDA object
 # clinical = ovarian_df %>%
-#   select(patient_id, age, survival_time, event) %>% distinct() %>%
+#   select(patient_id, age, survival_time, event, stage) %>% distinct() %>%
 #   mutate(sample_id = patient_id)
 # spatial = ovarian_df %>%
-#   select(-survival_time, -event) %>%
+#   select(-survival_time, -event, -age, -stage) %>%
 #   rename("sample_id" = patient_id)
 #
 # ovarian_FDA = make_mxfda(clinical,
@@ -137,12 +135,12 @@
 #                                         edge_correction = "rs",
 #                                         markvar = "immune",
 #                                         mark1 = "immune")
-
-
-# # write.csv(ovarian_gfun, file=gzfile("data-raw/ovarian_FDA.csv.gz", compression = 9))
-# #
-# # ovarian_gfun = read.csv(gzfile("data-raw/ovarian_FDA.csv.gz"))
-
-# add dataset to data folder
-usethis::use_data(ovarian_FDA, overwrite = TRUE)
+#
+#
+# ## write.csv(ovarian_gfun, file=gzfile("data-raw/ovarian_FDA.csv.gz", compression = 9))
+# # #
+# # # ovarian_gfun = read.csv(gzfile("data-raw/ovarian_FDA.csv.gz"))
+#
+# # add dataset to data folder
+# usethis::use_data(ovarian_FDA, overwrite = TRUE)
 
