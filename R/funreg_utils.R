@@ -28,7 +28,7 @@ process_fcm <- function(mxfundata,
                        r = "r",
                        value = "fundiff",
                        analysis_vars,
-                       quantile_transform){
+                       quantile_transform = FALSE){
 
   tind <- sort(unique(mxfundata[[r]]))
 
