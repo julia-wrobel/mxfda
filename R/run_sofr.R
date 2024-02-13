@@ -3,9 +3,10 @@
 #' Fit a scalar-on-function regression model. Uses refund::pfr under the hood for computations, and stores results in the mxfda object.
 #'
 #' @param mxFDAobject Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.
-#' @param model_name character string to give the fit model in the functional cox slot
-#' @param formula Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".
-#' @param metric name of calculated spatial metric to use
+#' @param model_name character string to give the fit model
+#' @param formula Formula to be fed to mgcv in the form of outcome ~ x1 + x2. Does not contain functional predictor. Character valued.
+#' @param family Exponential family distribution to be passed to \code{mgcv::gam}. Defaults to "gaussian". Select "binomial" for binary outcome.
+#' @param metric Name of calculated spatial metric to use
 #' @param r Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".
 #' @param value Character string, the name of the variable that identifies the spatial summary function values. Default is "fundiff".
 #' @param knots Number of knots for defining spline basis.
@@ -13,7 +14,7 @@
 #' @param filter_cols a named vector of factors to filter summary functions to in `c(Derived_Column = "Level_to_Filter")` format
 #' @param ... Optional other arguments to be passed to \code{fpca.face}
 #'
-#' @importFrom refund pfr
+#' @importFrom refund pfr lf
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -26,16 +27,25 @@
 #' #load ovarian mxFDA object
 #' data('ovarian_FDA')
 #'
-#' #run the scalar on function regression model with a continuous outcome (age)
+#' # run scalar on function regression model with a continuous outcome (age)
 #' ovarian_FDA = run_sofr(ovarian_FDA,
 #'                        model_name = "fit_sofr",
 #'                        formula = age~stage,
+#'                        metric = "uni g", r = "r", value = "fundiff")
+#'
+#' # run scalar on function regression model with a binary outcome (stage)
+#' # also known as functional logistic regression
+#' ovarian_FDA = run_sofr(ovarian_FDA,
+#'                        model_name = "fit_sofr",
+#'                        formula = stage~age,
+#'                        family = "binomial",
 #'                        metric = "uni g", r = "r", value = "fundiff")
 #'
 #' @export
 run_sofr <- function(mxFDAobject,
                     model_name,
                     formula,
+                    family = "gaussian",
                     metric = "uni k",
                     r = "r",
                     value = "fundiff",
@@ -85,10 +95,16 @@ run_sofr <- function(mxFDAobject,
   if(knots > ncol(mat) - 5) knots = floor(ncol(mat)/3)
   if(knots < 3) knots = 5
 
+  if(family == "binomial"){
+     outcome = stats::formula(formula)[[2]]
+     mxfundata[[outcome]] = as.numeric(mxfundata[[outcome]])
+  }
+
   form = deparse(stats::formula(formula))
-  form =  paste0(form, ' + lf(xmat, k=', knots, ")")
+  form =  paste0(form, ' + lf(xmat, k=', knots, ')')
 
   fit_sofr <- pfr(formula = stats::as.formula(form),
+                  family = family,
                   data = mxfundata)
 
   class(fit_sofr) <- append("sofr", class(fit_sofr))

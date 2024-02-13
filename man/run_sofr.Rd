@@ -8,6 +8,7 @@ run_sofr(
   mxFDAobject,
   model_name,
   formula,
+  family = "gaussian",
   metric = "uni k",
   r = "r",
   value = "fundiff",
@@ -20,11 +21,13 @@ run_sofr(
 \arguments{
 \item{mxFDAobject}{Dataframe of spatial summary functions from multiplex imaging data, in long format. Can be estimated using the function \code{extract_summary_functions} or provided separately.}
 
-\item{model_name}{character string to give the fit model in the functional cox slot}
+\item{model_name}{character string to give the fit model}
 
-\item{formula}{Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".}
+\item{formula}{Formula to be fed to mgcv in the form of outcome ~ x1 + x2. Does not contain functional predictor. Character valued.}
 
-\item{metric}{name of calculated spatial metric to use}
+\item{family}{Exponential family distribution to be passed to \code{mgcv::gam}. Defaults to "gaussian". Select "binomial" for binary outcome.}
+
+\item{metric}{Name of calculated spatial metric to use}
 
 \item{r}{Character string, the name of the variable that identifies the function domain (usually a radius for spatial summary functions). Default is "r".}
 
@@ -51,10 +54,18 @@ Fit a scalar-on-function regression model. Uses refund::pfr under the hood for c
 #load ovarian mxFDA object
 data('ovarian_FDA')
 
-#run the scalar on function regression model with a continuous outcome (age)
+# run scalar on function regression model with a continuous outcome (age)
 ovarian_FDA = run_sofr(ovarian_FDA,
                        model_name = "fit_sofr",
-                       formula = age~sex,
+                       formula = age~stage,
+                       metric = "uni g", r = "r", value = "fundiff")
+
+# run scalar on function regression model with a binary outcome (stage)
+# also known as functional logistic regression
+ovarian_FDA = run_sofr(ovarian_FDA,
+                       model_name = "fit_sofr",
+                       formula = stage~age,
+                       family = "binomial",
                        metric = "uni g", r = "r", value = "fundiff")
 
 }
