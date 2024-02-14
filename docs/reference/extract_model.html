@@ -59,7 +59,7 @@
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_model</span><span class="op">(</span><span class="va">mxFDAobject</span>, <span class="va">what</span>, <span class="va">model_name</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">extract_model</span><span class="op">(</span><span class="va">mxFDAobject</span>, <span class="va">metric</span>, <span class="va">type</span>, <span class="va">model_name</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -68,8 +68,12 @@
 <dd><p>object of class <code>mxFDA</code></p></dd>
 
 
-<dt>what</dt>
-<dd><p>what functional PCA data to extract, e.g. 'uni k'</p></dd>
+<dt>metric</dt>
+<dd><p>metric functional PCA data to extract, e.g. 'uni k'</p></dd>
+
+
+<dt>type</dt>
+<dd><p>one of "cox", "mcox", or "sofr" to specify the type of model to extract</p></dd>
 
 
 <dt>model_name</dt>
@@ -104,7 +108,7 @@
 <span class="r-in"><span>                      afcm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">#extract model</span></span></span>
-<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu">extract_model</span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">mod</span> <span class="op">=</span> <span class="fu">extract_model</span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'cox'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
