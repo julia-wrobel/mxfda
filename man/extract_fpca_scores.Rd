@@ -25,11 +25,9 @@ Extract FPCA scores
 data('ovarian_FDA')
 
 #run ghe lfcm model
-ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
-                      formula = survival_time ~ age, event = "event",
-                      metric = "uni g", r = "r", value = "fundiff",
-                      analysis_vars = c("age", "survival_time"),
-                      afcm = FALSE)
+ovarian_FDA = run_fpca(ovarian_FDA, metric = "uni g", r = "r",
+                       value = "fundiff",
+                       analysis_vars = c("age", "survival_time"))
 
 #extract uni fpc scores
 fpc = extract_fpca_scores(ovarian_FDA, 'uni g fpca')
