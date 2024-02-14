@@ -103,7 +103,7 @@ run_sofr <- function(mxFDAobject,
   form = deparse(stats::formula(formula))
   form =  paste0(form, ' + lf(xmat, k=', knots, ")")
 
-  fit_sofr <- pfr2(formula = stats::as.formula(form),
+  fit_sofr <- pfr(formula = stats::as.formula(form),
                   data = mxfundata)
 
   class(fit_sofr) <- append("sofr", class(fit_sofr))
