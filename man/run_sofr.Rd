@@ -54,7 +54,7 @@ data('ovarian_FDA')
 #run the scalar on function regression model with a continuous outcome (age)
 ovarian_FDA = run_sofr(ovarian_FDA,
                        model_name = "fit_sofr",
-                       formula = age~sex,
+                       formula = age~stage,
                        metric = "uni g", r = "r", value = "fundiff")
 
 }
