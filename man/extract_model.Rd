@@ -4,12 +4,14 @@
 \alias{extract_model}
 \title{Extract Model}
 \usage{
-extract_model(mxFDAobject, what, model_name)
+extract_model(mxFDAobject, metric, type, model_name)
 }
 \arguments{
 \item{mxFDAobject}{object of class \code{mxFDA}}
 
-\item{what}{what functional PCA data to extract, e.g. 'uni k'}
+\item{metric}{metric functional PCA data to extract, e.g. 'uni k'}
+
+\item{type}{one of "cox", "mcox", or "sofr" to specify the type of model to extract}
 
 \item{model_name}{character string of the model name to retrieve}
 }
@@ -34,7 +36,7 @@ ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       afcm = FALSE)
 
 #extract model
-mod = extract_model(ovarian_FDA, 'uni g', 'fit_lfcm')
+mod = extract_model(ovarian_FDA, 'uni g', 'cox' 'fit_lfcm')
 
 }
 \author{
