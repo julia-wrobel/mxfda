@@ -4,12 +4,14 @@
 \alias{filter_spatial}
 \title{Filter Spatial data}
 \usage{
-filter_spatial(mxFDAobject, ..., force = FALSE)
+filter_spatial(mxFDAobject, ..., based_on = "meta", force = FALSE)
 }
 \arguments{
 \item{mxFDAobject}{object of class \code{mxFDA}}
 
-\item{...}{expressions that return a logical TRUE/FALSE value when evaluated on columns of the spatial data slot. These expressions get passed to \code{\link[dplyr:filter]{dplyr::filter()}} so must be compatible.}
+\item{...}{expressions that return a logical TRUE/FALSE value when evaluated on columns of the meta data slot. These expressions get passed to \code{\link[dplyr:filter]{dplyr::filter()}} so must be compatible.}
+
+\item{based_on}{character for which data slot to use for filtering, either 'meta', or 'spatial'. Default to 'meta'.}
 
 \item{force}{logical whether or not to return empty spatial data \emph{if} filtering results in 0 rows}
 }
@@ -24,7 +26,7 @@ function to filter the spatial data slot of the \code{mxFDA} object.
 data(ovarian_FDA)
 
 #filter ages greater than 50
-ovarian_FDA_age50 = filter_spatial(ovarian_FDA, age >= 50)
+ovarian_FDA_age50 = filter_spatial(ovarian_FDA, age >= 50, based_on = 'meta')
 
 }
 \references{
