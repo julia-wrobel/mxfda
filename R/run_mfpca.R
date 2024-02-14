@@ -70,8 +70,10 @@ run_mfpca = function(mxFDAobject,
                  " sample have >= 4 values for FPCA; removing ",
                  cvs[cvs$Var1 == "FALSE", "Freq"], " samples"))
 
-  # NEED TO CHANGE THIS BEHAVIOR- WHAT DO WE DO IF WE HAVE AN NA FOR THE IMAGE SUMMARY FUNCTION
-  mxfundata = mxfundata %>% filter(!is.na(r))
+  # remove samples with less than 4 calculated radii
+  mxfundata = mxfundata %>%
+    filter(get(mxFDAobject@sample_key) %in%
+             computed_vals[[mxFDAobject@sample_key]][computed_vals$Keep == TRUE])
   index_range <- range(mxfundata[[r]])
 
   # this seems to break when there are NA values, what behavior do I want for that?
