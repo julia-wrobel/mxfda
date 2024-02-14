@@ -36,7 +36,7 @@ ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       afcm = FALSE)
 
 #extract model
-mod = extract_model(ovarian_FDA, 'uni g', 'cox' 'fit_lfcm')
+mod = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm')
 
 }
 \author{

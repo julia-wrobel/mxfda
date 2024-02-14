@@ -25,7 +25,7 @@
 #'                       afcm = FALSE)
 #'
 #' #extract model
-#' mod = extract_model(ovarian_FDA, 'uni g', 'cox' 'fit_lfcm')
+#' mod = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm')
 #'
 #' @export
 extract_model = function(mxFDAobject, metric, type, model_name){
