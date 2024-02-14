@@ -190,7 +190,7 @@ The central object of `spatialTIME` is the `mIF` object, that contains a list of
 ```{r}
 #Step 1
 spatialTIME_spatial_df = spatial %>% 
-  select(-X.1, -X, -phenotype) %>%
+  select(-phenotype) %>%
   mutate(across(phenotype_ck:phenotype_cd4, ~ ifelse(grepl("\\+", .x), 1, 0))) %>%
   relocate(patientImage_id, .before = 1)
 
