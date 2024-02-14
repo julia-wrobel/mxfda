@@ -32,7 +32,9 @@ Suggests:
     spatialTIME,
     tibble,
     broom,
-    refund.shiny
+    refund.shiny,
+    lme4,
+    gamm4
 Imports: 
     magrittr,
     rlang,
