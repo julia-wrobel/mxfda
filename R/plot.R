@@ -156,3 +156,31 @@ plot.afcmSurface = function(x, ...){
                          type = "div") +
     facet_wrap(~type, ncol = 2)
 }
+
+
+#' Plot sofr object
+#'
+#' @param x object of class `sofr` to be plotted
+#' @param ... currently ignored
+#'
+#' @return object compatable with ggplot2
+#' @export
+#'
+#' @author Julia Wrobel \email{`r juliawrobel_email`}
+#' @author Alex Soupir \email{`r alexsoupir_email`}
+#'
+plot.sofr = function(x, ...){
+  class(x) = class(x)[-1]
+  invisible(capture.output(v <- plot(x, ...)[[1]]))
+  dev.off() #because apparently you cant just turn off the default printing for some reason....terrible design for R
+  df = data.frame(x = v$x, fit = v$fit) %>%
+    dplyr::mutate(`fit+se` = fit + v$se,
+                  `fit-se` = fit - v$se)
+  pl = df %>%
+    ggplot2::ggplot() +
+    ggplot2::geom_line(aes(x = x, y = fit)) +
+    ggplot2::geom_line(aes(x = x, y = `fit+se`), linetype = "dashed") +
+    ggplot2::geom_line(aes(x = x, y = `fit-se`), linetype = 'dashed') +
+    ggplot2::labs(x = v$xlab, y = v$ylab)
+  return(pl)
+}
