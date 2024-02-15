@@ -1,0 +1,128 @@
+---
+title: "Analysis of lung data"
+output: rmarkdown::html_vignette
+bibliography: references.bib
+vignette: >
+  %\VignetteIndexEntry{mx Functional Regression}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  message = FALSE,
+  warning = FALSE,
+  comment = "#>",
+  fig.width = 8
+)
+invisible(suppressPackageStartupMessages(library(tidyverse)))
+```
+
+Vignette for start to finish analysis of dataset that has multiple images per subject.
+
+```{r setup}
+library(mxfda)
+library(tidyverse)
+library(patchwork)
+library(broom)
+```
+
+
+```{r}
+data(lung_df)
+
+clinical = lung_df %>%
+  select(image_id, patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
+  distinct()
+
+spatial = lung_df %>%
+  select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)
+
+mxFDAobject = make_mxfda(metadata = clinical,
+                         spatial = spatial,
+                         subject_key = "patient_id",
+                         sample_key = "patientImage_id"
+                         )
+
+mxFDAobject = extract_summary_functions(mxFDAobject, 
+                                        extract_func = extract_univariate,
+                                        summary_func = Kest,
+                                        r_vec = seq(0, 100, by = 1),
+                                        edge_correction = "iso",
+                                        markvar = "immune",
+                                        mark1 = "immune")
+```
+
+run mfpca
+
+```{r}
+mxFDAobject <- run_mfpca(mxFDAobject, 
+                         metric = "uni k", 
+                         r = "r", 
+                         value = "fundiff",
+                         pve = .99)
+```
+
+calculate variance of level2 scores
+
+```{r}
+var_df = mxFDAobject@functional_mpca$Kest$scores_level2 %>%
+  pivot_longer(level2_1:level2_3, names_to = "fpc", values_to = "score") %>%
+  group_by(patient_id) %>%
+  summarize(score_var = var(score),
+            score_sd = round(sd(score), 0)) %>%
+  ungroup()
+```
+
+
+## Dealing with multiple images per subject
+
+* multiple images per subject
+* deal with by using mfpca to calculate mean, then using variance of the level2 scores as a scalar covariate
+
+
+
+
+
+Plot individual subjects, their mean from mfpca, title shows variance of scores. Sort by standard deviation of level 2 score.
+
+```{r}
+set.seed(103)
+ids = sample(unique(mxFDAobject@Metadata$patient_id),8)
+
+
+grid = unique(mxFDAobject@univariate_summaries$Kest$r)[-102]
+rownames(mxFDAobject@functional_mpca$Kest$mfpc_object$Y.df)
+mean_df = tibble(yhat = as.vector(mxFDAobject@functional_mpca$Kest$mfpc_object$Yhat.subject),
+       r = rep(grid, times = nrow(mxFDAobject@functional_mpca$Kest$mfpc_object$Yhat.subject))) %>%
+  filter(p)
+
+
+
+
+mxFDAobject@univariate_summaries$Kest %>%
+  left_join(.,mxFDAobject@Metadata) %>%
+  #left_join(., var_df) %>%
+  filter(patient_id %in% ids) %>%
+  ggplot(aes(r, fundiff, group = patientImage_id)) +
+  geom_line(alpha = 0.8) +
+  geom_text(data = filter(var_df, patient_id %in% ids), x = 75, y = 40000, aes(label = score_sd, group = NULL)) +
+  #geom_hline(yintercept = 0, linetype = 2, color = "darkred") +
+  facet_wrap(~patient_id, ncol = 4, labeller = label_both)
+  
+```
+
+
+
+
+
+
+
+
+* hypothesis testing
+
+
+* dealing with multiple images per person
+* dealing with zero inflation
+* hypothesis testing

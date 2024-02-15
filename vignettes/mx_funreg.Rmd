@@ -59,7 +59,7 @@ Single-cell multiplex imaging is common in cancer applications, where the analys
 
 $$\log h_i(t) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip},$$
 
-where $h_i(t)$ is the *hazard rate* for subject $i$ and $h_0(t)$ is an unspecified baseline hazard. Each $Z_{ip}$ is a scalar covariates., and $P$ is the total number of scalar covariates. These are covariates.s like age, sex, treatment group, etc and can be contrasted with spatial summary functions which are known as functional covariates.s. The $\gamma_p$ are regression coefficients; these are interpreted as log hazard ratios.
+where $h_i(t)$ is the *hazard rate* for subject $i$ and $h_0(t)$ is an unspecified baseline hazard. Each $Z_{ip}$ is a scalar covariates., and $P$ is the total number of scalar covariates. These are covariates like age, sex, treatment group, etc and can be contrasted with spatial summary functions which are known as functional covariates.s. The $\gamma_p$ are regression coefficients; these are interpreted as log hazard ratios.
 
 For multiplex imaging data, we have a spatial summary function for each subject (e.g. univariate Ripley's K), $X_i(r)$, that we want to add to the Cox regression model as a functional covariate. Below we provide three different strategies for incorporating $X_i(r)$ into a Cox regression model as a covariate.
 
@@ -200,7 +200,7 @@ plot(afcm_surface)
 
 ```
 
-## Model summaries and C-index 
+### Model summaries and C-index 
 
 C-index is a good way to compare across models, especially when incorporating cross validation. Larger c-index is indicative of a better predictive model. Below, we calculate the c-index for each model.
 
@@ -217,4 +217,46 @@ c_index = c(
 tibble(model = c("fpc", "lfcm", "afcm"), c_index) %>%
   knitr::kable(digits = 2)
 
+```
+
+## Functional regression models for binary and continuous outcomes
+
+Models with continuous or binary scalar outcomes and functional covariates are also possible, and are referred to as *scalar-on-function regression* (sofr) models in the functional data analysis literature (@goldsmith2011penalized). 
+
+### Continuous outcome 
+
+Below we fit a sofr model with age as the outcome, G-functions from the ovarian cancer data as the functional covariate, and no additional scalar covariates using the `run_sofr()` function. 
+
+```{r}
+ovarian_FDA <- run_sofr(ovarian_FDA, 
+                        model_name = "fit_sofr_age", 
+                        formula = age ~ 1, 
+                        metric = "uni g", r = "r", value = "fundiff")
+```
+
+This model also produces an estimated coefficient surface $\hat{\beta}(r)$, which can be visualized. The code below extracts this quantity, then plots $\hat{\beta}(r)$ as a solid black line and 95% pointwise confidence intervals as dotted black lines. Values of the radius $r$ where the 95% confidence interval does not contain zero are statistically significant. At each radius value $r$, for a continuous outcome $\hat{\beta}(r)$ can be interpreted as a regular linear regression coefficient.
+
+```{r}
+model = extract_model(ovarian_FDA, 'uni g', type = 'sofr', model_name = 'fit_sofr_age')
+plot(model, ylab=expression(paste(beta(t))), xlab="t")
+```
+
+### Binary outcome 
+
+Below we fit a sofr model with stage as the outcome, G-functions from the ovarian cancer data as the functional covariate, and age as a scalar covariate. Stage is a binary outcome, and as a result this model can also be called *functional logistic regression*. When the outcome is binary, you need to specify the argument `family = "binomial"`. In addition, the outcome should be coded as a numeric rather than a factor or character variable.
+
+```{r}
+ovarian_FDA <- run_sofr(ovarian_FDA, 
+                        model_name = "fit_sofr_stage", 
+                        formula = stage ~ age, 
+                        family = "binomial",
+                        metric = "uni g", r = "r", value = "fundiff")
+```
+
+When the outcome is binary $\hat{\beta}(r)$ is interpreted as a log odds ratio at each radius $r$. This estimated coefficient function is plotted below.
+
+
+```{r}
+model = extract_model(ovarian_FDA, 'uni g', type = 'sofr', model_name = 'fit_sofr_stage')
+plot(model, ylab=expression(paste(beta(t))), xlab="t")
 ```
