@@ -101,7 +101,8 @@ binary data.</strong></p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://broom.tidymodels.org/" class="external-link">broom</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="ovarian-cancer-multiplex-imaging-data">Ovarian cancer multiplex imaging data<a class="anchor" aria-label="anchor" href="#ovarian-cancer-multiplex-imaging-data"></a>
 </h2>
@@ -122,20 +123,56 @@ on extracting spatial summary functions.</p>
 <div class="section level2">
 <h2 id="functional-regression-models-for-survival-outcomes">Functional regression models for survival outcomes<a class="anchor" aria-label="anchor" href="#functional-regression-models-for-survival-outcomes"></a>
 </h2>
-<p>Standard cox regression</p>
-<p><span class="math display">\[\log h_i(t;Z_i, X_i) = \log h_0(t) +
-\sum_{p = 1}^P \gamma_k Z_{ik}\]</span></p>
-<p>General form for Cox regression with a functional predictor</p>
-<p><span class="math display">\[\log h_i(t;Z_i, X_i) = \log h_0(t) +
-\sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)\]</span></p>
+<p>Single-cell multiplex imaging is common in cancer applications, where
+the analysis goal is to relate cell-level spatial information to
+patient-level time-to-event outcomes like overall survival or
+time-to-recurrence. Cox regression is a popular regression technique for
+assessing the association between covariates and a survival outcome. The
+standard Cox model is given by</p>
+<p><span class="math display">\[\log h_i(t) = \log h_0(t) + \sum_{p =
+1}^P \gamma_p Z_{ip},\]</span></p>
+<p>where <span class="math inline">\(h_i(t)\)</span> is the <em>hazard
+rate</em> for subject <span class="math inline">\(i\)</span> and <span class="math inline">\(h_0(t)\)</span> is an unspecified baseline hazard.
+Each <span class="math inline">\(Z_{ip}\)</span> is a scalar
+covariates., and <span class="math inline">\(P\)</span> is the total
+number of scalar covariates. These are covariates.s like age, sex,
+treatment group, etc and can be contrasted with spatial summary
+functions which are known as functional covariates.s. The <span class="math inline">\(\gamma_p\)</span> are regression coefficients;
+these are interpreted as log hazard ratios.</p>
+<p>For multiplex imaging data, we have a spatial summary function for
+each subject (e.g. univariate Ripley’s K), <span class="math inline">\(X_i(r)\)</span>, that we want to add to the Cox
+regression model as a functional covariate. Below we provide three
+different strategies for incorporating <span class="math inline">\(X_i(r)\)</span> into a Cox regression model as a
+covariate.</p>
 <div class="section level3">
-<h3 id="cox-regression-using-functional-principal-components-as-predictors">Cox regression using functional principal components as
-predictors<a class="anchor" aria-label="anchor" href="#cox-regression-using-functional-principal-components-as-predictors"></a>
+<h3 id="cox-regression-using-functional-principal-components-as-covariates">Cox regression using functional principal components as
+covariates<a class="anchor" aria-label="anchor" href="#cox-regression-using-functional-principal-components-as-covariates"></a>
 </h3>
-<p><span class="math display">\[\log h_i(t;Z_i, X_i) = \log h_0(t) +
-\sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)\]</span></p>
-<p>This is the approach used in <span class="citation">@vu2023funspace</span>.</p>
-<p>Runs FPCA and appends scores that explain up to 99% variance</p>
+<p>In this approach, we first decompose the spatial summary functions
+using FPCA, then use subject-specific scores from FPCA as covariates in
+a Cox regression model. Conceptually, we are fitting the model given
+by</p>
+<p><span class="math display">\[\log h_i(t) = \log h_0(t) + \sum_{p =
+1}^P \gamma_p Z_{ip} + \sum_{k = 1}^K \beta_k c_{ik},\]</span></p>
+<p>where <span class="math inline">\(c_{ik}\)</span> is the <span class="math inline">\(k\)</span>th score from functional principal
+components analysis for the <span class="math inline">\(i\)</span>th
+subject. <span class="math inline">\(K\)</span> represents the number of
+principal components, usually selected to explain at least 95% of the
+variance in the spatial summary functions (see
+<code><a href="../articles/mx_fpca.html">vignette("mx_fpca")</a></code>). The <span class="math inline">\(\beta_k\)</span> are regression coefficients that
+tell us about the association between overall survival and the <span class="math inline">\(k\)</span>th functional principal component. Like
+the <span class="math inline">\(\gamma_p\)</span>, the the <span class="math inline">\(\beta_k\)</span> are interpreted as log hazard
+ratios, and <span class="math inline">\(e^{\beta_k}\)</span> is a hazard
+ratio. This is the approach to Cox regression with spatial summary
+functions as covariates taken in <span class="citation">Vu et al.
+(2023)</span>.</p>
+<p>The code below runs FPCA the G-functions from the ovarian cancer data
+and calculates principal components that explain up to 99% variance
+using the argument <code>pve</code>. The argument
+<code>lightweight = TRUE</code> returns only what is needed for
+downstream analysis. To return all items calculate by FPCA when using
+<code><a href="https://rdrr.io/pkg/refund/man/fpca.face.html" class="external-link">refund::fpca.face</a></code>, use
+<code>lightweight = FALSE</code>.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ovarian_FDA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_fpca.html">run_fpca</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
 <span>                        lightweight <span class="op">=</span> <span class="cn">TRUE</span>,</span>
@@ -151,89 +188,134 @@ predictors<a class="anchor" aria-label="anchor" href="#cox-regression-using-func
 <span><span class="co">#&gt;  Gest: 7 FPCs describe 99.2% variance</span></span>
 <span><span class="co">#&gt; MFPCs not yet calculated</span></span>
 <span><span class="co">#&gt; FCMs not yet calculated</span></span>
-<span><span class="co">#&gt; MFCMs not yet calculated</span></span></code></pre></div>
-<p>visualize</p>
+<span><span class="co">#&gt; MFCMs not yet calculated</span></span>
+<span><span class="co">#&gt; Scalar on Functional Regression not calculated</span></span></code></pre></div>
+<p>Six FPCs were returned. Below, we extract the fpca scores from the
+<code>ovarian_FDA</code> object and visualize the relationship between
+the first two FPC scores and survival time.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">Gdf_fpc</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_fpca_scores.html">extract_fpca_scores</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g fpca'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p1</span> <span class="op">=</span> <span class="va">Gdf_fpc</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">fpc1</span>, <span class="va">survival_time</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">event</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"fpc1"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>event <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">event</span>, levels <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"censored"</span>, <span class="st">"died"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">fpc1</span>, <span class="va">survival_time</span>, color <span class="op">=</span> <span class="va">event</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"survival time (days)"</span>, title <span class="op">=</span> <span class="st">"fpc1"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.5</span>, <span class="fl">.7</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">p2</span> <span class="op">=</span> <span class="va">Gdf_fpc</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">fpc2</span>, <span class="va">survival_time</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">event</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"fpc2"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>event <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">event</span>, levels <span class="op">=</span> <span class="fl">0</span><span class="op">:</span><span class="fl">1</span>, labels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"censored"</span>, <span class="st">"died"</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">fpc2</span>, <span class="va">survival_time</span>, color <span class="op">=</span> <span class="va">event</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> </span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="st">"survival time (days)"</span>, title <span class="op">=</span> <span class="st">"fpc2"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p3</span> <span class="op">=</span> <span class="va">Gdf_fpc</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">fpc3</span>, <span class="va">survival_time</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">event</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"fpc3"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p4</span> <span class="op">=</span> <span class="va">Gdf_fpc</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span><span class="va">fpc4</span>, <span class="va">survival_time</span>, color <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">event</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"fpc4"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"bottom"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="op">(</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span><span class="op">)</span><span class="op">/</span><span class="op">(</span><span class="va">p3</span> <span class="op">+</span> <span class="va">p4</span><span class="op">)</span></span></code></pre></div>
+<span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span></span></code></pre></div>
 <p><img src="mx_funreg_files/figure-html/unnamed-chunk-4-1.png" width="768"></p>
-<p>Use fpc scores in cox regression model</p>
+<p>It appears that subjects with lower scores for FPC 1 tended to have
+longer survival times.</p>
+<p>Next, we use these scores as covariates in a Cox regression model. We
+also control for age.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/therneau/survival" class="external-link">survival</a></span><span class="op">)</span></span>
 <span><span class="va">phmod_fpc</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/pkg/survival/man/coxph.html" class="external-link">coxph</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/survival/man/Surv.html" class="external-link">Surv</a></span><span class="op">(</span><span class="va">survival_time</span>, <span class="va">event</span><span class="op">)</span> <span class="op">~</span> <span class="va">fpc1</span> <span class="op">+</span> <span class="va">fpc2</span> <span class="op">+</span> <span class="va">fpc3</span> <span class="op">+</span> <span class="va">fpc4</span> <span class="op">+</span> <span class="va">age</span>, </span>
-<span>              data <span class="op">=</span> <span class="va">Gdf_fpc</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="va">phmod_fpc</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Call:</span></span>
-<span><span class="co">#&gt; coxph(formula = Surv(survival_time, event) ~ fpc1 + fpc2 + fpc3 + </span></span>
-<span><span class="co">#&gt;     fpc4 + age, data = Gdf_fpc)</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;   n= 128, number of events= 80 </span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;          coef exp(coef) se(coef)      z Pr(&gt;|z|)    </span></span>
-<span><span class="co">#&gt; fpc1  1.47768   4.38278  0.27109  5.451 5.01e-08 ***</span></span>
-<span><span class="co">#&gt; fpc2  0.14640   1.15766  0.46700  0.313 0.753907    </span></span>
-<span><span class="co">#&gt; fpc3  4.13781  62.66520  1.10092  3.759 0.000171 ***</span></span>
-<span><span class="co">#&gt; fpc4 -3.34887   0.03512  1.50783 -2.221 0.026352 *  </span></span>
-<span><span class="co">#&gt; age   0.02916   1.02958  0.01119  2.604 0.009201 ** </span></span>
-<span><span class="co">#&gt; ---</span></span>
-<span><span class="co">#&gt; Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt;      exp(coef) exp(-coef) lower .95 upper .95</span></span>
-<span><span class="co">#&gt; fpc1   4.38278    0.22817  2.576315    7.4559</span></span>
-<span><span class="co">#&gt; fpc2   1.15766    0.86381  0.463524    2.8913</span></span>
-<span><span class="co">#&gt; fpc3  62.66520    0.01596  7.243091  542.1618</span></span>
-<span><span class="co">#&gt; fpc4   0.03512   28.47048  0.001829    0.6746</span></span>
-<span><span class="co">#&gt; age    1.02958    0.97127  1.007241    1.0524</span></span>
-<span><span class="co">#&gt; </span></span>
-<span><span class="co">#&gt; Concordance= 0.709  (se = 0.032 )</span></span>
-<span><span class="co">#&gt; Likelihood ratio test= 44.38  on 5 df,   p=2e-08</span></span>
-<span><span class="co">#&gt; Wald test            = 45.34  on 5 df,   p=1e-08</span></span>
-<span><span class="co">#&gt; Score (logrank) test = 50.34  on 5 df,   p=1e-09</span></span></code></pre></div>
+<span>              data <span class="op">=</span> <span class="va">Gdf_fpc</span><span class="op">)</span></span></code></pre></div>
+<p>The results from this model are printed below in a tidy format. Note
+that all FPCs except FPC 2 have a statistically significant relationship
+with overall survival. The hazard ratio above 1 for FPC 1 indicates that
+higher scores are associate with worse survival outcomes, which is
+consistent with the exploratory analysis in the plot above.</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">phmod_fpc</span>, exp <span class="op">=</span> <span class="cn">TRUE</span>, conf.int <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>p.value <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/format.pval.html" class="external-link">format.pval</a></span><span class="op">(</span><span class="va">p.value</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">term</span>, hazard_ratio <span class="op">=</span> <span class="va">estimate</span>, <span class="va">conf.low</span>, <span class="va">conf.high</span>, p <span class="op">=</span> <span class="va">p.value</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<table class="table">
+<thead><tr class="header">
+<th align="left">term</th>
+<th align="right">hazard_ratio</th>
+<th align="right">conf.low</th>
+<th align="right">conf.high</th>
+<th align="left">p</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td align="left">fpc1</td>
+<td align="right">4.38</td>
+<td align="right">2.58</td>
+<td align="right">7.46</td>
+<td align="left">5e-08</td>
+</tr>
+<tr class="even">
+<td align="left">fpc2</td>
+<td align="right">1.16</td>
+<td align="right">0.46</td>
+<td align="right">2.89</td>
+<td align="left">0.754</td>
+</tr>
+<tr class="odd">
+<td align="left">fpc3</td>
+<td align="right">62.67</td>
+<td align="right">7.24</td>
+<td align="right">542.16</td>
+<td align="left">2e-04</td>
+</tr>
+<tr class="even">
+<td align="left">fpc4</td>
+<td align="right">0.04</td>
+<td align="right">0.00</td>
+<td align="right">0.67</td>
+<td align="left">0.026</td>
+</tr>
+<tr class="odd">
+<td align="left">age</td>
+<td align="right">1.03</td>
+<td align="right">1.01</td>
+<td align="right">1.05</td>
+<td align="left">0.009</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="section level3">
-<h3 id="linear-and-additive-functional-cox-regression-models">linear and additive functional Cox regression models<a class="anchor" aria-label="anchor" href="#linear-and-additive-functional-cox-regression-models"></a>
+<h3 id="linear-and-additive-functional-cox-regression-models">Linear and additive functional Cox regression models<a class="anchor" aria-label="anchor" href="#linear-and-additive-functional-cox-regression-models"></a>
 </h3>
-<p>This is the approach used in <span class="citation">@vu2022spf</span></p>
-<p>Linear functional cox model takes the form:</p>
+<p>Linear and additive functional Cox regression models were used in
+<span class="citation">Vu et al. (2022)</span> to model the relationship
+between survival and spatial summary functions without having to first
+decompose the spatial summary functions using FPCA. Linear functional
+cox regression was first introduced by <span class="citation">Gellar et
+al. (2015)</span> and takes the form:</p>
 <p><span class="math display">\[\log h_i(t;Z_i, X_i) = \log h_0(t) +
-\sum_{p = 1}^P \gamma_k Z_{ik} + H\left(X_i(r)\right)\]</span></p>
-<p>Using age and gender and stage as scalar covariates</p>
+\sum_{p = 1}^P \gamma_p Z_{ip} + \int_{r = 0}^R
+\beta(r)X_i(r)dr,\]</span></p>
+<p>where <span class="math inline">\(X_i(r)\)</span> is the spatial
+summary function for subject <span class="math inline">\(i\)</span>, and
+<span class="math inline">\(\beta(r)\)</span> is a <em>coefficient
+function</em>. For this model, the coefficient function is a log hazard
+ratio for the spatial summary function at radius <span class="math inline">\(r\)</span>. In effect, this allows us to model the
+association between of spatial clustering and survival at many different
+radii simultaneously. Here <span class="math inline">\(X_i(r)\)</span>
+is considered a <em>functional covariate</em>, and the <span class="math inline">\(Z_{ip}\)</span> are <em>scalar
+covariates</em>.</p>
 <div class="section level4">
-<h4 id="lfcm">LFCM<a class="anchor" aria-label="anchor" href="#lfcm"></a>
+<h4 id="linear-functional-cox-model-lfcm">Linear functional Cox model (LFCM)<a class="anchor" aria-label="anchor" href="#linear-functional-cox-model-lfcm"></a>
 </h4>
-<p><span class="citation">@gellar2015cox</span></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p>The code below runs an LFCM for the G-functions from the ovarian
+cancer data with age as a scalar covariate. Setting the argument
+<code>afcm = FALSE</code> runs an LFCM instead of an AFCM.</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ovarian_FDA</span> <span class="op">=</span> <span class="fu"><a href="../reference/run_fcm.html">run_fcm</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, model_name <span class="op">=</span> <span class="st">"fit_lfcm"</span>,</span>
 <span>                      formula <span class="op">=</span> <span class="va">survival_time</span> <span class="op">~</span> <span class="va">age</span>, event <span class="op">=</span> <span class="st">"event"</span>,</span>
 <span>                      metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
 <span>                      afcm <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "lfcm" "gam"  "glm"  "lm"</span></span></code></pre></div>
+<p>Below we print the class and summary of the extracted model.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'cox'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "lfcm" "gam"  "glm"  "lm"</span></span></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'cox'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Family: Cox PH </span></span>
 <span><span class="co">#&gt; Link function: identity </span></span>
@@ -256,26 +338,40 @@ predictors<a class="anchor" aria-label="anchor" href="#cox-regression-using-func
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Deviance explained = 5.72%</span></span>
 <span><span class="co">#&gt; -REML = 314.14  Scale est. = 1         n = 128</span></span></code></pre></div>
-<p>Visualize coefficient function</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<p>Finally, we visualized the estimated coefficient function, <span class="math inline">\(\hat{\beta}(r)\)</span>, from this model. The code
+below extracts this quantity, then plots <span class="math inline">\(\hat{\beta}(r)\)</span> as a solid black line and
+95% pointwise confidence intervals as dotted black lines. Values of the
+radius <span class="math inline">\(r\)</span> where the 95% confidence
+interval does not contain zero are statistically significant.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lfcm_surface</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_surface.html">extract_surface</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, metric <span class="op">=</span> <span class="st">"uni g"</span>, model <span class="op">=</span> <span class="st">"fit_lfcm"</span>, analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">lfcm_surface</span><span class="op">)</span></span></code></pre></div>
-<p><img src="mx_funreg_files/figure-html/unnamed-chunk-9-1.png" width="768"></p>
+<p><img src="mx_funreg_files/figure-html/unnamed-chunk-10-1.png" width="768"></p>
 </div>
 <div class="section level4">
-<h4 id="afcm">AFCM<a class="anchor" aria-label="anchor" href="#afcm"></a>
+<h4 id="additive-functional-cox-model-afcm">Additive functional Cox model (AFCM)<a class="anchor" aria-label="anchor" href="#additive-functional-cox-model-afcm"></a>
 </h4>
-<p><span class="citation">@cui2021additive</span></p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<p>Additive functional cox regression was first introduced by <span class="citation">Cui, Crainiceanu, and Leroux (2021)</span> and takes
+the form:</p>
+<p><span class="math display">\[\log h_i(t;Z_i, X_i) = \log h_0(t) +
+\sum_{p = 1}^P \gamma_p Z_{ip} + \int_{r = 0}^R F\left(r,
+X_i(r)\right)dr.\]</span></p>
+<p>This model is slightly more flexible than the LFCM, in that it allows
+the relationship between <span class="math inline">\(X_i(r)\)</span> and
+survival to vary nonlinearly with <span class="math inline">\(r\)</span>.</p>
+<p>The code below runs an AFCM with age as a scalar covariate. Setting
+the argument <code>afcm = TRUE</code> runs an AFCM.</p>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">ovarian_FDA</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_fcm.html">run_fcm</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, model_name <span class="op">=</span> <span class="st">"fit_afcm"</span>, </span>
 <span>                       formula <span class="op">=</span> <span class="va">survival_time</span> <span class="op">~</span> <span class="va">age</span>, event <span class="op">=</span> <span class="st">"event"</span>,</span>
 <span>                       metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
 <span>                       afcm <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_afcm'</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] "afcm" "gam"  "glm"  "lm"</span></span></code></pre></div>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_afcm'</span><span class="op">)</span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/class.html" class="external-link">class</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'cox'</span>, <span class="st">'fit_afcm'</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] "afcm" "gam"  "glm"  "lm"</span></span></code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/summary.html" class="external-link">summary</a></span><span class="op">(</span><span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'cox'</span>, <span class="st">'fit_afcm'</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Family: Cox PH </span></span>
 <span><span class="co">#&gt; Link function: identity </span></span>
@@ -298,8 +394,12 @@ predictors<a class="anchor" aria-label="anchor" href="#cox-regression-using-func
 <span><span class="co">#&gt; </span></span>
 <span><span class="co">#&gt; Deviance explained = 10.7%</span></span>
 <span><span class="co">#&gt; -REML = 310.05  Scale est. = 1         n = 128</span></span></code></pre></div>
-<p>Visualize the afcm model</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>The AFCM model produces a <em>coefficient surface</em>, <span class="math inline">\(\hat{F}\left(r, X_i(r)\right)\)</span>, rather
+than a coefficient function. The code below extracts this estimated
+surface, then on the left plots the surface, and on the right plots
+regions of the surface that are statistically significant at the 95%
+confidence level.</p>
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">afcm_surface</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_surface.html">extract_surface</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, metric <span class="op">=</span> <span class="st">"uni g"</span>, model <span class="op">=</span> <span class="st">"fit_afcm"</span>, analysis_vars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"age"</span><span class="op">)</span>, p <span class="op">=</span> <span class="fl">0.05</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">afcm_surface</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mx_funreg_files/figure-html/extract_estimates-1.png" width="768"></p>
@@ -310,107 +410,65 @@ predictors<a class="anchor" aria-label="anchor" href="#cox-regression-using-func
 <h2 id="model-summaries-and-c-index">Model summaries and C-index<a class="anchor" aria-label="anchor" href="#model-summaries-and-c-index"></a>
 </h2>
 <p>C-index is a good way to compare across models, especially when
-incorporating cross validation.</p>
-<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># calculate overall p value for fpca</span></span>
-<span><span class="co">#fit_fpc_null = coxph(Surv(survival_time, event) ~  age, data = Gdf_fpc)</span></span>
-<span><span class="co">#p_fpc = anova(fit_fpc_null, phmod_fpc)</span></span>
-<span></span>
-<span><span class="va">fit_afcm</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_afcm'</span><span class="op">)</span></span>
-<span><span class="va">fit_lfcm</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span></span>
+incorporating cross validation. Larger c-index is indicative of a better
+predictive model. Below, we calculate the c-index for each model.</p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">fit_afcm</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'cox'</span>, <span class="st">'fit_afcm'</span><span class="op">)</span></span>
+<span><span class="va">fit_lfcm</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_model.html">extract_model</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, <span class="st">'uni g'</span>, <span class="st">'cox'</span>, <span class="st">'fit_lfcm'</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">c_index</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="va">phmod_fpc</span><span class="op">$</span><span class="va">concordance</span><span class="op">[[</span><span class="st">"concordance"</span><span class="op">]</span><span class="op">]</span>, times <span class="op">=</span> <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  <span class="va">phmod_fpc</span><span class="op">$</span><span class="va">concordance</span><span class="op">[[</span><span class="st">"concordance"</span><span class="op">]</span><span class="op">]</span>, </span>
 <span>  <span class="fu"><a href="../reference/extract_c.html">extract_c</a></span><span class="op">(</span><span class="va">fit_lfcm</span>, <span class="va">Gdf_fpc</span><span class="op">$</span><span class="va">survival_time</span>, <span class="va">Gdf_fpc</span><span class="op">$</span><span class="va">event</span><span class="op">)</span>,</span>
 <span>  <span class="fu"><a href="../reference/extract_c.html">extract_c</a></span><span class="op">(</span><span class="va">fit_afcm</span>, <span class="va">Gdf_fpc</span><span class="op">$</span><span class="va">survival_time</span>, <span class="va">Gdf_fpc</span><span class="op">$</span><span class="va">event</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span></span>
-<span><span class="va">est_fpca</span> <span class="op">=</span> <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">phmod_fpc</span>, exp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>model <span class="op">=</span> <span class="st">"fpca"</span>, edf <span class="op">=</span> <span class="cn">NA</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>,  <span class="va">term</span>, <span class="st">"hazard ratio"</span> <span class="op">=</span> <span class="va">estimate</span>, <span class="va">edf</span>, p <span class="op">=</span> <span class="va">p.value</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">est_lfcm</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit_lfcm</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="st">"hazard ratio"</span> <span class="op">=</span> <span class="cn">NA</span>, p <span class="op">=</span> <span class="cn">NA</span>, model <span class="op">=</span> <span class="st">"lfcm"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">term</span>, <span class="st">"hazard ratio"</span>, <span class="va">edf</span>, <span class="va">p</span><span class="op">)</span>,</span>
-<span>  <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit_lfcm</span>, parametric <span class="op">=</span> <span class="cn">TRUE</span>, exp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>edf <span class="op">=</span> <span class="cn">NA</span>, model <span class="op">=</span> <span class="st">"lfcm"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">term</span>, <span class="st">"hazard ratio"</span> <span class="op">=</span> <span class="va">estimate</span>, <span class="va">edf</span>, p <span class="op">=</span> <span class="va">p.value</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">est_afcm</span> <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit_afcm</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="st">"hazard ratio"</span> <span class="op">=</span> <span class="cn">NA</span>, p <span class="op">=</span> <span class="cn">NA</span>, model <span class="op">=</span> <span class="st">"afcm"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">term</span>, <span class="st">"hazard ratio"</span>, <span class="va">edf</span>, <span class="va">p</span><span class="op">)</span>,</span>
-<span>  <span class="fu">broom</span><span class="fu">::</span><span class="fu"><a href="https://generics.r-lib.org/reference/tidy.html" class="external-link">tidy</a></span><span class="op">(</span><span class="va">fit_afcm</span>, parametric <span class="op">=</span> <span class="cn">TRUE</span>, exp <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>edf <span class="op">=</span> <span class="cn">NA</span>, model <span class="op">=</span> <span class="st">"afcm"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="va">model</span>, <span class="va">term</span>, <span class="st">"hazard ratio"</span> <span class="op">=</span> <span class="va">estimate</span>, <span class="va">edf</span>, p <span class="op">=</span> <span class="va">p.value</span><span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/bind_rows.html" class="external-link">bind_rows</a></span><span class="op">(</span><span class="va">est_fpca</span>, <span class="va">est_lfcm</span>, <span class="va">est_afcm</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">term</span> <span class="op">!=</span> <span class="st">"age"</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/format.pval.html" class="external-link">format.pval</a></span><span class="op">(</span><span class="va">p</span>, digits <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
-<span>         <span class="st">"c-index"</span> <span class="op">=</span> <span class="va">c_index</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span><span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span>model <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fpc"</span>, <span class="st">"lfcm"</span>, <span class="st">"afcm"</span><span class="op">)</span>, <span class="va">c_index</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span>digits <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <table class="table">
 <thead><tr class="header">
 <th align="left">model</th>
-<th align="left">term</th>
-<th align="right">hazard ratio</th>
-<th align="right">edf</th>
-<th align="left">p</th>
-<th align="right">c-index</th>
+<th align="right">c_index</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">fpca</td>
-<td align="left">fpc1</td>
-<td align="right">4.38</td>
-<td align="right">NA</td>
-<td align="left">5e-08</td>
+<td align="left">fpc</td>
 <td align="right">0.71</td>
 </tr>
 <tr class="even">
-<td align="left">fpca</td>
-<td align="left">fpc2</td>
-<td align="right">1.16</td>
-<td align="right">NA</td>
-<td align="left">0.75</td>
-<td align="right">0.71</td>
-</tr>
-<tr class="odd">
-<td align="left">fpca</td>
-<td align="left">fpc3</td>
-<td align="right">62.67</td>
-<td align="right">NA</td>
-<td align="left">2e-04</td>
-<td align="right">0.71</td>
-</tr>
-<tr class="even">
-<td align="left">fpca</td>
-<td align="left">fpc4</td>
-<td align="right">0.04</td>
-<td align="right">NA</td>
-<td align="left">0.03</td>
-<td align="right">0.71</td>
-</tr>
-<tr class="odd">
 <td align="left">lfcm</td>
-<td align="left">s(t_int):l_int * func</td>
-<td align="right">NA</td>
-<td align="right">4.29</td>
-<td align="left">NA</td>
 <td align="right">0.73</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">afcm</td>
-<td align="left">ti(t_int,func):l_int</td>
-<td align="right">NA</td>
-<td align="right">8.25</td>
-<td align="left">NA</td>
 <td align="right">0.76</td>
 </tr>
 </tbody>
 </table>
+<div id="refs" class="references csl-bib-body hanging-indent">
+<div id="ref-cui2021additive" class="csl-entry">
+Cui, Erjia, Ciprian M Crainiceanu, and Andrew Leroux. 2021.
+<span>“Additive Functional Cox Model.”</span> <em>Journal of
+Computational and Graphical Statistics</em> 30 (3): 780–93.
+</div>
+<div id="ref-gellar2015cox" class="csl-entry">
+Gellar, Jonathan E, Elizabeth Colantuoni, Dale M Needham, and Ciprian M
+Crainiceanu. 2015. <span>“Cox Regression Models with Functional
+Covariates for Survival Data.”</span> <em>Statistical Modelling</em> 15
+(3): 256–78.
+</div>
+<div id="ref-vu2023funspace" class="csl-entry">
+Vu, Thao, Souvik Seal, Tusharkanti Ghosh, Mansooreh Ahmadian, Julia
+Wrobel, and Debashis Ghosh. 2023. <span>“FunSpace: A Functional and
+Spatial Analytic Approach to Cell Imaging Data Using Entropy
+Measures.”</span> <em>PLOS Computational Biology</em> 19 (9): e1011490.
+</div>
+<div id="ref-vu2022spf" class="csl-entry">
+Vu, Thao, Julia Wrobel, Benjamin G Bitler, Erin L Schenk, Kimberly R
+Jordan, and Debashis Ghosh. 2022. <span>“SPF: A Spatial and Functional
+Data Analytic Approach to Cell Imaging Data.”</span> <em>PLoS
+Computational Biology</em> 18 (6): e1009486.
+</div>
+</div>
 </div>
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>
     </nav></aside>

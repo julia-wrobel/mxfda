@@ -148,12 +148,12 @@ ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
 Below we print the class and summary of the extracted model.
 
 ```{r}
-class(extract_model(ovarian_FDA, 'uni g', 'fit_lfcm'))
+class(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm'))
 ```
 
 
 ```{r}
-summary(extract_model(ovarian_FDA, 'uni g', 'fit_lfcm'))
+summary(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm'))
 ```
 
 Finally, we visualized the estimated coefficient function, $\hat{\beta}(r)$, from this model. The code below extracts this quantity, then plots $\hat{\beta}(r)$ as a solid black line and 95% pointwise confidence intervals as dotted black lines. Values of the radius $r$ where the 95% confidence interval does not contain zero are statistically significant.
@@ -184,12 +184,12 @@ ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm",
 ```
 
 ```{r}
-class(extract_model(ovarian_FDA, 'uni g', 'fit_afcm'))
+class(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_afcm'))
 ```
 
 
 ```{r}
-summary(extract_model(ovarian_FDA, 'uni g', 'fit_afcm'))
+summary(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_afcm'))
 ```
 
 The AFCM model produces a *coefficient surface*, $\hat{F}\left(r, X_i(r)\right)$, rather than a coefficient function. The code below extracts this estimated surface, then on the left plots the surface, and on the right plots regions of the surface that are statistically significant at the 95% confidence level. 
@@ -205,8 +205,8 @@ plot(afcm_surface)
 C-index is a good way to compare across models, especially when incorporating cross validation. Larger c-index is indicative of a better predictive model. Below, we calculate the c-index for each model.
 
 ```{r}
-fit_afcm = extract_model(ovarian_FDA, 'uni g', 'fit_afcm')
-fit_lfcm = extract_model(ovarian_FDA, 'uni g', 'fit_lfcm')
+fit_afcm = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_afcm')
+fit_lfcm = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm')
 
 c_index = c(
   phmod_fpc$concordance[["concordance"]], 

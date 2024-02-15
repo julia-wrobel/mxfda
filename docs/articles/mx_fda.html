@@ -268,20 +268,20 @@ store these spatial summary functions in the
 To access this slot and view the extracted summary functions, type:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mxFDAobject</span><span class="op">@</span><span class="va">univariate_summaries</span><span class="op">$</span><span class="va">Kest</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 24,847 × 5</span></span></span>
-<span><span class="co">#&gt;    patientImage_id     r sumfun    csr fundiff</span></span>
-<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2_1                 0      0   0       0   </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 2_1                 1      0   3.14   -<span style="color: #BB0000;">3.14</span></span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 2_1                 2      0  12.6   -<span style="color: #BB0000;">12.6</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 2_1                 3      0  28.3   -<span style="color: #BB0000;">28.3</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 2_1                 4      0  50.3   -<span style="color: #BB0000;">50.3</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 2_1                 5      0  78.5   -<span style="color: #BB0000;">78.5</span> </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 2_1                 6      0 113.   -<span style="color: #BB0000;">113.</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2_1                 7      0 154.   -<span style="color: #BB0000;">154.</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2_1                 8      0 201.   -<span style="color: #BB0000;">201.</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2_1                 9      0 254.   -<span style="color: #BB0000;">254.</span>  </span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24,837 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 75,858 × 6</span></span></span>
+<span><span class="co">#&gt;    patientImage_id     r sumfun    csr fundiff `immune cells`</span></span>
+<span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 1_1                 0     0    0       0                32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 2</span> 1_1                 1     0    3.14   -<span style="color: #BB0000;">3.14</span>             32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 3</span> 1_1                 2     0   12.6   -<span style="color: #BB0000;">12.6</span>              32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 4</span> 1_1                 3     0   28.3   -<span style="color: #BB0000;">28.3</span>              32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 5</span> 1_1                 4     0   50.3   -<span style="color: #BB0000;">50.3</span>              32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 6</span> 1_1                 5   395.  78.5   317.               32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 7</span> 1_1                 6  <span style="text-decoration: underline;">1</span>185. 113.   <span style="text-decoration: underline;">1</span>072.               32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 1_1                 7  <span style="text-decoration: underline;">1</span>580. 154.   <span style="text-decoration: underline;">1</span>426.               32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 1_1                 8  <span style="text-decoration: underline;">1</span>580. 201.   <span style="text-decoration: underline;">1</span>379.               32</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 1_1                 9  <span style="text-decoration: underline;">1</span>580. 254.   <span style="text-decoration: underline;">1</span>326.               32</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 75,848 more rows</span></span></span></code></pre></div>
 <p>Note that the summaries are returned as a dataframe. The variable
 <code>sumfun</code> is the estimated summary function value,
 <code>csr</code> is the theoretical value under complete spatial
@@ -313,7 +313,7 @@ be used.</strong></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni k"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 48 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 103 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 </div>
@@ -371,7 +371,7 @@ results. The <code>what</code> now is <code>'bi g'</code>,
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"bi g"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1365 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 4958 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 </div>
@@ -387,15 +387,16 @@ been calculated, and functional data analyses that have been run.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mxFDAobject</span></span>
 <span><span class="co">#&gt; mxFDA Object:</span></span>
-<span><span class="co">#&gt;  Subjects: 50</span></span>
-<span><span class="co">#&gt;  Samples: 247</span></span>
+<span><span class="co">#&gt;  Subjects: 153</span></span>
+<span><span class="co">#&gt;  Samples: 761</span></span>
 <span><span class="co">#&gt;  Has spatial data</span></span>
 <span><span class="co">#&gt;  Univariate Summaries: None</span></span>
 <span><span class="co">#&gt;  Bivariate Summaries: Gcross</span></span>
 <span><span class="co">#&gt; FPCs not yet calculated</span></span>
 <span><span class="co">#&gt; MFPCs not yet calculated</span></span>
 <span><span class="co">#&gt; FCMs not yet calculated</span></span>
-<span><span class="co">#&gt; MFCMs not yet calculated</span></span></code></pre></div>
+<span><span class="co">#&gt; MFCMs not yet calculated</span></span>
+<span><span class="co">#&gt; Scalar on Functional Regression not calculated</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="spatialtime">SpatialTIME<a class="anchor" aria-label="anchor" href="#spatialtime"></a>
@@ -429,7 +430,7 @@ proportion of positive cells for each phenotype</li>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#Step 1</span></span>
 <span><span class="va">spatialTIME_spatial_df</span> <span class="op">=</span> <span class="va">spatial</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">X.1</span>, <span class="op">-</span><span class="va">X</span>, <span class="op">-</span><span class="va">phenotype</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">phenotype</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html" class="external-link">across</a></span><span class="op">(</span><span class="va">phenotype_ck</span><span class="op">:</span><span class="va">phenotype_cd4</span>, <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"\\+"</span>, <span class="va">.x</span><span class="op">)</span>, <span class="fl">1</span>, <span class="fl">0</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op"><a href="../reference/pipe.html">%&gt;%</a></span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/relocate.html" class="external-link">relocate</a></span><span class="op">(</span><span class="va">patientImage_id</span>, .before <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
@@ -459,7 +460,7 @@ efficiency, use &gt;v1.3.4.</p>
 <code class="sourceCode R"><span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/FridleyLab/spatialTIME" class="external-link">spatialTIME</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; spatialTIME version:</span></span>
-<span><span class="co">#&gt; <span style="color: #BBBBBB;">1.3.4.1</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BBBBBB;">1.3.4.3</span></span></span>
 <span><span class="co">#&gt; If using for publication, please cite our manuscript:</span></span>
 <span><span class="co">#&gt; <span style="color: #BBBBBB;">https://doi.org/10.1093/bioinformatics/btab757</span></span></span>
 <span></span>
@@ -488,7 +489,7 @@ the data frame. We can visualize both CD8+ and CD4+ with ggplot.</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">r</span>, y <span class="op">=</span> <span class="va">`Degree of Clustering Permutation`</span>, color <span class="op">=</span> <span class="va">patientImage_id</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="op">~</span><span class="va">Marker</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1086 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1399 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 <p>Exporting the spatial summary function data from the <code>mIF</code>
 object is the same as accessing the list object. However, we need to
@@ -520,7 +521,7 @@ continue with analyses as would be done if using the internal
 <code>extract_summary_function()</code>.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDA_spatialTIME</span>, y <span class="op">=</span> <span class="st">"Degree of Clustering Permutation"</span>, what <span class="op">=</span> <span class="st">"uni g"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 480 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 490 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 </div>
 <div class="section level2">

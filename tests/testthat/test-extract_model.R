@@ -7,12 +7,12 @@ ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
                       afcm = FALSE)
 
 test_that("model class is right", {
-  mod = extract_model(ovarian_FDA, 'uni g', 'fit_lfcm')
+  mod = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm')
   expect_equal(class(mod)[1], 'lfcm')
 })
 
 test_that("need to provide a model", {
-  expect_error(extract_model(ovarian_FDA, 'uni g'))
+  expect_error(extract_model(ovarian_FDA, 'uni g', 'cox'))
 })
 
 #only g exists so error will be about length of 'what' vs missing model

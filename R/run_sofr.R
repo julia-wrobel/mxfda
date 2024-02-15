@@ -64,6 +64,21 @@ run_sofr <- function(mxFDAobject,
     filter_data(filter_cols) %>%
     dplyr::full_join(mxFDAobject@Metadata, by = mxFDAobject@sample_key)
 
+  computed_vals = mxfundata %>%
+    dplyr::group_by(dplyr::across(!!mxFDAobject@sample_key)) %>%
+    dplyr::summarise(number_computable = sum(!is.na(get(value)))) %>% #number of radii with value
+    dplyr::mutate(Keep = ifelse(number_computable < 4, FALSE, TRUE),
+                  Keep = factor(Keep, levels = c(TRUE, FALSE))) #true means keep %>%
+  cvs = table(computed_vals$Keep) %>% data.frame() #calculated values summed
+  #let user know what is kept/removed
+  message(paste0(cvs[cvs$Var1 == "TRUE", "Freq"],
+                 " sample have >= 4 values for FPCA; removing ",
+                 cvs[cvs$Var1 == "FALSE", "Freq"], " samples"))
+  #remove bad samples
+  mxfundata = mxfundata %>%
+    filter(get(mxFDAobject@sample_key) %in%
+             computed_vals[[mxFDAobject@sample_key]][computed_vals$Keep == TRUE])
+
   analysis_vars = unique(c(all.vars(formula)))
 
   # check for missing values in the functional predictor- these must be removed
@@ -109,12 +124,12 @@ run_sofr <- function(mxFDAobject,
 
   class(fit_sofr) <- append("sofr", class(fit_sofr))
 
-  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`sofr`$Kcross[[model_name]] = fit_sofr
-  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`sofr`$Gcross[[model_name]] = fit_sofr
-  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`sofr`$Lcross[[model_name]] = fit_sofr
-  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`sofr`$Kest[[model_name]] = fit_sofr
-  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`sofr`$Gest[[model_name]] = fit_sofr
-  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`sofr`$Lest[[model_name]] = fit_sofr
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`scalar_on_functional`$Kcross[[model_name]] = fit_sofr
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`scalar_on_functional`$Gcross[[model_name]] = fit_sofr
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`scalar_on_functional`$Lcross[[model_name]] = fit_sofr
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`scalar_on_functional`$Kest[[model_name]] = fit_sofr
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`scalar_on_functional`$Gest[[model_name]] = fit_sofr
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`scalar_on_functional`$Lest[[model_name]] = fit_sofr
 
  return(mxFDAobject)
 }

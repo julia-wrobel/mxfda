@@ -3,6 +3,7 @@
 S3method(plot,afcmSurface)
 S3method(plot,lfcmSurface)
 S3method(plot,mxFDA)
+S3method(plot,sofr)
 S3method(summary,mxFDA)
 export("%>%")
 export(Gcross)

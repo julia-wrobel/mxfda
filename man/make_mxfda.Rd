@@ -27,6 +27,7 @@ S4 object of class \code{mxFDA}
 \item{functional_mpca}{slot of class \code{list} where MFPCA results are stored}
 \item{functional_cox}{slot of class \code{list} where functional cox model results are stored}
 \item{functional_mcox}{slot of class \code{list} where mixed functional cox model results are stored}
+\item{scalar_on_function}{slot of class \code{list} where functional models are fit to scalar responses}
 }
 \description{
 Used to create an object of class \code{mxFDA} that can be used with the \link{mxfda} package for functional data analysis.

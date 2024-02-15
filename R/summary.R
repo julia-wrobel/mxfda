@@ -75,6 +75,17 @@ summary.mxFDA = function(object, ...){
           " models\n", sep = "")
     }
   }
+  if(length(object@scalar_on_functional) == 0){
+    cat("Scalar on Functional Regression not calculated\n", sep = "")
+  } else {
+    sofr_slots = names(object@scalar_on_functional)
+    cat("Models Fit:\n", sep = "")
+    for(f in sofr_slots){
+      cat("\t", f, ": ", paste0(sapply(object@scalar_on_functional[[f]], function(i){ class(i)[1]}) %>% toupper(),#need to play with the output to determine how to report
+                                collapse = ", "),
+          " models\n", sep = "")
+    }
+  }
 }
 
 setMethod(f = 'show',

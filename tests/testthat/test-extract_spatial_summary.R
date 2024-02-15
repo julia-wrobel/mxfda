@@ -9,7 +9,6 @@ spatial = lung_df %>%
   select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)
 
 spatial2 = spatial %>%
-  select(-X.1, -X) %>%
   mutate(across(phenotype_ck:phenotype_cd4, ~ ifelse(grepl("\\+", .x), 1, 0))) %>%
   relocate(patientImage_id, .before = 1)
 
