@@ -28,15 +28,23 @@ process_fcm <- function(mxfundata,
                        r = "r",
                        value = "fundiff",
                        analysis_vars,
-                       quantile_transform = FALSE){
+                       quantile_transform = FALSE,
+                       multilevel = FALSE){
 
-  tind <- sort(unique(mxfundata[[r]]))
+  if(multilevel){
+    tind <- mxfundata %>% dplyr::select(dplyr::all_of(dplyr::starts_with("r_"))) %>% names() %>% str_remove("r_")
+    tind <- sort(as.numeric(tind))
+    mxfundata <- mxfundata %>%
+      dplyr::select(id, dplyr::all_of(analysis_vars), dplyr::starts_with("r_"))
+  }else{
+    tind <- sort(unique(mxfundata[[r]]))
+    mxfundata <- mxfundata %>%
+      dplyr::select(dplyr::all_of(c(id, r, value, analysis_vars))) %>%
+      tidyr::pivot_wider(names_from =  dplyr::all_of(r),
+                         names_prefix = "r_",
+                         values_from =  dplyr::all_of(value))
+  }
 
-  mxfundata <- mxfundata %>%
-    dplyr::select(dplyr::all_of(c(id, r, value, analysis_vars))) %>%
-    tidyr::pivot_wider(names_from =  dplyr::all_of(r),
-                names_prefix = "r_",
-                values_from =  dplyr::all_of(value))
 
   func <- mxfundata %>% dplyr::select(dplyr::all_of(dplyr::starts_with("r_"))) %>% as.matrix()
   mxfundata <- mxfundata %>% dplyr::select(!dplyr::starts_with("r_"))

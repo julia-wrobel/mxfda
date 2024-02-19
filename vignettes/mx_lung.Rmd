@@ -33,7 +33,7 @@ library(broom)
 data(lung_df)
 
 clinical = lung_df %>%
-  select(image_id, patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
+  select(patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
   distinct()
 
 spatial = lung_df %>%
@@ -61,18 +61,8 @@ mxFDAobject <- run_mfpca(mxFDAobject,
                          metric = "uni k", 
                          r = "r", 
                          value = "fundiff",
-                         pve = .99)
-```
-
-calculate variance of level2 scores
-
-```{r}
-var_df = mxFDAobject@functional_mpca$Kest$scores_level2 %>%
-  pivot_longer(level2_1:level2_3, names_to = "fpc", values_to = "score") %>%
-  group_by(patient_id) %>%
-  summarize(score_var = var(score),
-            score_sd = round(sd(score), 0)) %>%
-  ungroup()
+                         pve = .99,
+                         lightweight = TRUE)
 ```
 
 
@@ -83,34 +73,103 @@ var_df = mxFDAobject@functional_mpca$Kest$scores_level2 %>%
 
 
 
-
-
-Plot individual subjects, their mean from mfpca, title shows variance of scores. Sort by standard deviation of level 2 score.
+Plot individual subjects, their mean from mfpca, title shows variance of scores. Sort by standard deviation of level 2 score. Mean doesn't look like the pointwise mean. Does this make sense? Would be nice to make the code for this plot prettier
 
 ```{r}
-set.seed(103)
-ids = sample(unique(mxFDAobject@Metadata$patient_id),8)
+var_df = mxFDAobject@functional_mpca$Kest$Yi_hat %>%
+  select(patient_id, level2_score_sd) %>%
+  mutate(sd = round(level2_score_sd)) %>%
+  left_join(., mxFDAobject@Metadata)
 
+set.seed(11103)
+ids = sample(unique(var_df$patient_id),10)
 
-grid = unique(mxFDAobject@univariate_summaries$Kest$r)[-102]
-rownames(mxFDAobject@functional_mpca$Kest$mfpc_object$Y.df)
-mean_df = tibble(yhat = as.vector(mxFDAobject@functional_mpca$Kest$mfpc_object$Yhat.subject),
-       r = rep(grid, times = nrow(mxFDAobject@functional_mpca$Kest$mfpc_object$Yhat.subject))) %>%
-  filter(p)
+mean_df = mxFDAobject@functional_mpca$Kest$Yi_hat %>%
+  pivot_longer(contains("r_"), names_to = "r", values_to = "fundiff", names_prefix = "r_") %>%
+  mutate(r = as.numeric(r)) %>%
+  filter(patient_id %in% ids)
 
-
-
+var_df = var_df %>%
+  filter(patient_id %in% ids)
 
 mxFDAobject@univariate_summaries$Kest %>%
-  left_join(.,mxFDAobject@Metadata) %>%
-  #left_join(., var_df) %>%
+  left_join(.,var_df) %>%
   filter(patient_id %in% ids) %>%
-  ggplot(aes(r, fundiff, group = patientImage_id)) +
-  geom_line(alpha = 0.8) +
-  geom_text(data = filter(var_df, patient_id %in% ids), x = 75, y = 40000, aes(label = score_sd, group = NULL)) +
+  mutate(patient_id = fct_reorder(factor(patient_id), sd)) %>%
+  ggplot(aes(r, fundiff)) +
+  geom_line(alpha = 0.8, aes(group = patientImage_id)) +
+  geom_line(data = mean_df, color = "red") +
+  geom_text(data = var_df, x = 75, y = 30000, aes(label = sd), color = "blue") +
   #geom_hline(yintercept = 0, linetype = 2, color = "darkred") +
-  facet_wrap(~patient_id, ncol = 4, labeller = label_both)
+  facet_wrap(~patient_id, ncol = 5, labeller = label_both)
   
+```
+
+
+
+Next up is to use this in an lfcm model. Model is (make more specific to this problem):
+
+
+$$\log h_i(t;Z_i, X_i) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip} + \int_{r = 0}^R \beta(r)X_i(r)dr,$$
+
+```{r}
+ovarian_FDA <- run_fcm(ovarian_FDA, model_name = "fit_afcm", 
+                       formula = survival_time ~ age, 
+                       event = "event",
+                       metric = "uni g", r = "r", value = "fundiff",
+                       afcm = TRUE)
+```
+
+
+### Cluster argument in Cox model
+
+When there are repeated observations of a covariate in a survival model one can use a cluster term (see example below).
+
+```{r}
+library(survival)
+marginal.model <- coxph(Surv(time, status) ~ rx, data= rats, cluster=litter,
+                         subset=(sex=='f'))
+
+summary(marginal.model)
+```
+
+What is this actually doing? In this example the cluster can still have different outcome values, so I'm not sure that this is appropriate to use. 
+
+* Maybe treat as a time-dependent covariate that is actually spatially dependent?
+* Maybe use a frailty model?
+
+* https://onlinelibrary.wiley.com/doi/pdf/10.1111/insr.12214
+
+
+```{r}
+df = mxFDAobject@functional_mpca$Kest$Yi_hat %>%
+  select(patient_id, r_15, level2_score_sd) %>%
+  left_join(.,mxFDAobject@functional_mpca$Kest$scores_level2) %>%
+  left_join(., mxFDAobject@Metadata)
+
+
+df_nocluster = df %>% select(patient_id, r_15, level2_score_sd, age, survival_days, survival_status) %>%
+  distinct()
+
+mod_mean = coxph(Surv(survival_days, survival_status) ~ age + r_15, data = df_nocluster) 
+mod_mean_sd = coxph(Surv(survival_days, survival_status) ~ age + r_15 + level2_score_sd, data = df_nocluster) 
+
+
+mod_cluster = coxph(Surv(survival_days, survival_status) ~ age + r_15 + level2_1, data = df, cluster = patient_id)
+mod_frailty = coxph(Surv(survival_days, survival_status) ~ age + r_15 + level2_1 + frailty(patient_id), data = df)
+mod_frailty2 = coxph(Surv(survival_days, survival_status) ~ age + r_15 + level2_1+ frailty(patient_id), 
+                     data = df_nocluster)
+
+
+
+bind_rows(broom::tidy(mod_mean) %>% mutate(model = "mean"),
+          broom::tidy(mod_mean_sd) %>% mutate(model = "mean_sd"),
+          broom::tidy(mod_cluster) %>% mutate(model = "cluster"),
+          broom::tidy(mod_frailty) %>% mutate(model = "frailty")) %>%
+  arrange(term)
+
+AIC(mod_mean_sd)
+AIC(mod_cluster)
 ```
 
 
@@ -118,11 +177,21 @@ mxFDAobject@univariate_summaries$Kest %>%
 
 
 
-
+## Hypothesis testing
 
 * hypothesis testing
+
 
 
 * dealing with multiple images per person
 * dealing with zero inflation
 * hypothesis testing
+
+## Questions for Andrew
+
+* Why isn't subject-specific mean look like the mean for everyone in mfpca.face
+* Using mfpca in modeling multiple images for fcm- should I use standard deviation of scores? ICC? variance of scores?
+* Hypothesis test questions (applies to FCM and SOFR models- let me know if the answer is different for each outcome type)
+  * Fixed spline basis in mgcv and ftest- is this valid?
+  * Valid ftest when spline basis is not fixed
+  * p values for smooth terms? 
