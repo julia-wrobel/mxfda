@@ -179,19 +179,45 @@ AIC(mod_cluster)
 
 ## Hypothesis testing
 
-* hypothesis testing
+```{r}
+data("ovarian_FDA")
+
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit_lfcm",
+                       formula = survival_time ~ age, event = "event",
+                       metric = "uni g", r = "r", value = "fundiff",
+                       afcm = FALSE)
+
+ovarian_FDA = run_fcm(ovarian_FDA, model_name = "fit2_lfcm",
+                       formula = survival_time ~ age + stage, event = "event",
+                       metric = "uni g", r = "r", value = "fundiff",
+                       afcm = FALSE)
+
+```
 
 
 
-* dealing with multiple images per person
+```{r}
+mod = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm')
+mod2 = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit2_lfcm')
+
+anova(mod, mod2, test = "LRT")
+```
+
+
+
+
+## Zero inflation
+
 * dealing with zero inflation
-* hypothesis testing
+
 
 ## Questions for Andrew
 
 * Why isn't subject-specific mean look like the mean for everyone in mfpca.face
 * Using mfpca in modeling multiple images for fcm- should I use standard deviation of scores? ICC? variance of scores?
 * Hypothesis test questions (applies to FCM and SOFR models- let me know if the answer is different for each outcome type)
-  * Fixed spline basis in mgcv and ftest- is this valid?
-  * Valid ftest when spline basis is not fixed
+  * Fixed spline basis in mgcv and ftest:
+    * How do I fit mgcv without smoothing
+  * Valid ftest when spline basis is not fixed?
+  * Can I test models nested with different smooth terms?
   * p values for smooth terms? 
