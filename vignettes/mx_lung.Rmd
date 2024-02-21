@@ -62,7 +62,11 @@ mxFDAobject <- run_mfpca(mxFDAobject,
                          r = "r", 
                          value = "fundiff",
                          pve = .99,
-                         lightweight = TRUE)
+                         lightweight = FALSE)
+
+mxFDAobject@functional_mpca$Kest$mfpc_object
+
+mxFDAobject@functional_mpca$Kest$mfpc_object$Yhat.subject
 ```
 
 
@@ -201,9 +205,15 @@ mod = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm')
 mod2 = extract_model(ovarian_FDA, 'uni g', 'cox', 'fit2_lfcm')
 
 anova(mod, mod2, test = "LRT")
+
+
 ```
 
 
+
+```{r}
+summary(mod2)
+```
 
 
 ## Zero inflation
@@ -217,7 +227,8 @@ anova(mod, mod2, test = "LRT")
 * Using mfpca in modeling multiple images for fcm- should I use standard deviation of scores? ICC? variance of scores?
 * Hypothesis test questions (applies to FCM and SOFR models- let me know if the answer is different for each outcome type)
   * Fixed spline basis in mgcv and ftest:
-    * How do I fit mgcv without smoothing
   * Valid ftest when spline basis is not fixed?
   * Can I test models nested with different smooth terms?
   * p values for smooth terms? 
+    * See textbook and code from Andrew
+* What are any visualization diagnostic plots you like to look at for these models?

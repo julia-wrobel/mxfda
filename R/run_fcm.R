@@ -79,7 +79,8 @@ run_fcm <- function(mxFDAobject,
 
   # fit linear or additive functional Cox model
   if(afcm){
-    form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"), k=c(10,10), mc=c(FALSE,TRUE))')
+    form =  paste0(form, '+ ti(t_int, func, by=l_int, bs=c("cr","cr"),
+                   k=c(10,10), mc=c(FALSE,TRUE))')
     weights = mxfundata[[event]]
     fit_fcm <- mgcv::gam(formula = stats::as.formula(form),
                          weights = weights,

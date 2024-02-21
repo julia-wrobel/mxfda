@@ -98,7 +98,7 @@ run_mfpca = function(mxFDAobject,
   mx_mfpc <- mfpca.face(Y = mat, id = mxfundata[[mxFDAobject@subject_key]],
                         visit = mxfundata[[mxFDAobject@sample_key]],
                         knots = knots, twoway = FALSE,
-                        ...
+                        #...
                         )
 
 
@@ -122,15 +122,18 @@ run_mfpca = function(mxFDAobject,
               level2_score_sd = sd(score)) %>%
     ungroup()
 
-  Yi_hat <- mx_mfpc$Yhat.subject
+
+  Yi_hat = matrix(mx_mfpc$mu, nrow = nrow(mx_mfpc$scores$level1), ncol = nrow(mx_mfpc$efunctions$level1), byrow = TRUE) + mx_mfpc$scores$level1 %*% t(mx_mfpc$efunctions$level1)
+
+  #Yi_hat <- mx_mfpc$Yhat.subject
   colnames(Yi_hat) <- colnames(mat)
 
   Yi_hat <- as.data.frame(Yi_hat) %>%
-    mutate(!!mxFDAobject@subject_key := mxfundata[[mxFDAobject@subject_key]]) %>%
+    mutate(!!mxFDAobject@subject_key := unique(mxfundata[[mxFDAobject@subject_key]])) #%>%
     # only keep first row from each patient
-    group_by(patient_id) %>% # can't group by patient_id
-    slice(1) %>%
-    ungroup()
+    #group_by(patient_id) %>% # can't group by patient_id
+    #slice(1) %>%
+    #ungroup()
 
   Yi_hat <- left_join(var_df, Yi_hat)
 
