@@ -10,7 +10,7 @@ run_mfpca(
   r = "r",
   value = "fundiff",
   knots = NULL,
-  lightweight = FALSE,
+  lightweight = TRUE,
   ...
 )
 }
