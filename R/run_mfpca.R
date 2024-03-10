@@ -44,7 +44,7 @@ run_mfpca = function(mxFDAobject,
                     r = "r",
                     value = "fundiff",
                     knots = NULL,
-                    lightweight = TRUE,
+                    lightweight = FALSE,
                     ...){
   #get the right data
   if(length(metric) != 1) stop("Please provide a single spatial metric to calculate functional PCA with")
