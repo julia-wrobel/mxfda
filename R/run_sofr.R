@@ -66,11 +66,10 @@ run_sofr <- function(mxFDAobject,
 
   computed_vals = mxfundata %>%
     dplyr::group_by(dplyr::across(!!mxFDAobject@sample_key)) %>%
-    dplyr::summarise(number_computable = sum(!is.na(get(value)))) %>% #number of radii with value
+    dplyr::summarise(number_computable = sum(!is.na(get(value)))) %>%
     dplyr::mutate(Keep = ifelse(number_computable < 4, FALSE, TRUE),
-                  Keep = factor(Keep, levels = c(TRUE, FALSE))) #true means keep %>%
-  cvs = table(computed_vals$Keep) %>% data.frame() #calculated values summed
-  #let user know what is kept/removed
+                  Keep = factor(Keep, levels = c(TRUE, FALSE)))
+  cvs = table(computed_vals$Keep) %>% data.frame()
   message(paste0(cvs[cvs$Var1 == "TRUE", "Freq"],
                  " sample have >= 4 values for FPCA; removing ",
                  cvs[cvs$Var1 == "FALSE", "Freq"], " samples"))
@@ -119,7 +118,7 @@ run_sofr <- function(mxFDAobject,
   form =  paste0(form, ' + lf(xmat, k=', knots, ')')
 
   fit_sofr <- pfr(formula = stats::as.formula(form),
-                  family = family,
+                  #family = family,
                   data = mxfundata)
 
   class(fit_sofr) <- append("sofr", class(fit_sofr))
