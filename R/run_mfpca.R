@@ -118,8 +118,8 @@ run_mfpca = function(mxFDAobject,
   var_df = scores_level2 %>%
     pivot_longer(contains("level2_"), names_to = "fpc", values_to = "score") %>%
     group_by(patient_id) %>% # can't group by patient_id, need to generalize
-    summarize(level2_score_var = var(score),
-              level2_score_sd = sd(score)) %>%
+    summarize(level2_score_var = stats::var(score),
+              level2_score_sd = stats::sd(score)) %>%
     ungroup()
 
 
