@@ -52,6 +52,7 @@ mxFDAobject = extract_summary_functions(mxFDAobject,
                                         edge_correction = "iso",
                                         markvar = "immune",
                                         mark1 = "immune")
+
 ```
 
 run mfpca
@@ -64,9 +65,8 @@ mxFDAobject <- run_mfpca(mxFDAobject,
                          pve = .99,
                          lightweight = FALSE)
 
-mxFDAobject@functional_mpca$Kest$mfpc_object
-
-mxFDAobject@functional_mpca$Kest$mfpc_object$Yhat.subject
+#mxFDAobject@functional_mpca$Kest$mfpc_object
+#mxFDAobject@functional_mpca$Kest$mfpc_object$Yhat.subject
 ```
 
 

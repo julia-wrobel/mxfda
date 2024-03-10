@@ -123,9 +123,9 @@ run_mfpca = function(mxFDAobject,
     ungroup()
 
 
+  #Yi_hat <- mx_mfpc$Yhat.subject
   Yi_hat = matrix(mx_mfpc$mu, nrow = nrow(mx_mfpc$scores$level1), ncol = nrow(mx_mfpc$efunctions$level1), byrow = TRUE) + mx_mfpc$scores$level1 %*% t(mx_mfpc$efunctions$level1)
 
-  #Yi_hat <- mx_mfpc$Yhat.subject
   colnames(Yi_hat) <- colnames(mat)
 
   Yi_hat <- as.data.frame(Yi_hat) %>%
