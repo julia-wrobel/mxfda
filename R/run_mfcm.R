@@ -28,6 +28,7 @@
 #'
 #' @examples
 #' #load ovarian mxFDA object
+#' \dontrun{
 #' data('ovarian_FDA')
 #'
 #' # run the lfcm model
@@ -37,7 +38,7 @@
 #'                       metric = "uni g", r = "r", value = "fundiff",
 #'                       pve = 0.99,
 #'                       afcm = FALSE)
-#'
+#' }
 #' @export
 run_mfcm <- function(mxFDAobject,
                     model_name,
@@ -69,7 +70,7 @@ run_mfcm <- function(mxFDAobject,
 
 
   analysis_vars <- unique(c(all.vars(formula), event, mxFDAobject@subject_key))
-  meta_vars <- select(mxFDAobject@Metadata, all_of(analysis_vars)) %>% distinct()
+  meta_vars <- mxFDAobject@Metadata %>% select(all_of(analysis_vars)) %>% distinct()
 
 
   ### this is specific to the K example I have been working with
