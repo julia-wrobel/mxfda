@@ -32,7 +32,7 @@ process_fcm <- function(mxfundata,
                        multilevel = FALSE){
 
   if(multilevel){
-    tind <- mxfundata %>% dplyr::select(dplyr::all_of(dplyr::starts_with("r_"))) %>% names() %>% str_remove("r_")
+    tind <- mxfundata %>% dplyr::select(dplyr::all_of(dplyr::starts_with("r_"))) %>% names() %>% gsub("^r_", "", .)
     tind <- sort(as.numeric(tind))
     mxfundata <- mxfundata %>%
       dplyr::select(id, dplyr::all_of(analysis_vars), dplyr::starts_with("r_"))
