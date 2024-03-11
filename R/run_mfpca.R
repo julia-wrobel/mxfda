@@ -78,7 +78,7 @@ run_mfpca = function(mxFDAobject,
 
   # this seems to break when there are NA values, what behavior do I want for that?
   mxfundata <- mxfundata %>%
-    select(all_of(c(mxFDAobject@subject_key, mxFDAobject@sample_key, r, value))) %>%
+    select(dplyr::all_of(c(mxFDAobject@subject_key, mxFDAobject@sample_key, r, value))) %>%
     pivot_wider(names_from = r,
                 names_prefix = "r_",
                 values_from = value) %>%
