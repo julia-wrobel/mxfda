@@ -28,6 +28,7 @@
 #'
 #' @examples
 #' #load ovarian mxFDA object
+#' \dontrun{
 #' data('ovarian_FDA')
 #'
 #' # run the lfcm model
@@ -37,7 +38,7 @@
 #'                       metric = "uni g", r = "r", value = "fundiff",
 #'                       pve = 0.99,
 #'                       afcm = FALSE)
-#'
+#' }
 #' @export
 run_mfcm <- function(mxFDAobject,
                     model_name,

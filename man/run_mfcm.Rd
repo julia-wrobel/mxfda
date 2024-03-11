@@ -59,6 +59,7 @@ a scalar variable in the FCM called "level2_score_sd".
 }
 \examples{
 #load ovarian mxFDA object
+\dontrun{
 data('ovarian_FDA')
 
 # run the lfcm model
@@ -68,7 +69,7 @@ ovarian_FDA = run_mfcm(ovarian_FDA, model_name = "fit_mlfcm",
                       metric = "uni g", r = "r", value = "fundiff",
                       pve = 0.99,
                       afcm = FALSE)
-
+}
 }
 \author{
 Julia Wrobel \email{julia.wrobel@emory.edu}
