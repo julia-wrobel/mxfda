@@ -78,7 +78,7 @@ run_mfpca = function(mxFDAobject,
 
   # this seems to break when there are NA values, what behavior do I want for that?
   mxfundata <- mxfundata %>%
-    select(all_of(c(mxFDAobject@subject_key, mxFDAobject@sample_key, r, value))) %>%
+    select(dplyr::all_of(c(mxFDAobject@subject_key, mxFDAobject@sample_key, r, value))) %>%
     pivot_wider(names_from = r,
                 names_prefix = "r_",
                 values_from = value) %>%
@@ -118,8 +118,8 @@ run_mfpca = function(mxFDAobject,
   var_df = scores_level2 %>%
     pivot_longer(contains("level2_"), names_to = "fpc", values_to = "score") %>%
     group_by(patient_id) %>% # can't group by patient_id, need to generalize
-    summarize(level2_score_var = var(score),
-              level2_score_sd = sd(score)) %>%
+    summarize(level2_score_var = stats::var(score),
+              level2_score_sd = stats::sd(score)) %>%
     ungroup()
 
 

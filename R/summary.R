@@ -33,7 +33,7 @@ summary.mxFDA = function(object, ...){
     fpc_slots = names(object@functional_pca)
     cat("FPCs Calculated:\n", sep = "")
     for(f in fpc_slots){
-      cat("\t", f, ": ", ncol(object@functional_pca[[f]]$score_df), " FPCs describe ",
+      cat("\t", f, ": ", ncol(object@functional_pca[[f]]$score_df)-1, " FPCs describe ",
           round((object@functional_pca[[f]]$fpc_object$pve * 100), digits = 1), "% variance\n", sep = "")
     }
   }
@@ -45,8 +45,8 @@ summary.mxFDA = function(object, ...){
     cat("MFPCs Calculated:\n", sep = "")
     for(f in fpc_slots){
       cat("\t", f, ": ",
-          ncol(object@functional_mpca[[f]]$score_df), " Level1 MFPCs and ",
-          ncol(object@functional_mpca[[f]]$scores_level2), " Level2 MFPCs explaining ",
+          ncol(object@functional_mpca[[f]]$score_df)-1, " Level1 MFPCs and ",
+          ncol(object@functional_mpca[[f]]$scores_level2)-2, " Level2 MFPCs explaining ",
           round((object@functional_mpca[[f]]$mfpc_object$pve * 100), digits = 1),
           "% variance\n", sep = "") #need to play with the output to determine how to report
     }

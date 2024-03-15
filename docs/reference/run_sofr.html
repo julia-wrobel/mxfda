@@ -63,6 +63,7 @@
 <span>  <span class="va">mxFDAobject</span>,</span>
 <span>  <span class="va">model_name</span>,</span>
 <span>  <span class="va">formula</span>,</span>
+<span>  family <span class="op">=</span> <span class="st">"gaussian"</span>,</span>
 <span>  metric <span class="op">=</span> <span class="st">"uni k"</span>,</span>
 <span>  r <span class="op">=</span> <span class="st">"r"</span>,</span>
 <span>  value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
@@ -80,15 +81,19 @@
 
 
 <dt>model_name</dt>
-<dd><p>character string to give the fit model in the functional cox slot</p></dd>
+<dd><p>character string to give the fit model</p></dd>
 
 
 <dt>formula</dt>
-<dd><p>Formula to be fed to mgcv in the form of survival_time ~ x1 + x2. Does not contain functional predictor. Character valued. Data must contain censoring variable called "event".</p></dd>
+<dd><p>Formula to be fed to mgcv in the form of outcome ~ x1 + x2. Does not contain functional predictor. Character valued.</p></dd>
+
+
+<dt>family</dt>
+<dd><p>Exponential family distribution to be passed to <code><a href="https://rdrr.io/pkg/mgcv/man/gam.html" class="external-link">mgcv::gam</a></code>. Defaults to "gaussian". Select "binomial" for binary outcome.</p></dd>
 
 
 <dt>metric</dt>
-<dd><p>name of calculated spatial metric to use</p></dd>
+<dd><p>Name of calculated spatial metric to use</p></dd>
 
 
 <dt>r</dt>
@@ -136,10 +141,19 @@
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co">#load ovarian mxFDA object</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/utils/data.html" class="external-link">data</a></span><span class="op">(</span><span class="st">'ovarian_FDA'</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="co">#run the scalar on function regression model with a continuous outcome (age)</span></span></span>
+<span class="r-in"><span><span class="co"># run scalar on function regression model with a continuous outcome (age)</span></span></span>
 <span class="r-in"><span><span class="va">ovarian_FDA</span> <span class="op">=</span> <span class="fu">run_sofr</span><span class="op">(</span><span class="va">ovarian_FDA</span>,</span></span>
 <span class="r-in"><span>                       model_name <span class="op">=</span> <span class="st">"fit_sofr"</span>,</span></span>
 <span class="r-in"><span>                       formula <span class="op">=</span> <span class="va">age</span><span class="op">~</span><span class="va">stage</span>,</span></span>
+<span class="r-in"><span>                       metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> 128 sample have &gt;= 4 values for FPCA; removing 0 samples</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># run scalar on function regression model with a binary outcome (stage)</span></span></span>
+<span class="r-in"><span><span class="co"># also known as functional logistic regression</span></span></span>
+<span class="r-in"><span><span class="va">ovarian_FDA</span> <span class="op">=</span> <span class="fu">run_sofr</span><span class="op">(</span><span class="va">ovarian_FDA</span>,</span></span>
+<span class="r-in"><span>                       model_name <span class="op">=</span> <span class="st">"fit_sofr"</span>,</span></span>
+<span class="r-in"><span>                       formula <span class="op">=</span> <span class="va">stage</span><span class="op">~</span><span class="va">age</span>,</span></span>
+<span class="r-in"><span>                       family <span class="op">=</span> <span class="st">"binomial"</span>,</span></span>
 <span class="r-in"><span>                       metric <span class="op">=</span> <span class="st">"uni g"</span>, r <span class="op">=</span> <span class="st">"r"</span>, value <span class="op">=</span> <span class="st">"fundiff"</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> 128 sample have &gt;= 4 values for FPCA; removing 0 samples</span>
 <span class="r-in"><span></span></span>
