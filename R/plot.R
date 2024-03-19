@@ -127,7 +127,6 @@ plot.lfcmSurface = function(x, ...){
     geom_line(aes(x=r, y = exp(beta1-2*beta1_se)), linetype = 'longdash')+
     geom_line(aes(x=r, y = exp(beta1+2*beta1_se)), linetype = 'longdash')+
     geom_hline(yintercept = 1, color = "red", linetype = 3) +
-    ylim(0, 15) +
     labs(y = expression(e^hat(beta)(r)), title = "LFCM Hazard Ratio") +
     theme(axis.title = element_text(size = 15))
 }
