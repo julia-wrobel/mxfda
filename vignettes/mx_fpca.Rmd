@@ -23,7 +23,7 @@ The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging
 ```{r setup}
 library(mxfda)
 library(tidyverse)
-library(patchwork)
+library(ggpubr)
 ```
 
 
@@ -105,7 +105,7 @@ We can visualize the results of FPCA using the `plot()` function (see `?plot.mxF
 p1 = plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 1)
 p2 = plot(ovarian_FDA, what = 'uni g fpca', pc_choice = 2)
 
-(p1 + p2)
+ggarrange(p1, p2, nrow = 1, ncol = 2)
 ```
 
 The plots above show $\hat{\mu}(r)\pm \sqrt{\hat{\lambda}_1\hat{\psi_k}(t)}$ for the first and second FPC. The black line in each plot is the mean of the data- this shows that the peak in probability of observing a neighboring immune cell occurs, on average, at about radius $r = 12$. In these plots, the blue and red lines represent one standard deviation of the FPC added (blue) or subtracted (red) from the population mean. For example in the plot for FPC 1, we can interpret the pattern of this FPC as a shift up or down from the population mean. Subjects who have a high score, $c_{i1}$ for FPC 1 have, across radii, a larger probability of observing a neighboring immune cell than average in the dataset. This pattern explains 76.2% of variance in the data.
@@ -198,7 +198,7 @@ We can also visualize the results of MFPCA using the `plot()` function (see `?pl
 ```{r}
 p = plot(mxFDAobject, what = 'uni k mfpca', level1 = 1, level2 = 1)
 
-p[[1]] + p[[2]]
+ggarrange(plotlist = p, nrow = 1, ncol = 2)
 
 ```
 

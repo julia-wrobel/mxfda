@@ -25,7 +25,6 @@ The `mxfda` package contains tools for analyzing single-cell multiplex imaging d
 ```{r setup}
 library(mxfda)
 library(tidyverse)
-library(patchwork)
 ```
 
 

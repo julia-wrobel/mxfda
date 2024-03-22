@@ -27,7 +27,7 @@ The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging
 ```{r setup}
 library(mxfda)
 library(tidyverse)
-library(patchwork)
+library(ggpubr)
 library(broom)
 ```
 
@@ -101,7 +101,7 @@ p2 = Gdf_fpc %>%
   theme(legend.position = "none")
 
 
-p1 + p2
+ggarrange(p1, p2, nrow = 1, ncol = 2)
 ```
 
 
