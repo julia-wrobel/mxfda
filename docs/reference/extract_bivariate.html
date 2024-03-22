@@ -65,8 +65,9 @@
 <span>  <span class="va">mark1</span>,</span>
 <span>  <span class="va">mark2</span>,</span>
 <span>  <span class="va">r_vec</span>,</span>
-<span>  func <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Kcross</span>, <span class="va">Lcross</span>, <span class="va">Gcross</span><span class="op">)</span>,</span>
-<span>  <span class="va">edge_correction</span></span>
+<span>  func <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Kcross</span>, <span class="va">Lcross</span>, <span class="va">Gcross</span>, <span class="va">entropy</span><span class="op">)</span>,</span>
+<span>  <span class="va">edge_correction</span>,</span>
+<span>  breaks <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -94,11 +95,15 @@ Should have variables <code>x</code> and <code>y</code> to denote x and y spatia
 
 
 <dt>func</dt>
-<dd><p>Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.</p></dd>
+<dd><p>Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively, or entropy from Vu et al, 2023.</p></dd>
 
 
 <dt>edge_correction</dt>
 <dd><p>Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")</p></dd>
+
+
+<dt>breaks</dt>
+<dd><p>an integer for the number of breaks used for entropy</p></dd>
 
 </dl></div>
     <div class="section level2">
@@ -129,6 +134,9 @@ Should have variables <code>x</code> and <code>y</code> to denote x and y spatia
 Fast covariance estimation for high-dimensional functional data.
 <em>Statistics and Computing</em>, 26, 409-421.
 DOI: 10.1007/s11222-014-9485-x.</p>
+<p>Vu, T., Seal, S., Ghosh, T., Ahmadian, M., Wrobel, J., &amp; Ghosh, D. (2023).
+FunSpace: A functional and spatial analytic approach to cell imaging data using entropy measures.
+<em>PLOS Computational Biology</em>, 19(9), e1011490.</p>
     </div>
     <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>

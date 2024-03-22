@@ -66,7 +66,8 @@
 <span>  <span class="va">mark2</span>,</span>
 <span>  <span class="va">r_vec</span>,</span>
 <span>  func <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Kest</span>, <span class="va">Lest</span>, <span class="va">Gest</span><span class="op">)</span>,</span>
-<span>  <span class="va">edge_correction</span></span>
+<span>  <span class="va">edge_correction</span>,</span>
+<span>  breaks <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -99,6 +100,10 @@ Should have variables <code>x</code> and <code>y</code> to denote x and y spatia
 
 <dt>edge_correction</dt>
 <dd><p>Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")</p></dd>
+
+
+<dt>breaks</dt>
+<dd><p>ignored</p></dd>
 
 </dl></div>
     <div class="section level2">

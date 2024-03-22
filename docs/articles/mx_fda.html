@@ -96,8 +96,7 @@ spatial summary functions from multiplex imaging data, see
 <code><a href="../articles/mx_funreg.html">vignette("mx_funreg")</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="vectrapolarisdata">VectraPolarisData<a class="anchor" aria-label="anchor" href="#vectrapolarisdata"></a>
 </h2>
@@ -313,7 +312,8 @@ be used.</strong></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni k"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 103 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 103 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 </div>
@@ -371,7 +371,8 @@ results. The <code>what</code> now is <code>'bi g'</code>,
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"bi g"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 4958 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 4958 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
 </div>
@@ -489,7 +490,8 @@ the data frame. We can visualize both CD8+ and CD4+ with ggplot.</p>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html" class="external-link">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">r</span>, y <span class="op">=</span> <span class="va">`Degree of Clustering Permutation`</span>, color <span class="op">=</span> <span class="va">patientImage_id</span><span class="op">)</span>, alpha <span class="op">=</span> <span class="fl">0.4</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="op">~</span><span class="va">Marker</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1399 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 1399 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-13-1.png" width="700"></p>
 <p>Exporting the spatial summary function data from the <code>mIF</code>
 object is the same as accessing the list object. However, we need to
@@ -521,7 +523,8 @@ continue with analyses as would be done if using the internal
 <code>extract_summary_function()</code>.</p>
 <div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDA_spatialTIME</span>, y <span class="op">=</span> <span class="st">"Degree of Clustering Permutation"</span>, what <span class="op">=</span> <span class="st">"uni g"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 490 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 490 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-16-1.png" width="700"></p>
 </div>
 <div class="section level2">
