@@ -10,6 +10,7 @@
 #' @param mark1 Character string that denotes first cell type of interest.
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
+#' @param breaks integer value for number of breaks in r_vec. Used only for entropy measure
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -58,7 +59,8 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       markvar,
                                       mark1,
                                       mark2 = NULL,
-                                      edge_correction
+                                      edge_correction,
+                                      breaks = NULL
                                       ){
   if(!inherits(mxFDAobject, "mxFDA"))
     stop("Object must be of class `mxFDA`.")
@@ -93,7 +95,8 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                     mark2 = mark2,
                                     r_vec = r_vec,
                                     func = summary_func,
-                                    edge_correction = edge_correction)) %>%
+                                    edge_correction = edge_correction,
+                                    breaks = breaks)) %>%
      select(-data) %>%
      unnest(sumfuns)
 
@@ -115,6 +118,7 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
      if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`bivariate_summaries`$Kcross = ndat
      if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`bivariate_summaries`$Lcross = ndat
      if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`bivariate_summaries`$Gcross = ndat
+     if(deparse(substitute(summary_func)) == "entropy") mxFDAobject@`bivariate_summaries`$entropy = ndat
    }
    return(mxFDAobject)
 }

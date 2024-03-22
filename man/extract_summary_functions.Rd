@@ -12,7 +12,8 @@ extract_summary_functions(
   markvar,
   mark1,
   mark2 = NULL,
-  edge_correction
+  edge_correction,
+  breaks = NULL
 )
 }
 \arguments{
@@ -31,6 +32,8 @@ extract_summary_functions(
 \item{mark2}{Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.}
 
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")}
+
+\item{breaks}{integer value for number of breaks in r_vec. Used only for entropy measure}
 }
 \value{
 an object of class \code{mxFDA} containing the corresponding spatial summary function slot filled. See \code{\link[=make_mxfda]{make_mxfda()}} for object structure details.
