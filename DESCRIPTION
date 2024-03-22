@@ -28,7 +28,7 @@ Suggests:
     testthat (>= 3.0.0),
     tidyverse,
     survival,
-    patchwork,
+    ggpubr,
     spatialTIME,
     tibble,
     broom,
@@ -47,7 +47,9 @@ Imports:
     reshape2,
     mgcv,
     spatstat.geom,
-    spatstat.explore
+    spatstat.explore,
+    SpatEntropy,
+    SimDesign
 Remotes: FridleyLab/spatialTIME
 Depends: 
     R (>= 2.10),
