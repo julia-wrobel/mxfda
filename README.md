@@ -4,7 +4,7 @@
 <!-- badges: end -->
 <!--
 -->
-## mxFDA <img src="man/figures/logo.png" align="right" width="120" />
+## mxFDA <img src="man/figures/logo.png" align="right" width="150" />
 
 A functional data analysis package for spatial point pattern data.
 
