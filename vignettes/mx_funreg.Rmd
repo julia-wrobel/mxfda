@@ -22,7 +22,6 @@ invisible(suppressPackageStartupMessages(library(tidyverse)))
 The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to perform functional regression using spatial summary functions of multiplex image samples as model covariates. To set up an `mxFDA` object from spatial single cell imaging data, calculate spatial summary functions, and perform exploratory data analysis and visualization of these spatial summary functions, see `vignette("mx_fda")`. To perform feature extraction using functional principal component analysis, see `vignette("mx_fpca")`.
 
 
-**Note: Right now, the `{mxfda}` package focuses on regression problems with survival outcomes. In the future, the package will be extended to handle other outcome types, including continuous and binary data.**
 
 ```{r setup}
 library(mxfda)
