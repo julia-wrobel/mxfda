@@ -19,10 +19,9 @@ knitr::opts_chunk$set(
 invisible(suppressPackageStartupMessages(library(tidyverse)))
 ```
 
-The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to perform functional regression using spatial summary functions of multiplex image samples as model covariates. To set up an `mxFDA` object from spatial single cell imaging data, calculate spatial summary functions, and perform exploratory data analysis and visualization of these spatial summary functions, see `vignette("mx_fda")`. To perform feature extraction using functional principal component analysis, see `vignette("mx_fpca")`.
+The `{mxfda}` package contains tools for analyzing spatial single-cell data, including multiplex imaging and spatial transcriptomics, using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to perform functional regression using spatial summary functions of multiplex image samples as model covariates. To set up an `mxFDA` object from spatial single cell data, calculate spatial summary functions, and perform exploratory data analysis and visualization of these spatial summary functions, see `vignette("mx_fda")`. To perform feature extraction using functional principal component analysis, see `vignette("mx_fpca")`.
 
 
-**Note: Right now, the `{mxfda}` package focuses on regression problems with survival outcomes. In the future, the package will be extended to handle other outcome types, including continuous and binary data.**
 
 ```{r setup}
 library(mxfda)
@@ -55,13 +54,13 @@ plot(ovarian_FDA, y = "fundiff", what = "uni g") +
 
 ## Functional regression models for survival outcomes
 
-Single-cell multiplex imaging is common in cancer applications, where the analysis goal is to relate cell-level spatial information to patient-level time-to-event outcomes like overall survival or time-to-recurrence. Cox regression is a popular regression technique for assessing the association between covariates and a survival outcome. The standard Cox model is given by
+Single-cell imaging is common in cancer applications, where the analysis goal is to relate cell-level spatial information to patient-level time-to-event outcomes like overall survival or time-to-recurrence. Cox regression is a popular regression technique for assessing the association between covariates and a survival outcome. The standard Cox model is given by
 
 $$\log h_i(t) = \log h_0(t) + \sum_{p = 1}^P \gamma_p Z_{ip},$$
 
-where $h_i(t)$ is the *hazard rate* for subject $i$ and $h_0(t)$ is an unspecified baseline hazard. Each $Z_{ip}$ is a scalar covariates., and $P$ is the total number of scalar covariates. These are covariates like age, sex, treatment group, etc and can be contrasted with spatial summary functions which are known as functional covariates.s. The $\gamma_p$ are regression coefficients; these are interpreted as log hazard ratios.
+where $h_i(t)$ is the *hazard rate* for subject $i$ and $h_0(t)$ is an unspecified baseline hazard. Each $Z_{ip}$ is a scalar covariate, and $P$ is the total number of scalar covariates. These are covariates like age, sex, treatment group, etc and can be contrasted with spatial summary functions which are known as functional covariates. The $\gamma_p$ are regression coefficients; these are interpreted as log hazard ratios.
 
-For multiplex imaging data, we have a spatial summary function for each subject (e.g. univariate Ripley's K), $X_i(r)$, that we want to add to the Cox regression model as a functional covariate. Below we provide three different strategies for incorporating $X_i(r)$ into a Cox regression model as a covariate.
+For single cell spatial data, we have a spatial summary function for each subject (e.g. univariate Ripley's K), $X_i(r)$, that we want to add to the Cox regression model as a functional covariate. Below we provide three different strategies for incorporating $X_i(r)$ into a Cox regression model as a covariate.
 
 
 ### Cox regression using functional principal components as covariates
@@ -253,7 +252,7 @@ ovarian_FDA <- run_sofr(ovarian_FDA,
                         metric = "uni g", r = "r", value = "fundiff")
 ```
 
-When the outcome is binary $\hat{\beta}(r)$ is interpreted as a log odds ratio at each radius $r$. This estimated coefficient function is plotted below.
+When the outcome is binary $\hat{\beta}(r)$ is interpreted as a log odds ratio at each radius $r$. 
 
 
 ```{r, eval = FALSE}

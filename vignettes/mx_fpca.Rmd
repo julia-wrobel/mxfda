@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 invisible(suppressPackageStartupMessages(library(tidyverse)))
 ```
 
-The `{mxfda}` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to perform feature extraction using functional principal component analysis and multilevel functional principal component analysis. To set up an `mxFDA` object from spatial single cell imaging data, calculate spatial summary functions, and perform exploratory data analysis and visualization of these spatial summary functions, see `vignette("mx_fda")`. To perform functional regression on spatial summary functions from multiplex imaging data, see  `vignette("mx_funreg")`.
+The `{mxfda}` package contains tools for analyzing spatial single-cell data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to perform feature extraction using functional principal component analysis and multilevel functional principal component analysis. To set up an `mxFDA` object from spatial single cell imaging data, calculate spatial summary functions, and perform exploratory data analysis and visualization of these spatial summary functions, see `vignette("mx_fda")`. To perform functional regression on spatial summary functions from multiplex imaging data, see  `vignette("mx_funreg")`.
 
 
 ```{r setup}
