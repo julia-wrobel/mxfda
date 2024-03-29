@@ -1,7 +1,7 @@
 Package: mxfda
-Title: A functional data analysis package for spatial point pattern data
+Title: A functional data analysis package for spatial single cell data
 Version: 0.1.0
-Date: 2023-12-20
+Date: 2024-03-29
 Authors@R: 
     c(
     person("Julia", "Wrobel", role = c("aut", "cre"), 
@@ -10,7 +10,7 @@ Authors@R:
     person("Alex", "Soupir", role = c("aut"),
     comment = c(ORCID = "0000-0003-1251-9179"))
     )
-Description: The `mxfda` package contains tools for analyzing spatial point process data
+Description: The `mxfda` package contains tools for analyzing spatial single cell data
   using methods from functional data analysis. While examples in vignettes illustrate 
   the use of the package for single-cell multiplex imaging data, the package can handle
   analysis of other types of point process data as well, 
