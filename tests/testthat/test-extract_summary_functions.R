@@ -18,7 +18,7 @@ mxFDAobject = make_mxfda(metadata = clinical,
 #test running metrics
 test_that("can run spatial summary", {
   mxFDAobject = extract_summary_functions(mxFDAobject,
-                                          extract_func = extract_univariate,
+                                          extract_func = univariate,
                                           summary_func = Kest,
                                           r_vec = seq(0, 100, by = 1),
                                           edge_correction = "iso",
@@ -29,7 +29,7 @@ test_that("can run spatial summary", {
 #test running metrics
 test_that("can run spatial summary", {
   mxFDAobject = extract_summary_functions(mxFDAobject,
-                                          extract_func = extract_bivariate,
+                                          extract_func = bivariate,
                                           summary_func = Kcross,
                                           r_vec = seq(0, 100, by = 1),
                                           edge_correction = "iso",
@@ -42,7 +42,7 @@ test_that("can run spatial summary", {
 test_that("can run spatial summary", {
   mxFDAobject@Spatial = data.frame()
   expect_error(extract_summary_functions(mxFDAobject,
-                                          extract_func = extract_univariate,
+                                          extract_func = univariate,
                                           summary_func = Kest,
                                           r_vec = seq(0, 100, by = 1),
                                           edge_correction = "iso",
@@ -53,7 +53,7 @@ test_that("can run spatial summary", {
 #test right spot
 test_that("can run spatial summary", {
   mxFDAobject = extract_summary_functions(mxFDAobject,
-                                          extract_func = extract_bivariate,
+                                          extract_func = bivariate,
                                           summary_func = Kcross,
                                           r_vec = seq(0, 100, by = 1),
                                           edge_correction = "iso",
