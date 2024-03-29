@@ -86,11 +86,11 @@ The `{mxfda}` package provides methods for analyzing spatial relationships betwe
 
 ## Univariate summary functions
 
-Below we calculate univariate Ripley's K to summarize the spatial relationship among immune cells in each image. The `{mxfda}` package accomplishes this with the function `extract_summary_functions()`. Either univariate or bivariate can be calculated with this function depending on the choice supplied to the `extract_func` argument. To calculate a univariate spatial summary we supply `extract_univariate` to the `extract_func` argument. The summary function that is calculated depends on the function supplied to `summary_fun` which is one of `Kest()`, `Gest()`, or `Lest()` from the `{spatstat.explore}` package (`Kcross()`, `Gcross()`, or `Lcross()` for bivariate methods). Other options include supplying a vector of radius values through `r_vec`, and the a specific edge correction (see @baddeley2015spatial). We calculate the K function across a range of radii from 0 to 100 and use the isotropic ("iso") edge correction.
+Below we calculate univariate Ripley's K to summarize the spatial relationship among immune cells in each image. The `{mxfda}` package accomplishes this with the function `extract_summary_functions()`. Either univariate or bivariate can be calculated with this function depending on the choice supplied to the `extract_func` argument. To calculate a univariate spatial summary we supply `univariate` to the `extract_func` argument. The summary function that is calculated depends on the function supplied to `summary_fun` which is one of `Kest()`, `Gest()`, or `Lest()` from the `{spatstat.explore}` package (`Kcross()`, `Gcross()`, or `Lcross()` for bivariate methods). Other options include supplying a vector of radius values through `r_vec`, and the a specific edge correction (see @baddeley2015spatial). We calculate the K function across a range of radii from 0 to 100 and use the isotropic ("iso") edge correction.
 
 ```{r univariate_k}
 mxFDAobject = extract_summary_functions(mxFDAobject,
-                                        extract_func = extract_univariate,
+                                        extract_func = univariate,
                                         summary_func = Kest,
                                         r_vec = seq(0, 100, by = 1),
                                         edge_correction = "iso",
@@ -149,7 +149,7 @@ Now we calculate the bivariate G function, but can replace `Gcross()` with `Lcro
 ```{r}
 mxFDAobject = extract_summary_functions(mxFDAobject,
                 summary_func = Gcross,
-                extract_func = extract_bivariate,
+                extract_func = bivariate,
                 r_vec = seq(0, 100, by = 1),
                 edge_correction = "rs",
                 markvar = "phenotype",

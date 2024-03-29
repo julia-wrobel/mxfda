@@ -159,7 +159,7 @@ mxFDAobject = make_mxfda(metadata = clinical,
                          )
 
 mxFDAobject = extract_summary_functions(mxFDAobject, 
-                                        extract_func = extract_univariate,
+                                        extract_func = univariate,
                                         summary_func = Kest,
                                         r_vec = seq(0, 100, by = 1),
                                         edge_correction = "iso",
