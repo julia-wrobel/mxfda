@@ -3,7 +3,7 @@ title: "Defining an mxFDA object"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{mxFDA Object}
+  %\VignetteIndexEntry{Defining an mxFDA object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

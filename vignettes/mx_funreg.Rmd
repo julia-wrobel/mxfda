@@ -3,7 +3,7 @@ title: "Functional regression with spatial summary functions as covariates"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{mx Functional Regression}
+  %\VignetteIndexEntry{Functional regression with spatial summary functions as covariates}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
