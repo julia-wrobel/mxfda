@@ -4,7 +4,7 @@
 #'
 #' @param mxFDAobject object of class `mxFDA`
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
-#' @param extract_func Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.
+#' @param extract_func Defaults to univariate, which calculates univariate spatial summary functions. Choose bivariate for bivariate spatial summary functions.
 #' @param summary_func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param markvar The name of the variable that denotes cell type(s) of interest. Character.
 #' @param mark1 Character string that denotes first cell type of interest.
@@ -46,7 +46,7 @@
 #'
 #' #run function
 #' ovarian_FDA = extract_summary_functions(ovarian_FDA, r_vec = 0:100,
-#'                                         extract_func = extract_univariate,
+#'                                         extract_func = univariate,
 #'                                         summary_func = Kest,
 #'                                         markvar = "immune",
 #'                                         mark1 = "immune",
@@ -54,7 +54,7 @@
 #'
 #' @export
 extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
-                                      extract_func = c(extract_univariate, extract_bivariate),
+                                      extract_func = c(univariate, bivariate),
                                       summary_func = c(Kest, Lest, Gest),
                                       markvar,
                                       mark1,
@@ -110,7 +110,7 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
 
    ndat = full_join(ndat, cell_counts, by = mxFDAobject@sample_key)
 
-   if(deparse(substitute(extract_func)) == "extract_univariate"){
+   if(deparse(substitute(extract_func)) == "univariate"){
      if(deparse(substitute(summary_func)) == "Kest") mxFDAobject@`univariate_summaries`$Kest = ndat
      if(deparse(substitute(summary_func)) == "Lest") mxFDAobject@`univariate_summaries`$Lest = ndat
      if(deparse(substitute(summary_func)) == "Gest") mxFDAobject@`univariate_summaries`$Gest = ndat

@@ -1,4 +1,4 @@
-#' extract_bivariate
+#' bivariate
 #'
 #' Internal function called by \code{extract_summary_functions} to calculate a bivariate spatial summary function for a single image.
 #'
@@ -35,7 +35,7 @@
 #' @import dplyr
 #'
 #' @export
-extract_bivariate = function(mximg,
+bivariate = function(mximg,
                              markvar,
                              mark1,
                              mark2,

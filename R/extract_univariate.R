@@ -1,4 +1,4 @@
-#' extract_univariate
+#' univariate
 #'
 #' Internal function called by [extract_summary_functions()] to calculate a univariate spatial summary function for a single image.
 #'
@@ -26,7 +26,7 @@
 #' @import dplyr
 #'
 #' @export
-extract_univariate = function(mximg,
+univariate = function(mximg,
                               markvar,
                               mark1,
                               mark2,
