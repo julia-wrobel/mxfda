@@ -43,7 +43,7 @@ Imports:
     lifecycle,
     methods,
     stats,
-    refund (>= 0.1-33),
+    refund (>= 0.1-35),
     reshape2,
     mgcv,
     spatstat.geom,
