@@ -4,3 +4,4 @@ utils::globalVariables(c('.', 'Var1', 'Var2', 'Yhat', 'beta1', 'beta1_se', 'csr'
                          'score'))
 juliawrobel_email = "julia.wrobel@emory.edu"
 alexsoupir_email = "alex.soupir@moffitt.org"
+thaovu_email = "thao.3.vu@cuanschutz.edu"

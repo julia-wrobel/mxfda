@@ -1,4 +1,4 @@
-#' extract_univariate
+#' univariate
 #'
 #' Internal function called by [extract_summary_functions()] to calculate a univariate spatial summary function for a single image.
 #'
@@ -10,6 +10,7 @@
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
+#' @param breaks ignored
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -25,13 +26,14 @@
 #' @import dplyr
 #'
 #' @export
-extract_univariate = function(mximg,
+univariate = function(mximg,
                               markvar,
                               mark1,
                               mark2,
                               r_vec,
                               func = c(Kest, Lest, Gest),
-                              edge_correction){
+                              edge_correction,
+                              breaks = NULL){
   #### note to switch edge correction based on choice of func, this should be automated
 
   if(nrow(mximg) < 3) return(NA)

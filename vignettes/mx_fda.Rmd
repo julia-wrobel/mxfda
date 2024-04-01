@@ -1,9 +1,9 @@
 ---
-title: "mxFDA Object"
+title: "Defining an mxFDA object"
 output: rmarkdown::html_vignette
 bibliography: references.bib
 vignette: >
-  %\VignetteIndexEntry{mxFDA Object}
+  %\VignetteIndexEntry{Defining an mxFDA object}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,13 +19,12 @@ invisible(suppressPackageStartupMessages(library(tidyverse)))
 
 
 
-The `mxfda` package contains tools for analyzing single-cell multiplex imaging data using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal component analysis can be found in the separate vignette `vignette("mx_fpca")`. To perform functional regression on spatial summary functions from multiplex imaging data, see `vignette("mx_funreg")`.
+The `mxfda` package contains tools for analyzing spatial single-cell data, including multiplex imaging and spatial transcriptomics, using methods from functional data analysis. Analyses for this package are executed and stored using an S4 object of class `mxFDA`. This vignette outlines how to set up an `mxFDA` object from spatial single cell imaging data, how to calculate spatial summary functions, and exploratory data analysis and visualization of these spatial summary functions. Details on how to perform downstream analysis and feature extraction using functional principal component analysis can be found in the separate vignette `vignette("mx_fpca")`. To perform functional regression on spatial summary functions from multiplex imaging data, see `vignette("mx_funreg")`.
 
 
 ```{r setup}
 library(mxfda)
 library(tidyverse)
-library(patchwork)
 ```
 
 
@@ -33,7 +32,7 @@ library(patchwork)
 
 Examples in this package use data adapted from the [VectraPolarisData](https://bioconductor.org/packages/release/data/experiment/html/VectraPolarisData.html) package on Bioconductor's ExperimentHub.  This package contains data from two multiplex imaging experiments conducted at the University of Colorado Anschutz Medical Campus. A shortcourse on single-cell multiplex imaging using these data is available [here](http://juliawrobel.com/MI_tutorial/MI_Data.html).
 
-Data has been preprocessed and stored directly in the `{mxfda}` package. Available datasets are `ovarian_FDA` and `lung_df`. This vignette will focus on the `lung_df` dataset, which contains a subset of 50 subjects from a multiplex imaging study of non-small cell lung carcinoma described in @johnson2021cancer. Each subject has 4-5 multiplex images, which come from different regions of interest (ROIs) in the tumor. Each ROI will be considered a "sample" when constructing the `{mxfda}`  object. We load the lung cancer data below.
+Data has been preprocessed and stored directly in the `{mxfda}` package. Available datasets are `ovarian_FDA` and `lung_df`. This vignette will focus on the `lung_df` dataset, which contains a subset of 50 subjects from a multiplex imaging study of non-small cell lung carcinoma described in @johnson2021cancer. Each subject has 3-5 multiplex images, which come from different regions of interest (ROIs) in the tumor. Each ROI will be considered a "sample" when constructing the `{mxfda}`  object. We load the lung cancer data below.
 
 ```{r}
 data(lung_df)
@@ -52,7 +51,6 @@ The central object used with the `{mxfda}` package is the `mxFDA` object. These 
 - `functional_pca` - list of results from functional principle component analysis 
 - `functional_mpca` - list of results from multilevel functional principle component analysis
 - `functional_cox` - list of functional cox models that have been fit
-- `functional_mcox` - list of functional mixed cox models that have been fit
 
 ## Make mxFDAobject
 
@@ -83,15 +81,15 @@ class(mxFDAobject)
 
 # Spatial summary functions based on point processes
 
-The `{mxfda}` package provides methods for analyzing spatial relationships between cell types in multiplex imaging data based on point process theory. The location of cells in multiplex image samples are treated as following a point process, realizations of a point process are called “point patterns”, and point process models seek to understand correlations in the spatial distributions of cells. Under the assumption that the rate of a cell is constant over an entire region  of interest a point pattern will exhibit complete spatial randomness (CSR), and it is often of interest to model whether cells deviate from CSR either through clustering or repulsion. Spatial summary statistics can be calculated to quantify the clustering and co-occurrence of cells in a circular region with a particular radius *r*. Typically univariate (one cell type) or bivariate (two cell types) summary statistics are reported, and inference is obtained by comparing the observed spatial summary statistic to that obtained under CSR. A popular quantity is Ripley’s K(*r*), which studies the number of neighbors to a particular point within radius *r*, and has univariate and bivariate implementations in the `{spatstat}` package (@baddeley2015spatial). Ripley’s K is characterized by clustering or repulsion depending on whether it is above or below the theoretical value of $\pi r^2$. Other spatial summary statistics analyze the distance to a neighbor, and can be interpreted as probabilities of observing a particular cell type within a radius *r*. One of these metrics, G(*r*), or the nearest neighbor distance distribution, is the cumulative distribution function of an exponential random variable. More detailed overviews of spatial summary functions for multiplex imaging data are provided in @wilson2021challenges and @wrobel2023statistical.
+The `{mxfda}` package provides methods for analyzing spatial relationships between cell types in single cell imaging data based on point process theory. The location of cells in image samples are treated as following a point process, realizations of a point process are called “point patterns”, and point process models seek to understand correlations in the spatial distributions of cells. Under the assumption that the rate of a cell is constant over an entire region  of interest a point pattern will exhibit complete spatial randomness (CSR), and it is often of interest to model whether cells deviate from CSR either through clustering or repulsion. Spatial summary statistics can be calculated to quantify the clustering and co-occurrence of cells in a circular region with a particular radius *r*. Typically univariate (one cell type) or bivariate (two cell types) summary statistics are reported, and inference is obtained by comparing the observed spatial summary statistic to that obtained under CSR. A popular quantity is Ripley’s K(*r*), which studies the number of neighbors to a particular point within radius *r*, and has univariate and bivariate implementations in the `{spatstat}` package (@baddeley2015spatial). Ripley’s K is characterized by clustering or repulsion depending on whether it is above or below the theoretical value of $\pi r^2$. Other spatial summary statistics analyze the distance to a neighbor, and can be interpreted as probabilities of observing a particular cell type within a radius *r*. One of these metrics, G(*r*), or the nearest neighbor distance distribution, is the cumulative distribution function of an exponential random variable. More detailed overviews of spatial summary functions for multiplex imaging data are provided in @wilson2021challenges and @wrobel2023statistical.
 
 ## Univariate summary functions
 
-Below we calculate univariate Ripley's K to summarize the spatial relationship among immune cells in each image. The `{mxfda}` package accomplishes this with the function `extract_summary_functions()`. Either univariate or bivariate can be calculated with this function depending on the choice supplied to the `extract_func` argument. To calculate a univariate spatial summary we supply `extract_univariate` to the `extract_func` argument. The summary function that is calculated depends on the function supplied to `summary_fun` which is one of `Kest()`, `Gest()`, or `Lest()` from the `{spatstat.explore}` package (`Kcross()`, `Gcross()`, or `Lcross()` for bivariate methods). Other options include supplying a vector of radius values through `r_vec`, and the a specific edge correction (see @baddeley2015spatial). We calculate the K function across a range of radii from 0 to 100 and use the isotropic ("iso") edge correction.
+Below we calculate univariate Ripley's K to summarize the spatial relationship among immune cells in each image. The `{mxfda}` package accomplishes this with the function `extract_summary_functions()`. Either univariate or bivariate can be calculated with this function depending on the choice supplied to the `extract_func` argument. To calculate a univariate spatial summary we supply `univariate` to the `extract_func` argument. The summary function that is calculated depends on the function supplied to `summary_fun` which is one of `Kest()`, `Gest()`, or `Lest()` from the `{spatstat.explore}` package (`Kcross()`, `Gcross()`, or `Lcross()` for bivariate methods). Other options include supplying a vector of radius values through `r_vec`, and the a specific edge correction (see @baddeley2015spatial). We calculate the K function across a range of radii from 0 to 100 and use the isotropic ("iso") edge correction. See @baddeley2015spatial for more details on edge corrections for Ripley's K and nearest neighbor G.
 
 ```{r univariate_k}
 mxFDAobject = extract_summary_functions(mxFDAobject,
-                                        extract_func = extract_univariate,
+                                        extract_func = univariate,
                                         summary_func = Kest,
                                         r_vec = seq(0, 100, by = 1),
                                         edge_correction = "iso",
@@ -105,12 +103,11 @@ Running this code will calculate univariate Ripley's K function to measure spati
 mxFDAobject@univariate_summaries$Kest
 ```
 
-Note that the summaries are returned as a dataframe. The variable `sumfun` is the estimated summary function value, `csr` is the theoretical value under complete spatial randomness, and `fundiff` = `sumfun`-`csr`; in downstream analysis we will use the `fundiff` covariate. 
+Note that the summaries are returned as a dataframe. The variable `sumfun` is the estimated summary function value, `csr` is the theoretical value under complete spatial randomness, and `fundiff` = `sumfun`-`csr` describes the "degree of clustering beyond what is expected due to chance; in downstream analysis we will use the `fundiff` covariate. 
 
 ### Plotting the `mxFDA` object
 
-`{mxfda}` has S4 methods for visualization implemented via the `plot()` function (see `?plot.mxFDA` for details). The first argument is the `mxFDA` object followed by a few options that depend on what plot output is desired. Here, the we want to plot the univariate summary that we just calculated, which was the K function. By passing in `what = 'uni k'`, the plot function will extract the univariate K results. We also need to tell `plot()` what column is the y-axis which can be `'sumfun'` for the observed value, `'csr'` for the theoretical value of complete spatial randomness (CSR), or `'fundiff'` which is the difference between the observed K measure and the theoretical CSR. The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would. 
-
+`{mxfda}` has S4 methods for visualization implemented via the `plot()` function (see `?plot.mxFDA` for details). The first argument is the `mxFDA` object followed by a few options that depend on what plot output is desired. Here, we want to plot the univariate summary that we just calculated, which was the K function. By passing in `what = 'uni k'`, the plot function will extract the univariate K results. We also need to tell `plot()` what column is the y-axis which can be `'sumfun'` for the observed value, `'csr'` for the theoretical value of complete spatial randomness (CSR), or `'fundiff'` which is the difference between the observed K measure and the theoretical CSR. The output of `plot()` is a `{ggplot2}` object which can then be easily added to/manipulated as any ggplot plot would. 
 
 **NOTE: These are the columns when calculating using the `extract_summary_function()` of `{mxfda}` but if summary data is added from elsewhere with `add_summary_function()` then those column names will have to be used.**
 
@@ -150,7 +147,7 @@ Now we calculate the bivariate G function, but can replace `Gcross()` with `Lcro
 ```{r}
 mxFDAobject = extract_summary_functions(mxFDAobject,
                 summary_func = Gcross,
-                extract_func = extract_bivariate,
+                extract_func = bivariate,
                 r_vec = seq(0, 100, by = 1),
                 edge_correction = "rs",
                 markvar = "phenotype",
@@ -158,7 +155,7 @@ mxFDAobject = extract_summary_functions(mxFDAobject,
                 mark2 = "macrophage")
 ```
 
-### Plotting the bivariate G
+### Plotting bivariate G
 
 Just like with the univariate plots, we can use the `plot()` function to plot our `mxFDA` object results. The `what` now is `'bi g'`, `'bivar g'`, or `'bivariate g'`.
 
@@ -178,7 +175,7 @@ mxFDAobject
 
 # SpatialTIME
 
-Sometimes other summary functions or normalizations are run outside of the `{mxfda}` package but the end goal is to still run functional data analysis. Other packages, such as `{spatialTIME}` (@creed2021) provide methods for fast calculation of functions in `{spatstat}` with permutation estimates of complete spatial randomness that is more robust than the theoretical, especially when tissue samples have holes that violate the assumption of a homogeneous point pattern (see @wilson2022tumor). Lets look at how to perform the estimation of univariate nearest neighbor G with `{spatialTIME}`.
+Sometimes other summary functions or normalizations are run outside of the `{mxfda}` package but the end goal is to still run functional data analysis. Other packages, such as `{spatialTIME}` (@creed2021) provide methods for fast calculation of functions in `{spatstat}` with permutation estimates of complete spatial randomness that are more robust than theoretical CSR estimates, especially when tissue samples have holes that violate the assumption of a homogeneous point pattern (see @wilson2022tumor). Lets look at how to perform the estimation of univariate nearest neighbor G with `{spatialTIME}`.
 
 The central object of `spatialTIME` is the `mIF` object, that contains a list of spatial data frames, a data frame of sample-level summaries, and a data frame for the metadata ('clinical'). From creating the `mxFDA` object, we have a spatial data frame and the clinical data, now we have to convert them into something that works with `spatialTIME.` The steps below will be:
 
@@ -248,7 +245,7 @@ mif$derived$univariate_NN %>%
   theme(legend.position = "none")
 ```
 
-Exporting the spatial summary function data from the `mIF` object is the same as accessing the list object. However, we need to make sure that the data that we use with the `mxFDA` object contains only a single cell types results. This is to make sure that when modeling we aren't mixing up different cells. Below is the extraction and filtering of the new univariate G results and keeping only the cytotoxic T cell results
+Exporting the spatial summary function data from the `mIF` object is the same as accessing the list object. However, we need to make sure that the data that we use with the `mxFDA` object contains only a single cell types results. This is to make sure that when modeling we aren't mixing up different cells. Below is the extraction and filtering of the new univariate G results and keeping only the cytotoxic T cell results.
 
 ```{r}
 uni_g = mif$derived$univariate_NN %>%

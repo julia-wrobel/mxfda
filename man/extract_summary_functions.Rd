@@ -7,12 +7,13 @@
 extract_summary_functions(
   mxFDAobject,
   r_vec = seq(0, 100, by = 10),
-  extract_func = c(extract_univariate, extract_bivariate),
+  extract_func = c(univariate, bivariate),
   summary_func = c(Kest, Lest, Gest),
   markvar,
   mark1,
   mark2 = NULL,
-  edge_correction
+  edge_correction,
+  breaks = NULL
 )
 }
 \arguments{
@@ -20,7 +21,7 @@ extract_summary_functions(
 
 \item{r_vec}{Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.}
 
-\item{extract_func}{Defaults to extract_univariate, which calculates univariate spatial summary functions. Choose extract_bivariate for bivariate spatial summary functions.}
+\item{extract_func}{Defaults to univariate, which calculates univariate spatial summary functions. Choose bivariate for bivariate spatial summary functions.}
 
 \item{summary_func}{Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.}
 
@@ -31,6 +32,8 @@ extract_summary_functions(
 \item{mark2}{Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.}
 
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")}
+
+\item{breaks}{integer value for number of breaks in r_vec. Used only for entropy measure}
 }
 \value{
 an object of class \code{mxFDA} containing the corresponding spatial summary function slot filled. See \code{\link[=make_mxfda]{make_mxfda()}} for object structure details.
@@ -47,7 +50,7 @@ data('ovarian_FDA')
 
 #run function
 ovarian_FDA = extract_summary_functions(ovarian_FDA, r_vec = 0:100,
-                                        extract_func = extract_univariate,
+                                        extract_func = univariate,
                                         summary_func = Kest,
                                         markvar = "immune",
                                         mark1 = "immune",

@@ -44,11 +44,20 @@ summary.mxFDA = function(object, ...){
     fpc_slots = names(object@functional_mpca)
     cat("MFPCs Calculated:\n", sep = "")
     for(f in fpc_slots){
-      cat("\t", f, ": ",
-          ncol(object@functional_mpca[[f]]$score_df)-1, " Level1 MFPCs and ",
-          ncol(object@functional_mpca[[f]]$scores_level2)-2, " Level2 MFPCs explaining ",
-          round((object@functional_mpca[[f]]$mfpc_object$pve * 100), digits = 1),
-          "% variance\n", sep = "") #need to play with the output to determine how to report
+      if(inherits(object@functional_mpca[[f]]$mfpc_object$pve, "list")){
+        cat("\t", f, ": ",
+            ncol(object@functional_mpca[[f]]$score_df)-1, " Level1 MFPCs and ",
+            ncol(object@functional_mpca[[f]]$scores_level2)-2, " Level2 MFPCs explaining ",
+            round((object@functional_mpca[[f]]$mfpc_object$pve[[1]] * 100), digits = 1), "% and ",
+            round((object@functional_mpca[[f]]$mfpc_object$pve[[2]] * 100), digits = 1),
+            "% variance, respectively\n", sep = "") #need to play with the output to determine how to report
+      } else {
+        cat("\t", f, ": ",
+            ncol(object@functional_mpca[[f]]$score_df)-1, " Level1 MFPCs and ",
+            ncol(object@functional_mpca[[f]]$scores_level2)-2, " Level2 MFPCs explain ",
+            round((object@functional_mpca[[f]]$mfpc_object$pve * 100), digits = 1),
+            "% variance\n", sep = "")
+      }
     }
   }
   #any models run

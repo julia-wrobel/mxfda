@@ -7,6 +7,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <meta name="description" content="mxfda">
 <title>Functional principal component analysis for spatial summary functions • mxfda</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="../favicon-16x16.png">
+<link rel="icon" type="image/png" sizes="32x32" href="../favicon-32x32.png">
+<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="../apple-touch-icon-120x120.png">
+<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="../apple-touch-icon-76x76.png">
+<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="../apple-touch-icon-60x60.png">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.2.2/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.2.2/bootstrap.bundle.min.js"></script><!-- Font Awesome icons --><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous">
@@ -22,7 +28,7 @@
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
     
 
-    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light"><div class="container">
+    <nav class="navbar fixed-top navbar-light navbar-expand-lg bg-light" data-bs-theme="light"><div class="container">
     
     <a class="navbar-brand me-2" href="../index.html">mxfda</a>
 
@@ -41,7 +47,7 @@
 <li class="active nav-item dropdown">
   <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown" role="button" aria-expanded="false" aria-haspopup="true" id="dropdown-articles">Articles</a>
   <div class="dropdown-menu" aria-labelledby="dropdown-articles">
-    <a class="dropdown-item" href="../articles/mx_fda.html">mxFDA Object</a>
+    <a class="dropdown-item" href="../articles/mx_fda.html">Defining an mxFDA object</a>
     <a class="dropdown-item" href="../articles/mx_fpca.html">Functional principal component analysis for spatial summary functions</a>
     <a class="dropdown-item" href="../articles/mx_funreg.html">Functional regression with spatial summary functions as covariates</a>
   </div>
@@ -82,22 +88,21 @@
 
     
     
-<p>The <a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a> package contains tools for analyzing
-single-cell multiplex imaging data using methods from functional data
-analysis. Analyses for this package are executed and stored using an S4
-object of class <code>mxFDA</code>. This vignette outlines how to
-perform feature extraction using functional principal component analysis
-and multilevel functional principal component analysis. To set up an
-<code>mxFDA</code> object from spatial single cell imaging data,
-calculate spatial summary functions, and perform exploratory data
-analysis and visualization of these spatial summary functions, see
-<code><a href="../articles/mx_fda.html">vignette("mx_fda")</a></code>. To perform functional regression on
-spatial summary functions from multiplex imaging data, see
-<code><a href="../articles/mx_funreg.html">vignette("mx_funreg")</a></code>.</p>
+<p>The <a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a> package contains tools for analyzing spatial
+single-cell data using methods from functional data analysis. Analyses
+for this package are executed and stored using an S4 object of class
+<code>mxFDA</code>. This vignette outlines how to perform feature
+extraction using functional principal component analysis and multilevel
+functional principal component analysis. To set up an <code>mxFDA</code>
+object from spatial single cell imaging data, calculate spatial summary
+functions, and perform exploratory data analysis and visualization of
+these spatial summary functions, see <code><a href="../articles/mx_fda.html">vignette("mx_fda")</a></code>. To
+perform functional regression on spatial summary functions from
+multiplex imaging data, see <code><a href="../articles/mx_funreg.html">vignette("mx_funreg")</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patchwork.data-imaginist.com" class="external-link">patchwork</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/" class="external-link">ggpubr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
 <h2 id="functional-data-notation">Functional data notation<a class="anchor" aria-label="anchor" href="#functional-data-notation"></a>
 </h2>
@@ -167,7 +172,8 @@ experiment are described in <span class="citation">Steinhart et al.
 <span><span class="co">#&gt; FPCs not yet calculated</span></span>
 <span><span class="co">#&gt; MFPCs not yet calculated</span></span>
 <span><span class="co">#&gt; FCMs not yet calculated</span></span>
-<span><span class="co">#&gt; MFCMs not yet calculated</span></span></code></pre></div>
+<span><span class="co">#&gt; MFCMs not yet calculated</span></span>
+<span><span class="co">#&gt; Scalar on Functional Regression not calculated</span></span></code></pre></div>
 <p>These functions are visualized below.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni g"</span>, sampleID <span class="op">=</span> <span class="st">"patient_id"</span><span class="op">)</span> <span class="op">+</span></span>
@@ -200,7 +206,8 @@ variance in the data.</p>
 <span>                        metric <span class="op">=</span> <span class="st">"uni g"</span>, </span>
 <span>                        r <span class="op">=</span> <span class="st">"r"</span>, </span>
 <span>                        value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
-<span>                        pve <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span></code></pre></div>
+<span>                        pve <span class="op">=</span> <span class="fl">.95</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 128 sample have &gt;= 4 values for FPCA; removing 0 samples</span></span></code></pre></div>
 <p>Note that the summary of this object now shows the number of
 functional principal components (FPCs) that have been calculated:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
@@ -215,7 +222,8 @@ functional principal components (FPCs) that have been calculated:</p>
 <span><span class="co">#&gt;  Gest: 4 FPCs describe 96.9% variance</span></span>
 <span><span class="co">#&gt; MFPCs not yet calculated</span></span>
 <span><span class="co">#&gt; FCMs not yet calculated</span></span>
-<span><span class="co">#&gt; MFCMs not yet calculated</span></span></code></pre></div>
+<span><span class="co">#&gt; MFCMs not yet calculated</span></span>
+<span><span class="co">#&gt; Scalar on Functional Regression not calculated</span></span></code></pre></div>
 <p>The FPCA results are stored in the <code>functional_pca</code> slot
 of the <code>ovarian_FDA</code> object. To access this slot directly and
 view the extracted summary functions, type:</p>
@@ -232,7 +240,7 @@ G summary functions.</p>
 <span><span class="va">p1</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, what <span class="op">=</span> <span class="st">'uni g fpca'</span>, pc_choice <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span><span class="va">p2</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">ovarian_FDA</span>, what <span class="op">=</span> <span class="st">'uni g fpca'</span>, pc_choice <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
 <span></span>
-<span><span class="op">(</span><span class="va">p1</span> <span class="op">+</span> <span class="va">p2</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html" class="external-link">ggarrange</a></span><span class="op">(</span><span class="va">p1</span>, <span class="va">p2</span>, nrow <span class="op">=</span> <span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mx_fpca_files/figure-html/fpc_plots-1.png" width="960"></p>
 <p>The plots above show <span class="math inline">\(\hat{\mu}(r)\pm
 \sqrt{\hat{\lambda}_1\hat{\psi_k}(t)}\)</span> for the first and second
@@ -309,7 +317,7 @@ functions from the lung data.</p>
 <span>                         <span class="op">)</span></span>
 <span></span>
 <span><span class="va">mxFDAobject</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_summary_functions.html">extract_summary_functions</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, </span>
-<span>                                        extract_func <span class="op">=</span> <span class="va">extract_univariate</span>,</span>
+<span>                                        extract_func <span class="op">=</span> <span class="va">univariate</span>,</span>
 <span>                                        summary_func <span class="op">=</span> <span class="va">Kest</span>,</span>
 <span>                                        r_vec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>                                        edge_correction <span class="op">=</span> <span class="st">"iso"</span>,</span>
@@ -319,7 +327,8 @@ functions from the lung data.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni k"</span>, sampleID <span class="op">=</span> <span class="st">"patientImage_id"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 48 rows containing missing values (`geom_line()`).</span></span></code></pre></div>
+<span><span class="co">#&gt; Warning: Removed 103 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fpca_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <div class="section level4">
 <h4 id="run-and-visualize-mfpca">Run and visualize MFPCA<a class="anchor" aria-label="anchor" href="#run-and-visualize-mfpca"></a>
@@ -336,19 +345,22 @@ calculated.</p>
 <span>                         r <span class="op">=</span> <span class="st">"r"</span>, </span>
 <span>                         value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
 <span>                         pve <span class="op">=</span> <span class="fl">.99</span><span class="op">)</span></span>
+<span><span class="co">#&gt; 751 sample have &gt;= 4 values for FPCA; removing 7 samples</span></span>
+<span><span class="co">#&gt; Joining with `by = join_by(patient_id)`</span></span>
 <span></span>
 <span><span class="va">mxFDAobject</span></span>
 <span><span class="co">#&gt; mxFDA Object:</span></span>
-<span><span class="co">#&gt;  Subjects: 50</span></span>
-<span><span class="co">#&gt;  Samples: 247</span></span>
+<span><span class="co">#&gt;  Subjects: 153</span></span>
+<span><span class="co">#&gt;  Samples: 761</span></span>
 <span><span class="co">#&gt;  Has spatial data</span></span>
 <span><span class="co">#&gt;  Univariate Summaries: Kest</span></span>
 <span><span class="co">#&gt;  Bivariate Summaries: None</span></span>
 <span><span class="co">#&gt; FPCs not yet calculated</span></span>
 <span><span class="co">#&gt; MFPCs Calculated:</span></span>
-<span><span class="co">#&gt;  Kest: 2 Level1 MFPCs and 2 Level2 MFPCs</span></span>
+<span><span class="co">#&gt;  Kest: 2 Level1 MFPCs and 3 Level2 MFPCs explaining 99.6% and 99.4% variance, respectively</span></span>
 <span><span class="co">#&gt; FCMs not yet calculated</span></span>
-<span><span class="co">#&gt; MFCMs not yet calculated</span></span></code></pre></div>
+<span><span class="co">#&gt; MFCMs not yet calculated</span></span>
+<span><span class="co">#&gt; Scalar on Functional Regression not calculated</span></span></code></pre></div>
 <p>We can also visualize the results of MFPCA using the
 <code><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot()</a></code> function (see <code><a href="../reference/plot.mxFDA.html">?plot.mxFDA</a></code> for details).
 Below we plot the first FPC for level 1 and the first FPC for level
@@ -356,7 +368,7 @@ Below we plot the first FPC for level 1 and the first FPC for level
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">p</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, what <span class="op">=</span> <span class="st">'uni k mfpca'</span>, level1 <span class="op">=</span> <span class="fl">1</span>, level2 <span class="op">=</span> <span class="fl">1</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">p</span><span class="op">[[</span><span class="fl">1</span><span class="op">]</span><span class="op">]</span> <span class="op">+</span> <span class="va">p</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span></span></code></pre></div>
+<span><span class="fu"><a href="https://rpkgs.datanovia.com/ggpubr/reference/ggarrange.html" class="external-link">ggarrange</a></span><span class="op">(</span>plotlist <span class="op">=</span> <span class="va">p</span>, nrow <span class="op">=</span> <span class="fl">1</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mx_fpca_files/figure-html/unnamed-chunk-10-1.png" width="700"></p>
 <p>The left plot shows <span class="math inline">\(\hat{\mu}(r)\pm
 \sqrt{\hat{\lambda}_1^{(1)}}\hat{\psi_1}^{(1)}(t)\)</span>, and
@@ -415,7 +427,7 @@ Wrobel, Julia, So Young Park, Ana Maria Staicu, and Jeff Goldsmith.
 
 <div class="pkgdown-footer-right">
   <p></p>
-<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.</p>
+<p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.7.9000.</p>
 </div>
 
     </footer>

@@ -1,4 +1,4 @@
-#' extract_bivariate
+#' bivariate
 #'
 #' Internal function called by \code{extract_summary_functions} to calculate a bivariate spatial summary function for a single image.
 #'
@@ -9,8 +9,9 @@
 #' @param mark1 Character string that denotes first cell type of interest.
 #' @param mark2 Character string that denotes second cell type of interest.
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
-#' @param func Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
+#' @param func Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively, or entropy from Vu et al, 2023.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
+#' @param breaks an integer for the number of breaks used for entropy
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -26,18 +27,22 @@
 #' Fast covariance estimation for high-dimensional functional data.
 #' \emph{Statistics and Computing}, 26, 409-421.
 #' DOI: 10.1007/s11222-014-9485-x.
+#' @references Vu, T., Seal, S., Ghosh, T., Ahmadian, M., Wrobel, J., & Ghosh, D. (2023).
+#' FunSpace: A functional and spatial analytic approach to cell imaging data using entropy measures.
+#' \emph{PLOS Computational Biology}, 19(9), e1011490.
 #'
 #' @importFrom spatstat.geom ppp convexhull.xy
 #' @import dplyr
 #'
 #' @export
-extract_bivariate = function(mximg,
-                              markvar,
-                              mark1,
-                              mark2,
-                              r_vec,
-                              func = c(Kcross, Lcross, Gcross),
-                              edge_correction){
+bivariate = function(mximg,
+                             markvar,
+                             mark1,
+                             mark2,
+                             r_vec,
+                             func = c(Kcross, Lcross, Gcross, entropy),
+                             edge_correction,
+                             breaks = NULL){
   #### note to switch edge correction based on choice of func, this should be automated
 
   # subset data to only cells if interest
@@ -53,18 +58,26 @@ extract_bivariate = function(mximg,
   # create ppp object
   pp_obj = ppp(mximg[["x"]], mximg[["y"]], window = w,
                marks = as.factor(mximg[[markvar]]), checkdup = FALSE)
-
+  if(!is.null(breaks)){
+    r_vec = exp(seq(log(0.05*max(r_vec)), log(max(r_vec)), length.out = breaks))
+  }
   # estimate L using spatstat
-  sumfun = func(pp_obj, mark1, mark2,
+  sumfun = func(pp_obj,
+                mark1,
+                mark2,
                 r = r_vec,
                 correction = edge_correction)
+  if(is.null(breaks)){
+    df = data.frame(sumfun) %>%
+      select(r, sumfun = all_of(edge_correction), csr = theo) %>%
+      mutate(fundiff = sumfun - csr) %>%
+      select(r, sumfun, csr, fundiff)
+    return(df)
+  } else {
+    return(data.frame(sumfun))
+  }
 
-  df = data.frame(sumfun) %>%
-    select(r, sumfun = all_of(edge_correction), csr = theo) %>%
-    mutate(fundiff = sumfun - csr) %>%
-    select(r, sumfun, csr, fundiff)
 
-  df
 
 }
 
