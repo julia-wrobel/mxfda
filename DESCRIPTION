@@ -47,7 +47,9 @@ Imports:
     reshape2,
     mgcv,
     spatstat.geom,
-    spatstat.explore
+    spatstat.explore,
+    SpatEntropy,
+    SimDesign
 Remotes: FridleyLab/spatialTIME
 Depends: 
     R (>= 2.10),
