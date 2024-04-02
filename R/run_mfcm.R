@@ -72,9 +72,16 @@ run_mfcm <- function(mxFDAobject,
   analysis_vars <- unique(c(all.vars(formula), event, mxFDAobject@subject_key))
   meta_vars <- mxFDAobject@Metadata %>% select(all_of(analysis_vars)) %>% distinct()
 
+  #get summary func name
+  if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) func = "Kcross"
+  if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) func = "Gcross"
+  if(grepl("[B|b]", metric[1]) & grepl("[L|l]", metric[2])) func = "Lcross"
+  if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) func = "Kest"
+  if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) func = "Gest"
+  if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) func = "Lest"
 
   ### this is specific to the K example I have been working with
-  mxfundata = mfpca_obj@functional_mpca$Kest$Yi_hat %>%
+  mxfundata = mfpca_obj@functional_mpca[[func]]$Yi_hat %>%
     dplyr::left_join(meta_vars)
 
   analysis_vars <- c(analysis_vars, "level2_score_sd")
