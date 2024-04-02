@@ -5,6 +5,10 @@
 [![test-coverage](https://github.com/julia-wrobel/mxfda/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/julia-wrobel/mxfda/actions/workflows/test-coverage.yaml)
 <!-- badges: end -->
 
+<!--
+-->
+## mxFDA
+
 A functional data analysis package for spatial point pattern data.
 
 ## Installing mxFDA to R
