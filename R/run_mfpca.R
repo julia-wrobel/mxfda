@@ -117,7 +117,7 @@ run_mfpca = function(mxFDAobject,
   # calculate variance of level2 scores
   var_df = scores_level2 %>%
     pivot_longer(contains("level2_"), names_to = "fpc", values_to = "score") %>%
-    group_by(!!mxFDAobject@subject_key) %>% # can't group by patient_id, need to generalize
+    dplyr::group_by(dplyr::across(mxFDAobject@subject_key)) %>% # can't group by patient_id, need to generalize
     summarize(level2_score_var = stats::var(score),
               level2_score_sd = stats::sd(score)) %>%
     ungroup()
