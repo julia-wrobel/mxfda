@@ -71,7 +71,7 @@ run_mfcm <- function(mxFDAobject,
 
   analysis_vars <- unique(c(all.vars(formula), event, mxFDAobject@subject_key))
   meta_vars <- mxFDAobject@Metadata %>% select(all_of(analysis_vars)) %>% distinct()
-
+  metric = unlist(strsplit(metric, split = " "))
   #get summary func name
   if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) func = "Kcross"
   if(grepl("[B|b]", metric[1]) & grepl("[G|g]", metric[2])) func = "Gcross"
