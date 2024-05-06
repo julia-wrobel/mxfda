@@ -24,6 +24,12 @@ if (!require("devtools", quietly = TRUE))
 devtools::install_github("julia-wrobel/mxfda")
 ```
 
+To install a specific release of `mxfda`, use the `devtools` syntax. This is an example for installing the first release of `mxfda`:
+
+```
+devtools::install_github('julia-wrobel/mxfda@v0.2.0')
+```
+
 ## Vignettes and Function References
 
 If interested in documentation and how-to's, please see http://juliawrobel.com/mxfda/
