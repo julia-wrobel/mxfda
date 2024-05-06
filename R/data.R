@@ -1,6 +1,7 @@
 #' Multiplex imaging data from a non-small cell lung cancer study.
 #'
 #' This data is adapted from the VectraPolarisData Bioconductor package. There are multiple ROIs for each patient.
+#' Data was filtered to include only the cells in the tumor compartment.
 #'
 #' @format ## `lung_df`
 #' A data frame with 879,694 rows and 19 columns:

@@ -18,7 +18,7 @@ Useful links:
 
 }
 \author{
-\strong{Maintainer}: Alex Soupir (\href{https://orcid.org/0000-0003-1251-9179}{ORCID})
+\strong{Maintainer}: Alex Soupir \email{alex.soupir@moffitt.org} (\href{https://orcid.org/0000-0003-1251-9179}{ORCID})
 
 Authors:
 \itemize{

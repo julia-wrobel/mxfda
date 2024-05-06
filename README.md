@@ -1,4 +1,4 @@
-# mxFDA <img src="man/figures/logo1.png" align="right" width="120" />
+# mxFDA <img src="man/figures/logo_small.png" align="right" width="120" />
 
 <!-- badges: start -->
 [![R-CMD-check](https://github.com/julia-wrobel/mxfda/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/julia-wrobel/mxfda/actions/workflows/R-CMD-check.yaml) 

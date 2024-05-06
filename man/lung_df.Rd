@@ -28,5 +28,6 @@ lung_df
 }
 \description{
 This data is adapted from the VectraPolarisData Bioconductor package. There are multiple ROIs for each patient.
+Data was filtered to include only the cells in the tumor compartment.
 }
 \keyword{datasets}
