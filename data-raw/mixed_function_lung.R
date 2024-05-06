@@ -20,7 +20,8 @@ mxFDAobject = make_mxfda(metadata = clinical,
                          sample_key = "patientImage_id")
 
 #calculate summary function Gest
-mxFDAobject = extract_summary_functions(mxFDAobject, r_vec = 0:100, extract_func = extract_univariate, summary_func = Gest, markvar = 'phenotype_cd8', mark1 = 'CD8+', edge_correction = 'rs')
+mxFDAobject = extract_summary_functions(mxFDAobject, r_vec = 0:100, extract_func = univariate,
+                                        summary_func = Gest, markvar = 'phenotype_cd8', mark1 = 'CD8+', edge_correction = 'rs')
 
 plot(mxFDAobject, y = 'fundiff', what = 'uni g')
 

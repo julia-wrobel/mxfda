@@ -78,14 +78,16 @@ run_mfpca = function(mxFDAobject,
 
   # this seems to break when there are NA values, what behavior do I want for that?
   mxfundata <- mxfundata %>%
-    dplyr::select(dplyr::all_of(c(mxFDAobject@subject_key, mxFDAobject@sample_key, r, value))) %>%
-    pivot_wider(names_from = r,
+    dplyr::select(dplyr::all_of(c(mxFDAobject@subject_key, mxFDAobject@sample_key, r, value)))
+  mxfundata = mxfundata %>%
+    pivot_wider(names_from = dplyr::all_of(r),
                 names_prefix = "r_",
-                values_from = value) %>%
+                values_from = dplyr::all_of(value))
+  mxfundata = mxfundata %>%
     arrange(!!mxFDAobject@subject_key, !!mxFDAobject@sample_key)
 
   mat <- mxfundata %>%
-    select(starts_with("r_")) %>%
+    select(dplyr::starts_with("r_")) %>%
     as.matrix()
 
   rownames(mat) <- mxfundata[[mxFDAobject@sample_key]]
@@ -116,7 +118,7 @@ run_mfpca = function(mxFDAobject,
 
   # calculate variance of level2 scores
   var_df = scores_level2 %>%
-    pivot_longer(contains("level2_"), names_to = "fpc", values_to = "score") %>%
+    pivot_longer(dplyr::contains("level2_"), names_to = "fpc", values_to = "score") %>%
     dplyr::group_by(dplyr::across(mxFDAobject@subject_key)) %>% # can't group by patient_id, need to generalize
     summarize(level2_score_var = stats::var(score),
               level2_score_sd = stats::sd(score)) %>%
