@@ -1,7 +1,7 @@
 Package: mxfda
-Title: A functional data analysis package for spatial single cell data
+Title: A Functional Data Analysis Package for Spatial Single Cell Data
 Version: 0.2.0
-Date: 2024-03-29
+Date: 2024-05-06
 Authors@R: 
     c(
     person("Julia", "Wrobel", role = c("aut"), 
@@ -18,8 +18,8 @@ Description: The `mxfda` package contains tools for analyzing spatial single cel
   including repeated samples of spatial transcriptomics and geospatial data.
   Analyses for this package are executed and stored using an S4 object of class `mxFDA`. 
 License: MIT + file LICENSE
-URL: https://github.com/julia-wrobel/mxfda, http://juliawrobel.com/mxfda
-BugReports: https://github.com/julia-wrobel/mxfda/issues
+URL: https://github.com/julia-wrobel/mxfda/, https://juliawrobel.com/mxfda/
+BugReports: https://github.com/julia-wrobel/mxfda/issues/
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.3
@@ -51,7 +51,6 @@ Imports:
     spatstat.explore,
     SpatEntropy,
     SimDesign
-Remotes: FridleyLab/spatialTIME
 Depends: 
     R (>= 2.10),
 LazyData: true
