@@ -3,7 +3,10 @@
 \name{Gest}
 \alias{Gest}
 \title{Gest}
+\value{
+object of class "fv" with columns for radii, theoretical G, and columns for edge corrections.
+}
 \description{
-See \code{spatstat.explore::Gest}
+See \code{\link[spatstat.explore:Gest]{spatstat.explore::Gest()}}
 }
 \keyword{internal}

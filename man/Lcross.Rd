@@ -3,7 +3,10 @@
 \name{Lcross}
 \alias{Lcross}
 \title{Lcross}
+\value{
+object of class "fv" with columns for radii, theoretical bivariate L, and columns for edge corrections.
+}
 \description{
-See \code{spatstat.explore::Lcross}
+See \code{\link[spatstat.explore:Lcross]{spatstat.explore::Lcross()}}
 }
 \keyword{internal}

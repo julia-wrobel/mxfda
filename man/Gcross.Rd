@@ -3,7 +3,10 @@
 \name{Gcross}
 \alias{Gcross}
 \title{Gcross}
+\value{
+object of class "fv" with columns for radii, theoretical bivariate G, and columns for edge corrections.
+}
 \description{
-See \code{spatstat.explore::Gcross}
+See \code{\link[spatstat.explore:Gcross]{spatstat.explore::Gcross()}}
 }
 \keyword{internal}

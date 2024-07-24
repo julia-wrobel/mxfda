@@ -3,7 +3,10 @@
 \name{Kest}
 \alias{Kest}
 \title{Kest}
+\value{
+object of class "fv" with columns for radii, theoretical K, and columns for edge corrections.
+}
 \description{
-See \code{spatstat.explore::Kest}
+See \code{\link[spatstat.explore:Kest]{spatstat.explore::Kest()}}
 }
 \keyword{internal}

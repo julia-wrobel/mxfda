@@ -1,6 +1,6 @@
 Package: mxfda
 Title: A Functional Data Analysis Package for Spatial Single Cell Data
-Version: 0.2.0
+Version: 0.2.1
 Date: 2024-05-06
 Authors@R: 
     c(
@@ -11,14 +11,13 @@ Authors@R:
     comment = c(ORCID = "0000-0003-1251-9179"),
     email = "alex.soupir@moffitt.org")
     )
-Description: The `mxfda` package contains tools for analyzing spatial single cell data
-  using methods from functional data analysis. While examples in vignettes illustrate 
-  the use of the package for single-cell multiplex imaging data, the package can handle
-  analysis of other types of point process data as well, 
-  including repeated samples of spatial transcriptomics and geospatial data.
-  Analyses for this package are executed and stored using an S4 object of class `mxFDA`. 
+Description: Methods and tools for deriving spatial summary functions from single-cell imaging
+  data and performing functional data analyses. Functions can be applied to other single-cell
+  technologies such as spatial transcriptomics. Functional regression and functional principal component analysis methods
+  are in the 'refund' package <https://cran.r-project.org/package=refund> while calculation of the
+  spatial summary functions are from the 'spatstat' package <https://spatstat.org/>.
 License: MIT + file LICENSE
-URL: https://github.com/julia-wrobel/mxfda/, https://juliawrobel.com/mxfda/
+URL: https://github.com/julia-wrobel/mxfda/, http://juliawrobel.com/mxfda/
 BugReports: https://github.com/julia-wrobel/mxfda/issues/
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

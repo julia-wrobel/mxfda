@@ -3,7 +3,10 @@
 \name{Lest}
 \alias{Lest}
 \title{Lest}
+\value{
+object of class "fv" with columns for radii, theoretical L, and columns for edge corrections.
+}
 \description{
-See \code{spatstat.explore::Lest}
+See \code{\link[spatstat.explore:Lest]{spatstat.explore::Lest()}}
 }
 \keyword{internal}

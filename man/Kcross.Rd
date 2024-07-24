@@ -3,7 +3,10 @@
 \name{Kcross}
 \alias{Kcross}
 \title{Kcross}
+\value{
+object of class "fv" with columns for radii, theoretical bivariate K, and columns for edge corrections.
+}
 \description{
-See \code{spatstat.explore::Kcross}
+See \code{\link[spatstat.explore:Kcross]{spatstat.explore::Kcross()}}
 }
 \keyword{internal}
