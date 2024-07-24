@@ -32,7 +32,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mxfda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -88,7 +88,7 @@
 
     
     
-<p>The <a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a> package contains tools for analyzing spatial
+<p>The <a href="https://github.com/julia-wrobel/mxfda/" class="external-link">mxfda</a> package contains tools for analyzing spatial
 single-cell data using methods from functional data analysis. Analyses
 for this package are executed and stored using an S4 object of class
 <code>mxFDA</code>. This vignette outlines how to perform feature
@@ -100,7 +100,7 @@ these spatial summary functions, see <code><a href="../articles/mx_fda.html">vig
 perform functional regression on spatial summary functions from
 multiplex imaging data, see <code><a href="../articles/mx_funreg.html">vignette("mx_funreg")</a></code>.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/julia-wrobel/mxfda/" class="external-link">mxfda</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org" class="external-link">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://rpkgs.datanovia.com/ggpubr/" class="external-link">ggpubr</a></span><span class="op">)</span></span></code></pre></div>
 <div class="section level2">
@@ -113,7 +113,7 @@ structure, which occurs when there are multiple samples for each
 subject. Methods for functional data are typically presented in terms of
 continuous functions, but in practice data are observed on a discrete
 grid, <span class="math inline">\(t\)</span>. In the
-<a href="https://github.com/julia-wrobel/mxfda" class="external-link">mxfda</a> package, <span class="math inline">\(X_{ij}(r)\)</span> is the spatial summary function
+<a href="https://github.com/julia-wrobel/mxfda/" class="external-link">mxfda</a> package, <span class="math inline">\(X_{ij}(r)\)</span> is the spatial summary function
 (for example, Ripley’s K) value at radius <span class="math inline">\(r\)</span> for sample <span class="math inline">\(j\)</span> from subject <span class="math inline">\(i\)</span>.</p>
 </div>
 <div class="section level2">
@@ -327,7 +327,7 @@ functions from the lung data.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni k"</span>, sampleID <span class="op">=</span> <span class="st">"patientImage_id"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 103 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 48 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fpca_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <div class="section level4">
@@ -345,19 +345,19 @@ calculated.</p>
 <span>                         r <span class="op">=</span> <span class="st">"r"</span>, </span>
 <span>                         value <span class="op">=</span> <span class="st">"fundiff"</span>,</span>
 <span>                         pve <span class="op">=</span> <span class="fl">.99</span><span class="op">)</span></span>
-<span><span class="co">#&gt; 751 sample have &gt;= 4 values for FPCA; removing 7 samples</span></span>
+<span><span class="co">#&gt; 246 sample have &gt;= 4 values for FPCA; removing 1 samples</span></span>
 <span><span class="co">#&gt; Joining with `by = join_by(patient_id)`</span></span>
 <span></span>
 <span><span class="va">mxFDAobject</span></span>
 <span><span class="co">#&gt; mxFDA Object:</span></span>
-<span><span class="co">#&gt;  Subjects: 153</span></span>
-<span><span class="co">#&gt;  Samples: 761</span></span>
+<span><span class="co">#&gt;  Subjects: 50</span></span>
+<span><span class="co">#&gt;  Samples: 247</span></span>
 <span><span class="co">#&gt;  Has spatial data</span></span>
 <span><span class="co">#&gt;  Univariate Summaries: Kest</span></span>
 <span><span class="co">#&gt;  Bivariate Summaries: None</span></span>
 <span><span class="co">#&gt; FPCs not yet calculated</span></span>
 <span><span class="co">#&gt; MFPCs Calculated:</span></span>
-<span><span class="co">#&gt;  Kest: 2 Level1 MFPCs and 3 Level2 MFPCs explaining 99.6% and 99.4% variance, respectively</span></span>
+<span><span class="co">#&gt;  Kest: 1 Level1 MFPCs and 3 Level2 MFPCs explaining 99.6% and 100% variance, respectively</span></span>
 <span><span class="co">#&gt; FCMs not yet calculated</span></span>
 <span><span class="co">#&gt; MFCMs not yet calculated</span></span>
 <span><span class="co">#&gt; Scalar on Functional Regression not calculated</span></span></code></pre></div>
