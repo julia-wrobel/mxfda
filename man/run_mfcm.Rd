@@ -59,17 +59,15 @@ a scalar variable in the FCM called "level2_score_sd".
 }
 \examples{
 #load ovarian mxFDA object
-\dontrun{
-data('ovarian_FDA')
+data('lung_FDA')
 
 # run the lfcm model
-ovarian_FDA = run_mfcm(ovarian_FDA, model_name = "fit_mlfcm",
-                      formula = survival_time ~ age,
-                      event = "event",
+lung_FDA = run_mfcm(lung_FDA, model_name = "fit_mlfcm",
+                      formula = survival_days ~ age,
+                      event = "survival_status",
                       metric = "uni g", r = "r", value = "fundiff",
                       pve = 0.99,
                       afcm = FALSE)
-}
 }
 \author{
 Julia Wrobel \email{julia.wrobel@emory.edu}

@@ -4,16 +4,16 @@
 \name{mxfda-package}
 \alias{mxfda}
 \alias{mxfda-package}
-\title{mxfda: A functional data analysis package for spatial single cell data}
+\title{mxfda: A Functional Data Analysis Package for Spatial Single Cell Data}
 \description{
-The `mxfda` package contains tools for analyzing spatial single cell data using methods from functional data analysis. While examples in vignettes illustrate the use of the package for single-cell multiplex imaging data, the package can handle analysis of other types of point process data as well, including repeated samples of spatial transcriptomics and geospatial data. Analyses for this package are executed and stored using an S4 object of class `mxFDA`.
+Methods and tools for deriving spatial summary functions from single-cell imaging data and performing functional data analyses. Functions can be applied to other single-cell technologies such as spatial transcriptomics. Functional regression and functional principal component analysis methods are in the 'refund' package \url{https://cran.r-project.org/package=refund} while calculation of the spatial summary functions are from the 'spatstat' package \url{https://spatstat.org/}.
 }
 \seealso{
 Useful links:
 \itemize{
-  \item \url{https://github.com/julia-wrobel/mxfda}
-  \item \url{http://juliawrobel.com/mxfda}
-  \item Report bugs at \url{https://github.com/julia-wrobel/mxfda/issues}
+  \item \url{https://github.com/julia-wrobel/mxfda/}
+  \item \url{http://juliawrobel.com/mxfda/}
+  \item Report bugs at \url{https://github.com/julia-wrobel/mxfda/issues/}
 }
 
 }
