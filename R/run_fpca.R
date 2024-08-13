@@ -77,7 +77,7 @@ run_fpca = function(mxFDAobject,
   if(!(value %in% colnames(mxfundata)))
     stop("'value' not in summary data")
 
-  index_range <- range(mxfundata[[r]])
+  index_range <- range(mxfundata[[r]], na.rm = TRUE)
 
   mxfundata <- mxfundata %>%
     dplyr::filter(get(mxFDAobject@sample_key) %in% #filter out the samples that don't have enough values
