@@ -1,6 +1,9 @@
 # mxFDA <img src="man/figures/logo_small.png" align="right" width="120" />
 
 <!-- badges: start -->
+[![](https://cranlogs.r-pkg.org/badges/mxfda)](https://CRAN.R-project.org/package=mxfda)
+[![](https://cranlogs.r-pkg.org/badges/grand-total/mxfda)](https://CRAN.R-project.org/package=mxfda)
+[![](https://www.r-pkg.org/badges/version-ago/mxfda)](https://CRAN.R-project.org/package=mxfda)
 [![R-CMD-check](https://github.com/julia-wrobel/mxfda/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/julia-wrobel/mxfda/actions/workflows/R-CMD-check.yaml) 
 [![test-coverage](https://github.com/julia-wrobel/mxfda/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/julia-wrobel/mxfda/actions/workflows/test-coverage.yaml)
 <!-- badges: end -->
