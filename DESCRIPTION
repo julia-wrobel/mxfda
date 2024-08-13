@@ -1,6 +1,6 @@
 Package: mxfda
 Title: A Functional Data Analysis Package for Spatial Single Cell Data
-Version: 0.2.1
+Version: 0.2.1-1
 Date: 2024-05-06
 Authors@R: 
     c(
