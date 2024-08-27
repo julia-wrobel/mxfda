@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mxfda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -67,7 +67,9 @@
 <span>  <span class="va">r_vec</span>,</span>
 <span>  func <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">Kest</span>, <span class="va">Lest</span>, <span class="va">Gest</span><span class="op">)</span>,</span>
 <span>  <span class="va">edge_correction</span>,</span>
-<span>  breaks <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>  breaks <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>  permute_CSR <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  permutations <span class="op">=</span> <span class="fl">1000</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -105,6 +107,14 @@ Should have variables <code>x</code> and <code>y</code> to denote x and y spatia
 <dt>breaks</dt>
 <dd><p>ignored</p></dd>
 
+
+<dt>permute_CSR</dt>
+<dd><p>logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.</p></dd>
+
+
+<dt>permutations</dt>
+<dd><p>integer for the number of permtuations to use if permute_CSR is <code>TRUE</code> and exact CSR not calculable</p></dd>
+
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
@@ -129,8 +139,17 @@ Should have variables <code>x</code> and <code>y</code> to denote x and y spatia
     <p><a href="https://lifecycle.r-lib.org/articles/stages.html#stable" class="external-link"><img src="figures/lifecycle-stable.svg" alt="[Stable]"></a></p>
     </div>
     <div class="section level2">
+    <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>
+    <p>Creed, J. H., Wilson, C. M., Soupir, A. C., Colin-Leitzinger, C. M., Kimmel, G. J.,
+Ospina, O. E., Chakiryan, N. H., Markowitz, J., Peres, L. C., Coghill, A., &amp; Fridley, B. L. (2021).
+spatialTIME and iTIME: R package and Shiny application for visualization and analysis of
+immunofluorescence data. <em>Bioinformatics</em> (Oxford, England), 37(23), 4584–4586.
+https://doi.org/10.1093/bioinformatics/btab757</p>
+    </div>
+    <div class="section level2">
     <h2 id="author">Author<a class="anchor" aria-label="anchor" href="#author"></a></h2>
     <p>Julia Wrobel <a href="mailto:julia.wrobel@emory.edu">julia.wrobel@emory.edu</a></p>
+<p>Alex Soupir <a href="mailto:alex.soupir@moffitt.org">alex.soupir@moffitt.org</a></p>
     </div>
 
   </main><aside class="col-md-3"><nav id="toc"><h2>On this page</h2>

@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mxfda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1-1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -219,24 +219,30 @@ understand correlations in the spatial distributions of cells. Under the
 assumption that the rate of a cell is constant over an entire region of
 interest a point pattern will exhibit complete spatial randomness (CSR),
 and it is often of interest to model whether cells deviate from CSR
-either through clustering or repulsion. Spatial summary statistics can
-be calculated to quantify the clustering and co-occurrence of cells in a
-circular region with a particular radius <em>r</em>. Typically
-univariate (one cell type) or bivariate (two cell types) summary
-statistics are reported, and inference is obtained by comparing the
-observed spatial summary statistic to that obtained under CSR. A popular
-quantity is Ripley’s K(<em>r</em>), which studies the number of
-neighbors to a particular point within radius <em>r</em>, and has
-univariate and bivariate implementations in the <a href="http://spatstat.org/" class="external-link">spatstat</a>
-package (<span class="citation">Baddeley, Rubak, and Turner
-(2015)</span>). Ripley’s K is characterized by clustering or repulsion
-depending on whether it is above or below the theoretical value of <span class="math inline">\(\pi r^2\)</span>. Other spatial summary statistics
-analyze the distance to a neighbor, and can be interpreted as
-probabilities of observing a particular cell type within a radius
-<em>r</em>. One of these metrics, G(<em>r</em>), or the nearest neighbor
-distance distribution, is the cumulative distribution function of an
-exponential random variable. More detailed overviews of spatial summary
-functions for multiplex imaging data are provided in <span class="citation">C. M. Wilson et al. (2021)</span> and <span class="citation">Wrobel, Harris, and Vandekar (2023)</span>.</p>
+either through clustering or repulsion. When the rate of a cell is not
+constant, this CSR assumption is violated and to estimate CSR it is
+recommended to use permutations (see <span class="citation">C. Wilson et
+al. (2022)</span> for explanation).</p>
+<p>Spatial summary statistics can be calculated to quantify the
+clustering and co-occurrence of cells in a circular region with a
+particular radius <em>r</em>. Typically univariate (one cell type) or
+bivariate (two cell types) summary statistics are reported, and
+inference is obtained by comparing the observed spatial summary
+statistic to that obtained under CSR. A popular quantity is Ripley’s
+K(<em>r</em>), which studies the number of neighbors to a particular
+point within radius <em>r</em>, and has univariate and bivariate
+implementations in the <a href="http://spatstat.org/" class="external-link">spatstat</a> package (<span class="citation">Baddeley, Rubak, and Turner (2015)</span>). Ripley’s K
+is characterized by clustering or repulsion depending on whether it is
+above or below the theoretical value of <span class="math inline">\(\pi
+r^2\)</span>. Other spatial summary statistics analyze the distance to a
+neighbor, and can be interpreted as probabilities of observing a
+particular cell type within a radius <em>r</em>. One of these metrics,
+G(<em>r</em>), or the nearest neighbor distance distribution, is the
+cumulative distribution function of an exponential random variable. More
+detailed overviews of spatial summary functions for multiplex imaging
+data are provided in <span class="citation">C. M. Wilson et al.
+(2021)</span> and <span class="citation">Wrobel, Harris, and Vandekar
+(2023)</span>.</p>
 <div class="section level3">
 <h3 id="univariate-summary-functions">Univariate summary functions<a class="anchor" aria-label="anchor" href="#univariate-summary-functions"></a>
 </h3>
@@ -257,7 +263,13 @@ radius values through <code>r_vec</code>, and the a specific edge
 correction (see <span class="citation">Baddeley, Rubak, and Turner
 (2015)</span>). We calculate the K function across a range of radii from
 0 to 100 and use the isotropic (“iso”) edge correction. See <span class="citation">Baddeley, Rubak, and Turner (2015)</span> for more
-details on edge corrections for Ripley’s K and nearest neighbor G.</p>
+details on edge corrections for Ripley’s K and nearest neighbor G.
+Options <code>permute_CSR</code> and <code>permutations</code> can be
+used if interested in using a measure of the sample-specific CSR instead
+of the theoretical, the column specified with <code>markvar</code> just
+needs to contain 1 level more than used for <code>summary_func</code> (2
+levels for univariate and 3 levels for bivariate) otherwise falls back
+to theoretical.</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mxFDAobject</span> <span class="op">=</span> <span class="fu"><a href="../reference/extract_summary_functions.html">extract_summary_functions</a></span><span class="op">(</span><span class="va">mxFDAobject</span>,</span>
 <span>                                        extract_func <span class="op">=</span> <span class="va">univariate</span>,</span>
@@ -265,7 +277,10 @@ details on edge corrections for Ripley’s K and nearest neighbor G.</p>
 <span>                                        r_vec <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">100</span>, by <span class="op">=</span> <span class="fl">1</span><span class="op">)</span>,</span>
 <span>                                        edge_correction <span class="op">=</span> <span class="st">"iso"</span>,</span>
 <span>                                        markvar <span class="op">=</span> <span class="st">"immune"</span>,</span>
-<span>                                        mark1 <span class="op">=</span> <span class="st">"immune"</span><span class="op">)</span></span></code></pre></div>
+<span>                                        mark1 <span class="op">=</span> <span class="st">"immune"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using Theoretical Complete Spatial Randomness for Ripley's K</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  28% |  ETA:  4s</span></span>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■■      </span>  84% |  ETA:  1s</span></span></code></pre></div>
 <p>Running this code will calculate univariate Ripley’s K function to
 measure spatial clustering of immune cells for each sample, and will
 store these spatial summary functions in the
@@ -273,7 +288,7 @@ store these spatial summary functions in the
 To access this slot and view the extracted summary functions, type:</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">mxFDAobject</span><span class="op">@</span><span class="va">univariate_summaries</span><span class="op">$</span><span class="va">Kest</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 24,847 × 6</span></span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 24,947 × 6</span></span></span>
 <span><span class="co">#&gt;    patientImage_id     r sumfun    csr fundiff `immune cells`</span></span>
 <span><span class="co">#&gt;    <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span>           <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>   <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>          <span style="color: #949494; font-style: italic;">&lt;int&gt;</span></span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 1</span> 2_1                 0      0   0       0                 6</span></span>
@@ -286,7 +301,7 @@ To access this slot and view the extracted summary functions, type:</p>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 8</span> 2_1                 7      0 154.   -<span style="color: #BB0000;">154.</span>                6</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;"> 9</span> 2_1                 8      0 201.   -<span style="color: #BB0000;">201.</span>                6</span></span>
 <span><span class="co">#&gt; <span style="color: #BCBCBC;">10</span> 2_1                 9      0 254.   -<span style="color: #BB0000;">254.</span>                6</span></span>
-<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24,837 more rows</span></span></span></code></pre></div>
+<span><span class="co">#&gt; <span style="color: #949494;"># ℹ 24,937 more rows</span></span></span></code></pre></div>
 <p>Note that the summaries are returned as a dataframe. The variable
 <code>sumfun</code> is the estimated summary function value,
 <code>csr</code> is the theoretical value under complete spatial
@@ -318,9 +333,7 @@ summary data is added from elsewhere with
 be used.</strong></p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni k"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 48 rows containing missing values or values outside the scale range</span></span>
-<span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-5-1.png" width="700"></p>
 </div>
 </div>
@@ -367,7 +380,8 @@ to <code>mark1</code> and <code>mark2</code>, respectively.</p>
 <span>                edge_correction <span class="op">=</span> <span class="st">"rs"</span>,</span>
 <span>                markvar <span class="op">=</span> <span class="st">"phenotype"</span>,</span>
 <span>                mark1 <span class="op">=</span> <span class="st">"T-cell"</span>,</span>
-<span>                mark2 <span class="op">=</span> <span class="st">"macrophage"</span><span class="op">)</span></span></code></pre></div>
+<span>                mark2 <span class="op">=</span> <span class="st">"macrophage"</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Using Theoretical Complete Spatial Randomness for Bivariate Ripley's K - L Transform</span></span></code></pre></div>
 <div class="section level4">
 <h4 id="plotting-bivariate-g">Plotting bivariate G<a class="anchor" aria-label="anchor" href="#plotting-bivariate-g"></a>
 </h4>
@@ -378,7 +392,7 @@ results. The <code>what</code> now is <code>'bi g'</code>,
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"bi g"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Removed 1365 rows containing missing values or values outside the scale range</span></span>
+<span><span class="co">#&gt; Warning: Removed 712 rows containing missing values or values outside the scale range</span></span>
 <span><span class="co">#&gt; (`geom_line()`).</span></span></code></pre></div>
 <p><img src="mx_fda_files/figure-html/unnamed-chunk-9-1.png" width="700"></p>
 </div>
