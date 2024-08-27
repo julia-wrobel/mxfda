@@ -6,6 +6,8 @@
 \alias{mxfda-package}
 \title{mxfda: A Functional Data Analysis Package for Spatial Single Cell Data}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Methods and tools for deriving spatial summary functions from single-cell imaging data and performing functional data analyses. Functions can be applied to other single-cell technologies such as spatial transcriptomics. Functional regression and functional principal component analysis methods are in the 'refund' package \url{https://cran.r-project.org/package=refund} while calculation of the spatial summary functions are from the 'spatstat' package \url{https://spatstat.org/}.
 }
 \seealso{
