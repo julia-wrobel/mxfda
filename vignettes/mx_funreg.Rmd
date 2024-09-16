@@ -244,7 +244,7 @@ plot(model, ylab=expression(paste(beta(t))), xlab="t")
 
 Below we fit a sofr model with stage as the outcome, G-functions from the ovarian cancer data as the functional covariate, and age as a scalar covariate. Stage is a binary outcome, and as a result this model can also be called *functional logistic regression*. When the outcome is binary, you need to specify the argument `family = "binomial"`. In addition, the outcome should be coded as a numeric rather than a factor or character variable.
 
-```{r, eval = FALSE}
+```{r}
 ovarian_FDA <- run_sofr(ovarian_FDA, 
                         model_name = "fit_sofr_stage", 
                         formula = stage ~ age, 
@@ -255,7 +255,7 @@ ovarian_FDA <- run_sofr(ovarian_FDA,
 When the outcome is binary $\hat{\beta}(r)$ is interpreted as a log odds ratio at each radius $r$. 
 
 
-```{r, eval = FALSE}
+```{r}
 model = extract_model(ovarian_FDA, 'uni g', type = 'sofr', model_name = 'fit_sofr_stage')
 plot(model, ylab=expression(paste(beta(t))), xlab="t")
 ```
