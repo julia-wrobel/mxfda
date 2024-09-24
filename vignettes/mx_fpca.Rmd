@@ -168,11 +168,11 @@ mxFDAobject = extract_summary_functions(mxFDAobject,
 ```
 
 
-These K-functions are visualized below.
+These K-functions (with CSR substracted) are visualized below. Each black line is an individual, and values above zero at a particular radius indicate spatial clustering beyond what is expected under CSR.
 
 ```{r}
 plot(mxFDAobject, y = "fundiff", what = "uni k", sampleID = "patientImage_id") +
-  geom_hline(yintercept = 0, color = "red", linetype = 2)
+  geom_hline(yintercept = 0, color = "red", linetype = 2) 
 ```
 
 
