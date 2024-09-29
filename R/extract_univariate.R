@@ -11,8 +11,8 @@
 #' @param func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
 #' @param breaks ignored
-#' @param permute_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.
-#' @param permutations integer for the number of permtuations to use if permute_CSR is `TRUE` and exact CSR not calculable
+#' @param emperical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.
+#' @param permutations integer for the number of permtuations to use if emperical_CSR is `TRUE` and exact CSR not calculable
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -45,7 +45,7 @@ univariate = function(mximg,
                       func = c(Kest, Lest, Gest),
                       edge_correction,
                       breaks = NULL,
-                      permute_CSR = FALSE,
+                      emperical_CSR = FALSE,
                       permutations = 1000){
   #### note to switch edge correction based on choice of func, this should be automated
 
@@ -65,7 +65,7 @@ univariate = function(mximg,
                 correction = edge_correction)
 
   #if the user wants permutations to estimate CSR then will have to run them
-  if(permute_CSR == TRUE){
+  if(emperical_CSR == TRUE){
     if(identical(Kest, func)){
       #message("Using Exact Complete Spatial Randomness for Ripley's K")
       sumfun[[2]] = func(pp_obj, #exact CSR is across all points
