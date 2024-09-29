@@ -11,8 +11,8 @@
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
 #' @param breaks integer value for number of breaks in r_vec. Used only for entropy measure
-#' @param permute_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation. If there are not enough levels present in `markvar` column for permutations, the theoretical will be used.
-#' @param permutations integer for the number of permtuations to use if permute_CSR is `TRUE` and exact CSR not calculable
+#' @param emperical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation. If there are not enough levels present in `markvar` column for permutations, the theoretical will be used.
+#' @param permutations integer for the number of permtuations to use if emperical_CSR is `TRUE` and exact CSR not calculable
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -84,7 +84,7 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       mark2 = NULL,
                                       edge_correction,
                                       breaks = NULL,
-                                      permute_CSR = FALSE,
+                                      emperical_CSR = FALSE,
                                       permutations = 1000
                                       ){
   if(!inherits(mxFDAobject, "mxFDA"))
@@ -112,11 +112,11 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
   markvar_levels = length(unique(mxFDAobject@Spatial[[markvar]]))
 
   #check if enough marks to permute with if needed
-  permute_CSR = can_permute(extract_func, summary_func, permute_CSR, markvar_levels)
+  emperical_CSR = can_permute(extract_func, summary_func, emperical_CSR, markvar_levels)
 
   df_nest = mxFDAobject@Spatial %>%
     select(all_of(mxFDAobject@sample_key), x, y, all_of(markvar)) %>%
-    #need all points to be sent to sub functions to calculate sample specific CSR when permute_CSR == TRUE
+    #need all points to be sent to sub functions to calculate sample specific CSR when emperical_CSR == TRUE
     #filter(get(markvar) %in% c(mark1, mark2)) %>%
     nest(data = c(x, y, all_of(markvar)))
 
@@ -128,7 +128,7 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                     func = summary_func,
                                     edge_correction = edge_correction,
                                     breaks = breaks,
-                                    permute_CSR = permute_CSR,
+                                    emperical_CSR = emperical_CSR,
                                     permutations = permutations,
                                     .progress = TRUE)) %>%
      select(-data) %>%
