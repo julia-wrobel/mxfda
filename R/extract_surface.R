@@ -75,6 +75,7 @@ extract_surface = function(mxFDAobject,
   if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@functional_cox$Kest[[model]]
   if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) fit = mxFDAobject@functional_cox$Gest[[model]]
   if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) fit = mxFDAobject@functional_cox$Lest[[model]]
+  if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) fit = mxFDAobject@functional_cox$entropy[[model]]
 
   #model class
   mod_class = class(fit)

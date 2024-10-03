@@ -59,6 +59,8 @@ run_fpca = function(mxFDAobject,
   #get data
   mxfundata = get_data(mxFDAobject, metric, 'summaries') %>%
     filter_data(filter_cols)
+  #entropy produces infinite values - converting to NA
+  mxfundata[[value]][is.infinite(mxfundata[[value]])] = NA
 
   computed_vals = mxfundata %>%
     dplyr::group_by(dplyr::across(!!mxFDAobject@sample_key)) %>%
@@ -120,6 +122,7 @@ run_fpca = function(mxFDAobject,
   if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_pca`$Kest = fpca_dat
   if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`functional_pca`$Gest = fpca_dat
   if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`functional_pca`$Lest = fpca_dat
+  if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) mxFDAobject@`functional_pca`$entropy = fpca_dat
 
   return(mxFDAobject)
 

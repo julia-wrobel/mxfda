@@ -10,7 +10,6 @@
 #' @param mark1 Character string that denotes first cell type of interest.
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
-#' @param breaks integer value for number of breaks in r_vec. Used only for entropy measure
 #' @param emperical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation. If there are not enough levels present in `markvar` column for permutations, the theoretical will be used.
 #' @param permutations integer for the number of permtuations to use if emperical_CSR is `TRUE` and exact CSR not calculable
 #'
@@ -83,7 +82,6 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       mark1,
                                       mark2 = NULL,
                                       edge_correction,
-                                      breaks = NULL,
                                       emperical_CSR = FALSE,
                                       permutations = 1000
                                       ){
@@ -92,6 +90,9 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
   #need spatial data to calculate spatial summary functions
   if(nrow(mxFDAobject@Spatial) == 0)
     stop("No summary function to be calculated - missing spatial")
+  #if running entropy, break out and do different
+  if(identical(summary_func, entropy))
+    stop("To calculate entropy, please use `extract_entropy()`")
   #check correction methods
   k_l_correction = c("border", "isotropic", "Ripley", "translate")
   gest_correction = c("rs", "km", "han")
@@ -120,19 +121,18 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
     #filter(get(markvar) %in% c(mark1, mark2)) %>%
     nest(data = c(x, y, all_of(markvar)))
 
-   ndat = df_nest %>% mutate(sumfuns = map(df_nest$data, extract_func,
-                                    markvar = markvar,
-                                    mark1 = mark1,
-                                    mark2 = mark2,
-                                    r_vec = r_vec,
-                                    func = summary_func,
-                                    edge_correction = edge_correction,
-                                    breaks = breaks,
-                                    emperical_CSR = emperical_CSR,
-                                    permutations = permutations,
-                                    .progress = TRUE)) %>%
-     select(-data) %>%
-     unnest(sumfuns)
+  ndat = df_nest %>% mutate(sumfuns = map(df_nest$data, extract_func,
+                                          markvar = markvar,
+                                          mark1 = mark1,
+                                          mark2 = mark2,
+                                          r_vec = r_vec,
+                                          func = summary_func,
+                                          edge_correction = edge_correction,
+                                          emperical_CSR = emperical_CSR,
+                                          permutations = permutations,
+                                          .progress = TRUE)) %>%
+    select(-data) %>%
+    unnest(sumfuns)
 
    cell_counts = mxFDAobject@Spatial %>%
      dplyr::filter(get(markvar) %in% !!c(mark1, mark2)) %>%
@@ -152,7 +152,6 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
      if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`bivariate_summaries`$Kcross = ndat
      if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`bivariate_summaries`$Lcross = ndat
      if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`bivariate_summaries`$Gcross = ndat
-     if(deparse(substitute(summary_func)) == "entropy") mxFDAobject@`bivariate_summaries`$entropy = ndat
    }
    return(mxFDAobject)
 }

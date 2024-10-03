@@ -11,7 +11,6 @@
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param func Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively, or entropy from Vu et al, 2023.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
-#' @param breaks an integer for the number of breaks used for entropy
 #' @param emperical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.
 #' @param permutations integer for the number of permtuations to use if emperical_CSR is `TRUE` and exact CSR not calculable
 #'
@@ -48,13 +47,12 @@
 #'
 #' @export
 bivariate = function(mximg,
-                             markvar,
-                             mark1,
-                             mark2,
-                             r_vec,
-                             func = c(Kcross, Lcross, Gcross, entropy),
-                             edge_correction,
-                             breaks = NULL,
+                     markvar,
+                     mark1,
+                     mark2,
+                     r_vec,
+                     func = c(Kcross, Lcross, Gcross, entropy),
+                     edge_correction,
                      emperical_CSR = FALSE,
                      permutations = 1000){
   #### note to switch edge correction based on choice of func, this should be automated
@@ -71,9 +69,7 @@ bivariate = function(mximg,
   # create ppp object
   pp_obj = ppp(mximg[["x"]], mximg[["y"]], window = w,
                marks = as.factor(mximg[[markvar]]), checkdup = FALSE)
-  if(!is.null(breaks)){
-    r_vec = exp(seq(log(0.05*max(r_vec)), log(max(r_vec)), length.out = breaks))
-  }
+
   # estimate L using spatstat
   sumfun = func(pp_obj,
                 mark1,
@@ -103,15 +99,10 @@ bivariate = function(mximg,
 
   }
 
-  if(is.null(breaks)){
-    df = data.frame(sumfun) %>%
-      select(r, sumfun = all_of(edge_correction), csr = theo) %>%
-      mutate(fundiff = sumfun - csr) %>%
-      select(r, sumfun, csr, fundiff)
-    return(df)
-  } else {
-    return(data.frame(sumfun))
-  }
+  df = data.frame(sumfun) %>%
+    select(r, sumfun = all_of(edge_correction), csr = theo) %>%
+    mutate(fundiff = sumfun - csr) %>%
+    select(r, sumfun, csr, fundiff)
 
 
 

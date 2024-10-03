@@ -23,6 +23,7 @@ S4 object of class \code{mxFDA}
 \item{sample_key}{slot of class \code{character} that corresponds to a column both in the \code{Metadata} and \code{Spatial} slots that links samples to characteristics}
 \item{univariate_summaries}{slot of class \code{list} where univariate summary functions calculated on \code{Spatial} would be stored}
 \item{bivariate_summaries}{slot of class \code{list} where bivariate summary functions calculated on \code{Spatial} would be stored}
+\item{multiivariate_summaries}{slot of class \code{list} where entropy summary functions calculated on \code{Spatial} would be stored}
 \item{functional_pca}{slot of class \code{list} where FPCA results are stored}
 \item{functional_mpca}{slot of class \code{list} where MFPCA results are stored}
 \item{functional_cox}{slot of class \code{list} where functional cox model results are stored}

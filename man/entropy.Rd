@@ -4,18 +4,14 @@
 \alias{entropy}
 \title{Entropy}
 \usage{
-entropy(X, i, j, r_vec, correction)
+entropy(df, r_vec, markvar)
 }
 \arguments{
-\item{X}{object of class \code{ppp} from spatstat with 2 marks}
-
-\item{i}{ignored}
-
-\item{j}{ignored}
+\item{df}{data frame with x and y columns, along with a column for point marks}
 
 \item{r_vec}{vector of length wanted for breaks (will be rescaled) with max value at max for measuring entropy}
 
-\item{correction}{ignored}
+\item{markvar}{The name of the variable that denotes cell type(s) of interest. Character.}
 }
 \value{
 data frame with entropy calculated for \code{length(r_vec)} bins within 0 to \code{max(r_vec)}

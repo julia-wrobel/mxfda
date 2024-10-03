@@ -21,6 +21,7 @@ get_data = function(mxFDAobject, what, type){
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`functional_mpca`$Kest
     if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`functional_mpca`$Gest
     if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`functional_mpca`$Lest
+    if(grepl("[M|m]", what[1]) & grepl("[E|e]", what[2])) dat = mxFDAobject@`functional_mpca`$entropy
   } else if(grepl("fpca", type, ignore.case = TRUE)){
     if(grepl("[B|b]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`functional_pca`$Kcross
     if(grepl("[B|b]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`functional_pca`$Gcross
@@ -28,6 +29,7 @@ get_data = function(mxFDAobject, what, type){
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`functional_pca`$Kest
     if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`functional_pca`$Gest
     if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`functional_pca`$Lest
+    if(grepl("[M|m]", what[1]) & grepl("[E|e]", what[2])) dat = mxFDAobject@`functional_pca`$entropy
   } else if(grepl("summ", type, ignore.case = TRUE)){
     if(grepl("[B|b]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`bivariate_summaries`$Kcross
     if(grepl("[B|b]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`bivariate_summaries`$Gcross
@@ -35,6 +37,7 @@ get_data = function(mxFDAobject, what, type){
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`univariate_summaries`$Kest
     if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`univariate_summaries`$Gest
     if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`univariate_summaries`$Lest
+    if(grepl("[M|m]", what[1]) & grepl("[E|e]", what[2])) dat = mxFDAobject@`multivariate_summaries`$entropy
   }
   return(dat)
 }
@@ -98,12 +101,16 @@ filter_data = function(dat, filter_columns){
 #' @export
 #'
 metric.exists = function(mxFDAobject, metric){
-  if(grepl("[U|u]", metric[1])){
+  if(grepl("[U|u]",  substr(metric[1], 1,1))){
     if(!grepl(metric[2], names(mxFDAobject@univariate_summaries), ignore.case = TRUE))
       stop("Missing summary function provided")
   }
-  if(grepl("[B|b]", metric[1])){
+  if(grepl("[B|b]",  substr(metric[1], 1,1))){
     if(!grepl(metric[2], names(mxFDAobject@bivariate_summaries), ignore.case = TRUE))
+      stop("Missing summary function provided")
+  }
+  if(grepl("[M|m]",  substr(metric[1], 1,1))){
+    if(!grepl(metric[2], names(mxFDAobject@multivariate_summaries), ignore.case = TRUE))
       stop("Missing summary function provided")
   }
 }
@@ -177,9 +184,9 @@ can_permute = function(extract_func, summary_func, permute_CSR, markvar_levels){
         }
       }
     } else {
-      if(identical(Kest, summary_func)){
+      if(identical(Kcross, summary_func)){
         message("Using Theoretical Complete Spatial Randomness for Bivariate Ripley's K")
-      } else if(identical(Gest, summary_func)){
+      } else if(identical(Gcross, summary_func)){
         message("Using Theoretical Complete Spatial Randomness for Bivariate Nearest Neighbor G")
       } else {
         message("Using Theoretical Complete Spatial Randomness for Bivariate Ripley's K - L Transform")

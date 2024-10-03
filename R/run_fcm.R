@@ -105,6 +105,7 @@ run_fcm <- function(mxFDAobject,
   if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_cox`$Kest[[model_name]] = fit_fcm
   if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`functional_cox`$Gest[[model_name]] = fit_fcm
   if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`functional_cox`$Lest[[model_name]] = fit_fcm
+  if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) mxFDAobject@`functional_cox`$entropy[[model_name]] = fit_fcm
 
  return(mxFDAobject)
 }

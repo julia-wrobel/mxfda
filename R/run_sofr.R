@@ -129,6 +129,7 @@ run_sofr <- function(mxFDAobject,
   if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`scalar_on_functional`$Kest[[model_name]] = fit_sofr
   if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`scalar_on_functional`$Gest[[model_name]] = fit_sofr
   if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`scalar_on_functional`$Lest[[model_name]] = fit_sofr
+  if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) mxFDAobject@`scalar_on_functional`$entropy[[model_name]] = fit_sofr
 
  return(mxFDAobject)
 }

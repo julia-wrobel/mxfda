@@ -48,6 +48,7 @@ extract_model = function(mxFDAobject, metric, type, model_name){
     if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@functional_cox$Kest[[model_name]]
     if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) fit = mxFDAobject@functional_cox$Gest[[model_name]]
     if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) fit = mxFDAobject@functional_cox$Lest[[model_name]]
+    if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) fit = mxFDAobject@`functional_cox`$entropy[[model_name]]
   } else if(type == 'mcox'){
     #get mixed effects
     if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@functional_mcox$Kcross[[model_name]]
@@ -56,6 +57,7 @@ extract_model = function(mxFDAobject, metric, type, model_name){
     if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@functional_mcox$Kest[[model_name]]
     if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) fit = mxFDAobject@functional_mcox$Gest[[model_name]]
     if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) fit = mxFDAobject@functional_mcox$Lest[[model_name]]
+    if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) fit = mxFDAobject@functional_mcox$entropy[[model_name]]
   } else if(type == 'sofr'){
     #get scalar on functional regression
     if(grepl("[B|b]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@scalar_on_functional$Kcross[[model_name]]
@@ -64,6 +66,7 @@ extract_model = function(mxFDAobject, metric, type, model_name){
     if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) fit = mxFDAobject@scalar_on_functional$Kest[[model_name]]
     if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) fit = mxFDAobject@scalar_on_functional$Gest[[model_name]]
     if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) fit = mxFDAobject@scalar_on_functional$Lest[[model_name]]
+    if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) fit = mxFDAobject@scalar_on_functional$entropy[[model_name]]
   }
 
   if(is.null(fit))

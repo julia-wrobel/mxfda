@@ -10,7 +10,6 @@
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param func Spatial summary function to calculate. Options are c(Kest, Lest, Gest) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
-#' @param breaks ignored
 #' @param emperical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.
 #' @param permutations integer for the number of permtuations to use if emperical_CSR is `TRUE` and exact CSR not calculable
 #'
@@ -44,7 +43,6 @@ univariate = function(mximg,
                       r_vec,
                       func = c(Kest, Lest, Gest),
                       edge_correction,
-                      breaks = NULL,
                       emperical_CSR = FALSE,
                       permutations = 1000){
   #### note to switch edge correction based on choice of func, this should be automated
