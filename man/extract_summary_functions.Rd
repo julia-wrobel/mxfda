@@ -13,7 +13,8 @@ extract_summary_functions(
   mark1,
   mark2 = NULL,
   edge_correction,
-  breaks = NULL
+  empirical_CSR = FALSE,
+  permutations = 1000
 )
 }
 \arguments{
@@ -33,7 +34,9 @@ extract_summary_functions(
 
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")}
 
-\item{breaks}{integer value for number of breaks in r_vec. Used only for entropy measure}
+\item{empirical_CSR}{logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation. If there are not enough levels present in \code{markvar} column for permutations, the theoretical will be used.}
+
+\item{permutations}{integer for the number of permtuations to use if empirical_CSR is \code{TRUE} and exact CSR not calculable}
 }
 \value{
 an object of class \code{mxFDA} containing the corresponding spatial summary function slot filled. See \code{\link[=make_mxfda]{make_mxfda()}} for object structure details.
@@ -43,6 +46,13 @@ Function to extract spatial summary functions from the \code{Spatial} slot of an
 }
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
+
+Complete spatial randomness (CSR) is the estimation or measure of a spatial summary function when the points or cells in a sample are randomly distributed,
+following no clustering or dispersion pattern. Some samples do have artifacts that may influence what CSR is under the distribution of points as they
+are found in the sample such as large regions of missing points or possibly in the case of tissue sections, necrotic tissue where cells are dead. Theoretical
+CSR requires points have an equal chance of occurring anywhere in the sample that these artifacts violate, necessitating the need to estimate or
+calculate what this CSR would be for each sample independently. Previously Wilson et al. had demonstrated cases in which sample-specific
+CSR was important over the use of the theoretical in calculating how much the observed deviates from expected.
 }
 \examples{
 #load ovarian FDA object
@@ -62,6 +72,18 @@ Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 Fast covariance estimation for high-dimensional functional data.
 \emph{Statistics and Computing}, 26, 409-421.
 DOI: 10.1007/s11222-014-9485-x.
+
+Wilson, C., Soupir, A. C., Thapa, R., Creed, J., Nguyen, J., Segura, C. M.,
+Gerke, T., Schildkraut, J. M., Peres, L. C., & Fridley, B. L. (2022).
+Tumor immune cell clustering and its association with survival in African
+American women with ovarian cancer. PLoS computational biology, 18(3),
+e1009900. https://doi.org/10.1371/journal.pcbi.1009900
+
+Creed, J. H., Wilson, C. M., Soupir, A. C., Colin-Leitzinger, C. M., Kimmel, G. J.,
+Ospina, O. E., Chakiryan, N. H., Markowitz, J., Peres, L. C., Coghill, A., & Fridley, B. L. (2021).
+spatialTIME and iTIME: R package and Shiny application for visualization and analysis of
+immunofluorescence data. \emph{Bioinformatics} (Oxford, England), 37(23), 4584–4586.
+https://doi.org/10.1093/bioinformatics/btab757
 
 \code{\link[spatstat.explore:Kest]{spatstat.explore::Kest()}}
 

@@ -15,6 +15,7 @@ An mxFDA object with augmented ovarian cancer multiplex immunofluorescence data,
 \item{sample_key}{column in both \code{Metadata} and \code{Spatial} that is a 1:1 with the samples (unique per sample)}
 \item{univariate_summaries}{univariate summary slot with nearest neighbor G calculared}
 \item{bivariate_summaries}{empty slot available for bivariate summaries}
+\item{multiivariate_summaries}{empty slot available for multivariate summaries}
 \item{functional_pca}{empty slot for functional PCA data of summaries}
 \item{functional_cox}{empty slot for functional models}
 }

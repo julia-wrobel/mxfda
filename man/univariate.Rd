@@ -12,7 +12,8 @@ univariate(
   r_vec,
   func = c(Kest, Lest, Gest),
   edge_correction,
-  breaks = NULL
+  empirical_CSR = FALSE,
+  permutations = 1000
 )
 }
 \arguments{
@@ -31,7 +32,9 @@ Should have variables \code{x} and \code{y} to denote x and y spatial locations 
 
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")}
 
-\item{breaks}{ignored}
+\item{empirical_CSR}{logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.}
+
+\item{permutations}{integer for the number of permtuations to use if empirical_CSR is \code{TRUE} and exact CSR not calculable}
 }
 \value{
 A \code{data.frame} containing:
@@ -46,6 +49,15 @@ Internal function called by \code{\link[=extract_summary_functions]{extract_summ
 \details{
 \ifelse{html}{\href{https://lifecycle.r-lib.org/articles/stages.html#stable}{\figure{lifecycle-stable.svg}{options: alt='[Stable]'}}}{\strong{[Stable]}}
 }
+\references{
+Creed, J. H., Wilson, C. M., Soupir, A. C., Colin-Leitzinger, C. M., Kimmel, G. J.,
+Ospina, O. E., Chakiryan, N. H., Markowitz, J., Peres, L. C., Coghill, A., & Fridley, B. L. (2021).
+spatialTIME and iTIME: R package and Shiny application for visualization and analysis of
+immunofluorescence data. \emph{Bioinformatics} (Oxford, England), 37(23), 4584–4586.
+https://doi.org/10.1093/bioinformatics/btab757
+}
 \author{
 Julia Wrobel \email{julia.wrobel@emory.edu}
+
+Alex Soupir \email{alex.soupir@moffitt.org}
 }

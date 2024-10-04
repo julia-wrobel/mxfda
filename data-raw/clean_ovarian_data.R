@@ -68,7 +68,7 @@ ovarian_FDA = make_mxfda(clinical,
 
 #extract gfunctions from the ovarian data
 ovarian_FDA = extract_summary_functions(ovarian_FDA,
-                                        extract_func = extract_univariate,
+                                        extract_func = univariate,
                                         summary_func = Gest,
                                         r_vec = seq(0, 50, by = 1),
                                         edge_correction = "rs",

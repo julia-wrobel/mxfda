@@ -1,4 +1,4 @@
-# mxFDA <img src="man/figures/logo_small.png" align="right" width="120" />
+# mxfda <img src="docs/reference/figures/logo.png" align="right" />
 
 <!-- badges: start -->
 [![](https://cranlogs.r-pkg.org/badges/mxfda)](https://CRAN.R-project.org/package=mxfda)

@@ -24,8 +24,10 @@ summary.mxFDA = function(object, ...){
   #spatial summaries
   uni_sums = names(object@univariate_summaries)
   bi_sums = names(object@bivariate_summaries)
+  mi_sums = names(object@multivariate_summaries)
   cat("\tUnivariate Summaries: ", ifelse(length(uni_sums) == 0, "None", paste0(uni_sums, collapse =  ", ")), "\n", sep = "")
   cat("\tBivariate Summaries: ", ifelse(length(bi_sums) == 0, "None", paste0(bi_sums, collapse =  ", ")), "\n", sep = "")
+  cat("\tMultivariate Summaries: ", ifelse(length(mi_sums) == 0, "None", paste0(mi_sums, collapse =  ", ")), "\n", sep = "")
   #any FPCs calculated
   if(length(object@functional_pca) == 0){
     cat("FPCs not yet calculated\n", sep = "")

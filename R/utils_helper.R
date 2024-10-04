@@ -21,6 +21,7 @@ get_data = function(mxFDAobject, what, type){
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`functional_mpca`$Kest
     if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`functional_mpca`$Gest
     if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`functional_mpca`$Lest
+    if(grepl("[M|m]", what[1]) & grepl("[E|e]", what[2])) dat = mxFDAobject@`functional_mpca`$entropy
   } else if(grepl("fpca", type, ignore.case = TRUE)){
     if(grepl("[B|b]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`functional_pca`$Kcross
     if(grepl("[B|b]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`functional_pca`$Gcross
@@ -28,6 +29,7 @@ get_data = function(mxFDAobject, what, type){
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`functional_pca`$Kest
     if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`functional_pca`$Gest
     if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`functional_pca`$Lest
+    if(grepl("[M|m]", what[1]) & grepl("[E|e]", what[2])) dat = mxFDAobject@`functional_pca`$entropy
   } else if(grepl("summ", type, ignore.case = TRUE)){
     if(grepl("[B|b]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`bivariate_summaries`$Kcross
     if(grepl("[B|b]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`bivariate_summaries`$Gcross
@@ -35,6 +37,7 @@ get_data = function(mxFDAobject, what, type){
     if(grepl("[U|u]", what[1]) & grepl("[K|k]", what[2])) dat = mxFDAobject@`univariate_summaries`$Kest
     if(grepl("[U|u]", what[1]) & grepl("[G|g]", what[2])) dat = mxFDAobject@`univariate_summaries`$Gest
     if(grepl("[U|u]", what[1]) & grepl("[L|l]", what[2])) dat = mxFDAobject@`univariate_summaries`$Lest
+    if(grepl("[M|m]", what[1]) & grepl("[E|e]", what[2])) dat = mxFDAobject@`multivariate_summaries`$entropy
   }
   return(dat)
 }
@@ -98,12 +101,16 @@ filter_data = function(dat, filter_columns){
 #' @export
 #'
 metric.exists = function(mxFDAobject, metric){
-  if(grepl("[U|u]", metric[1])){
+  if(grepl("[U|u]",  substr(metric[1], 1,1))){
     if(!grepl(metric[2], names(mxFDAobject@univariate_summaries), ignore.case = TRUE))
       stop("Missing summary function provided")
   }
-  if(grepl("[B|b]", metric[1])){
+  if(grepl("[B|b]",  substr(metric[1], 1,1))){
     if(!grepl(metric[2], names(mxFDAobject@bivariate_summaries), ignore.case = TRUE))
+      stop("Missing summary function provided")
+  }
+  if(grepl("[M|m]",  substr(metric[1], 1,1))){
+    if(!grepl(metric[2], names(mxFDAobject@multivariate_summaries), ignore.case = TRUE))
       stop("Missing summary function provided")
   }
 }
@@ -122,4 +129,69 @@ metric.exists = function(mxFDAobject, metric){
 one_zero = function(vec){
   vec = unique(vec)
   length(setdiff(vec, c(0, 1))) == 0
+}
+
+#' Can Permute Checker
+#'
+#' @param extract_func univariate or bivariate function
+#' @param summary_func summary function
+#' @param permute_CSR whether or not user wants to permute
+#' @param markvar_levels how many levels are in the column the user wants for column of interest
+#'
+#' @return `TRUE` or `FALSE` on if permutations are possible
+#' @keywords internal
+#' @export
+#'
+can_permute = function(extract_func, summary_func, permute_CSR, markvar_levels){
+  if(identical(extract_func, univariate)){ #if univariate
+    if(permute_CSR == TRUE){
+      if(markvar_levels == 1){ #only mark of interest - cannot permute
+        message("Only one level in the 'markvar' column. Not able to permute. Using theoretical CSR.")
+        return(FALSE)
+      } else if(markvar_levels > 1){ #more marks than 1 - can permute
+        if(identical(Kest, summary_func)){
+          message("Using Exact Complete Spatial Randomness for Ripley's K")
+        } else if(identical(Gest, summary_func)){
+          message("Using Permutations for Complete Spatial Randomness for Nearest Neighbor G")
+        } else {
+          message("Using Permutations for Complete Spatial Randomness for Ripley's K - L Transform")
+        }
+      }
+    } else {
+      if(identical(Kest, summary_func)){
+        message("Using Theoretical Complete Spatial Randomness for Ripley's K")
+      } else if(identical(Gest, summary_func)){
+        message("Using Theoretical Complete Spatial Randomness for Nearest Neighbor G")
+      } else {
+        message("Using Theoretical Complete Spatial Randomness for Ripley's K - L Transform")
+      }
+    }
+    #make sure there are at least 2 levels in the markvar column
+  } else if(identical(extract_func, bivariate)){
+    if(permute_CSR == TRUE){
+      if(markvar_levels == 2){ #only marks of interest (2) - cannot permute
+        message("Only two levels in the 'markvar' column. Not able to permute. Using theoretical CSR.")
+        return(FALSE)
+      } else if(markvar_levels > 2){ #more marks than 1 - can permute
+        if(identical(Kcross, summary_func)){
+          message("Using Exact Complete Spatial Randomness for Bivariate Ripley's K")
+        } else {
+          if(identical(Gcross, summary_func)){
+            message("Using Permutations for Complete Spatial Randomness for Bivariate Nearest Neighbor G")
+          } else {
+            message("Using Permutations for Complete Spatial Randomness for Bivariate Ripley's K - L Transform")
+          }
+        }
+      }
+    } else {
+      if(identical(Kcross, summary_func)){
+        message("Using Theoretical Complete Spatial Randomness for Bivariate Ripley's K")
+      } else if(identical(Gcross, summary_func)){
+        message("Using Theoretical Complete Spatial Randomness for Bivariate Nearest Neighbor G")
+      } else {
+        message("Using Theoretical Complete Spatial Randomness for Bivariate Ripley's K - L Transform")
+      }
+    }
+  }
+  return(permute_CSR)
 }

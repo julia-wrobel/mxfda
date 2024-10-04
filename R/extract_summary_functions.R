@@ -10,19 +10,41 @@
 #' @param mark1 Character string that denotes first cell type of interest.
 #' @param mark2 Character string that denotes second cell type of interest for calculating bivariate summary statistics. Not used when calculating univariate statistics.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kest and Lest choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gest choose one of c("rs", "km", "han")
-#' @param breaks integer value for number of breaks in r_vec. Used only for entropy measure
+#' @param empirical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation. If there are not enough levels present in `markvar` column for permutations, the theoretical will be used.
+#' @param permutations integer for the number of permtuations to use if empirical_CSR is `TRUE` and exact CSR not calculable
 #'
 #' @details `r lifecycle::badge('stable')`
+#'
+#' Complete spatial randomness (CSR) is the estimation or measure of a spatial summary function when the points or cells in a sample are randomly distributed,
+#' following no clustering or dispersion pattern. Some samples do have artifacts that may influence what CSR is under the distribution of points as they
+#' are found in the sample such as large regions of missing points or possibly in the case of tissue sections, necrotic tissue where cells are dead. Theoretical
+#' CSR requires points have an equal chance of occurring anywhere in the sample that these artifacts violate, necessitating the need to estimate or
+#' calculate what this CSR would be for each sample independently. Previously Wilson et al. had demonstrated cases in which sample-specific
+#' CSR was important over the use of the theoretical in calculating how much the observed deviates from expected.
 #'
 #' @return an object of class `mxFDA` containing the corresponding spatial summary function slot filled. See [make_mxfda()] for object structure details.
 #'
 #' @author Julia Wrobel \email{`r juliawrobel_email`}
 #' @author Alex Soupir \email{`r alexsoupir_email`}
 #'
-#' @references Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
+#' @references
+#'
+#' Xiao, L., Ruppert, D., Zipunnikov, V., and Crainiceanu, C. (2016).
 #' Fast covariance estimation for high-dimensional functional data.
 #' \emph{Statistics and Computing}, 26, 409-421.
 #' DOI: 10.1007/s11222-014-9485-x.
+#'
+#' Wilson, C., Soupir, A. C., Thapa, R., Creed, J., Nguyen, J., Segura, C. M.,
+#' Gerke, T., Schildkraut, J. M., Peres, L. C., & Fridley, B. L. (2022).
+#' Tumor immune cell clustering and its association with survival in African
+#' American women with ovarian cancer. PLoS computational biology, 18(3),
+#' e1009900. https://doi.org/10.1371/journal.pcbi.1009900
+#'
+#' Creed, J. H., Wilson, C. M., Soupir, A. C., Colin-Leitzinger, C. M., Kimmel, G. J.,
+#' Ospina, O. E., Chakiryan, N. H., Markowitz, J., Peres, L. C., Coghill, A., & Fridley, B. L. (2021).
+#' spatialTIME and iTIME: R package and Shiny application for visualization and analysis of
+#' immunofluorescence data. \emph{Bioinformatics} (Oxford, England), 37(23), 4584–4586.
+#' https://doi.org/10.1093/bioinformatics/btab757
 #'
 #' [spatstat.explore::Kest()]
 #'
@@ -60,13 +82,17 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
                                       mark1,
                                       mark2 = NULL,
                                       edge_correction,
-                                      breaks = NULL
+                                      empirical_CSR = FALSE,
+                                      permutations = 1000
                                       ){
   if(!inherits(mxFDAobject, "mxFDA"))
     stop("Object must be of class `mxFDA`.")
   #need spatial data to calculate spatial summary functions
   if(nrow(mxFDAobject@Spatial) == 0)
     stop("No summary function to be calculated - missing spatial")
+  #if running entropy, break out and do different
+  if(identical(summary_func, entropy))
+    stop("To calculate entropy, please use `extract_entropy()`")
   #check correction methods
   k_l_correction = c("border", "isotropic", "Ripley", "translate")
   gest_correction = c("rs", "km", "han")
@@ -84,21 +110,29 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
       stop("edge correction must match summary function")
   }
 
+  markvar_levels = length(unique(mxFDAobject@Spatial[[markvar]]))
+
+  #check if enough marks to permute with if needed
+  empirical_CSR = can_permute(extract_func, summary_func, empirical_CSR, markvar_levels)
+
   df_nest = mxFDAobject@Spatial %>%
     select(all_of(mxFDAobject@sample_key), x, y, all_of(markvar)) %>%
-    filter(get(markvar) %in% c(mark1, mark2)) %>%
+    #need all points to be sent to sub functions to calculate sample specific CSR when empirical_CSR == TRUE
+    #filter(get(markvar) %in% c(mark1, mark2)) %>%
     nest(data = c(x, y, all_of(markvar)))
 
-   ndat = df_nest %>% mutate(sumfuns = map(df_nest$data, extract_func,
-                                    markvar = markvar,
-                                    mark1 = mark1,
-                                    mark2 = mark2,
-                                    r_vec = r_vec,
-                                    func = summary_func,
-                                    edge_correction = edge_correction,
-                                    breaks = breaks)) %>%
-     select(-data) %>%
-     unnest(sumfuns)
+  ndat = df_nest %>% mutate(sumfuns = map(df_nest$data, extract_func,
+                                          markvar = markvar,
+                                          mark1 = mark1,
+                                          mark2 = mark2,
+                                          r_vec = r_vec,
+                                          func = summary_func,
+                                          edge_correction = edge_correction,
+                                          empirical_CSR = empirical_CSR,
+                                          permutations = permutations,
+                                          .progress = TRUE)) %>%
+    select(-data) %>%
+    unnest(sumfuns)
 
    cell_counts = mxFDAobject@Spatial %>%
      dplyr::filter(get(markvar) %in% !!c(mark1, mark2)) %>%
@@ -118,7 +152,6 @@ extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),
      if(deparse(substitute(summary_func)) == "Kcross") mxFDAobject@`bivariate_summaries`$Kcross = ndat
      if(deparse(substitute(summary_func)) == "Lcross") mxFDAobject@`bivariate_summaries`$Lcross = ndat
      if(deparse(substitute(summary_func)) == "Gcross") mxFDAobject@`bivariate_summaries`$Gcross = ndat
-     if(deparse(substitute(summary_func)) == "entropy") mxFDAobject@`bivariate_summaries`$entropy = ndat
    }
    return(mxFDAobject)
 }

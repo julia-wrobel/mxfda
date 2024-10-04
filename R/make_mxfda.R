@@ -16,6 +16,7 @@
 #' \item{sample_key}{slot of class `character` that corresponds to a column both in the `Metadata` and `Spatial` slots that links samples to characteristics}
 #' \item{univariate_summaries}{slot of class `list` where univariate summary functions calculated on `Spatial` would be stored}
 #' \item{bivariate_summaries}{slot of class `list` where bivariate summary functions calculated on `Spatial` would be stored}
+#' \item{multiivariate_summaries}{slot of class `list` where entropy summary functions calculated on `Spatial` would be stored}
 #' \item{functional_pca}{slot of class `list` where FPCA results are stored}
 #' \item{functional_mpca}{slot of class `list` where MFPCA results are stored}
 #' \item{functional_cox}{slot of class `list` where functional cox model results are stored}
@@ -75,6 +76,7 @@ methods::setClass("mxFDA", slots = list(
   sample_key = "character",
   `univariate_summaries` = "list", #G, K, L
   `bivariate_summaries` = "list", #G, K, L
+  `multivariate_summaries` = "list", #entropy
   `functional_pca` = "list", #one for 'regular'
   `functional_mpca` = "list", #one for mixed effects (?)
   `functional_cox` = "list",

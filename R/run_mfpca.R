@@ -53,6 +53,8 @@ run_mfpca = function(mxFDAobject,
   metric.exists(mxFDAobject, metric)
   #get data
   mxfundata = get_data(mxFDAobject, metric, 'summaries')
+  #entropy produces infinite values - converting to NA
+  mxfundata[[value]][is.infinite(mxfundata[[value]])] = NA
 
   #add subject column
   mxfundata = mxFDAobject@Metadata %>%
@@ -158,6 +160,7 @@ run_mfpca = function(mxFDAobject,
   if(grepl("[U|u]", metric[1]) & grepl("[K|k]", metric[2])) mxFDAobject@`functional_mpca`$Kest = fpca_dat
   if(grepl("[U|u]", metric[1]) & grepl("[G|g]", metric[2])) mxFDAobject@`functional_mpca`$Gest = fpca_dat
   if(grepl("[U|u]", metric[1]) & grepl("[L|l]", metric[2])) mxFDAobject@`functional_mpca`$Lest = fpca_dat
+  if(grepl("[M|m]", metric[1]) & grepl("[E|e]", metric[2])) mxFDAobject@`functional_mpca`$entropy = fpca_dat
 
   return(mxFDAobject)
 
