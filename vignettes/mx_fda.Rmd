@@ -166,6 +166,53 @@ plot(mxFDAobject, y = "fundiff", what = "bi g") +
   geom_hline(yintercept = 0, color = "red", linetype = 2)
 ```
 
+
+# Entropy
+
+Below we show how to calculate spatial summary functions using a multivariate metrics based on spatial entropy from @vu2023funspace.  Briefly, this approach measures the heterogeneity in the tissue sample by considering all cell types in a given radius.
+
+This framework is able to capture the diversity in cellular composition, such as similar proportions across cell types or dominance of a single type, at a specific distance range.Spatial patterns, including clustered, independent, or regular, among cell types can also be acquired. If cells of different types are randomly scattered on an image, the spatial entropy at any given distance is close to zero. The spatial entropy deviates from zero if spatial patterns of cell types in a given local neighborhood are different from the global pattern. See @vu2023funspace for a mathematical representation of this index.
+
+Below we calculate spatial summary functions based on entropy in the lung cancer dataset.
+
+```{r, eval = FALSE}
+#load in lung DF
+data(lung_df)
+#filter to only the clinical information
+clinical = lung_df %>%
+  select(image_id, patient_id, patientImage_id, gender, age, survival_days, survival_status, stage) %>%
+  distinct()
+#filter to cell information
+spatial = lung_df %>%
+  select(-image_id, -gender, -age, -survival_days, -survival_status, -stage)%>%
+  mutate(phenotype = case_when(phenotype_cd8 == "CD8+" ~ "T-cell",
+                               phenotype_cd14 == "CD14+" ~ "macrophage",
+                               TRUE ~ "other"),
+         phenotype = factor(phenotype))
+#create the mxfda object
+mxFDAobject = make_mxfda(metadata = clinical,
+                         spatial = spatial,
+                         subject_key = "patient_id",
+                         sample_key = "patientImage_id")
+#run entropy
+mxFDAobject = extract_summary_functions(mxFDAobject,
+                                        extract_func = bivariate,
+                                        summary_func = entropy,
+                                        r_vec = seq(0, 100, by = 1),
+                                        edge_correction = "iso",
+                                        markvar = "phenotype",
+                                        mark1 = "T-cell",
+                                        mark2 = "macrophage")
+#plot
+mxFDAobject@bivariate_summaries$entropy %>%
+  ggplot() +
+  geom_line(aes(x = r, y = spatial_entropy,
+                group = patientImage_id, color = patientImage_id),
+            alpha = 0.2) +
+  theme(legend.position = "none")
+```
+
+
 # Exploring the S4 object
 
 Another useful function is `?summary.mxFDA` which feeds into the `summary()` method. Either typing the name of the object or wrapping it in the summary function will provide information like the number of subjects, samples, if spatial summary functions have been calculated, and functional data analyses that have been run.

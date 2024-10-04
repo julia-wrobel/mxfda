@@ -52,6 +52,8 @@ plot(ovarian_FDA, y = "fundiff", what = "uni g") +
 ```
 
 
+The plot shows the G-function values as a function of radius (r) for multiple immune cell samples, where each black line is an individual sample. The red dashed line at g = 0 indicates a baseline where no spatial clustering or dispersion is observed. Deviations from this baseline highlight potential patterns of clustering or dispersion of immune cells at varying radii. 
+
 ## Functional regression models for survival outcomes
 
 Single-cell imaging is common in cancer applications, where the analysis goal is to relate cell-level spatial information to patient-level time-to-event outcomes like overall survival or time-to-recurrence. Cox regression is a popular regression technique for assessing the association between covariates and a survival outcome. The standard Cox model is given by
@@ -103,8 +105,15 @@ p2 = Gdf_fpc %>%
 ggarrange(p1, p2, nrow = 1, ncol = 2)
 ```
 
+The figure above shows scatter plots of survival time versus functional principal components for FPC 1 and FPC 2. The left panel shows the relationship between survival time (in days) and the first functional principal component (fpc1) score, while the right panel illustrates the relationship with the second component (fpc2). Data points are color-coded based on whether a given patient experienced the event, with red representing censoring and blue representing individuals who died. These plots highlight the variation in survival times as explained by the two principal components. In general, it appears that subjects with lower scores for FPC 1 tended to have longer survival times.
 
-It appears that subjects with lower scores for FPC 1 tended to have longer survival times.
+
+
+
+
+
+
+
 
 Next, we use these scores as covariates in a Cox regression model. We also control for age.
 
@@ -155,12 +164,12 @@ class(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm'))
 summary(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_lfcm'))
 ```
 
-Finally, we visualized the estimated coefficient function, $\hat{\beta}(r)$, from this model. The code below extracts this quantity, then plots $\hat{\beta}(r)$ as a solid black line and 95% pointwise confidence intervals as dotted black lines. Values of the radius $r$ where the 95% confidence interval does not contain zero are statistically significant.
+Finally, we visualized the exponentiated estimated coefficient function, $e^{\hat{\beta}(r)}$, from this model. The code below extracts this quantity, then plots $e^{\hat{\beta}(r)}$ as a solid black line and 95% pointwise confidence intervals as dotted black lines. For the linear functional Cox model, $e^{\hat{\beta}(r)}$ is interpreted as a hazard ratio as a function of radius $r$. The red dotted line represents the hazard ratio of 1. Values above the red line indicate an increased hazard, while values below it suggest a decreased hazard. Values of the radius $r$ where the 95% confidence interval does not contain one are statistically significant.
 
 ```{r}
 lfcm_surface = extract_surface(ovarian_FDA, metric = "uni g", model = "fit_lfcm", analysis_vars = c("age"))
 
-plot(lfcm_surface)
+plot(lfcm_surface) + ylim(0, 10)
 ```
 
 
@@ -191,12 +200,16 @@ class(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_afcm'))
 summary(extract_model(ovarian_FDA, 'uni g', 'cox', 'fit_afcm'))
 ```
 
-The AFCM model produces a *coefficient surface*, $\hat{F}\left(r, X_i(r)\right)$, rather than a coefficient function. The code below extracts this estimated surface, then on the left plots the surface, and on the right plots regions of the surface that are statistically significant at the 95% confidence level. 
+The AFCM model produces a *coefficient surface*, $\hat{F}\left(r, X_i(r)\right)$, rather than a coefficient function, illustrating the relationship between G value and radius $r$ in a continuous gradient. The code below extracts this estimated surface, then on the left plots the surface, and on the right plots regions of the surface that are statistically significant at the 95% confidence level. The color scale represents the magnitude of the hazard ratio.  
+
+For example, at $r= 30$ and $G = 0.3$, we observe a statistically significant region with a color corresponding to a hazard ratio value between 1.5 and 2.0. This indicates that at a radius of 30mm, individuals with a G value of 0.3, experience an expected 50% to 100% increased hazard compared to the baseline hazard.
+
+
 
 ```{r extract_estimates, fig.with = 12}
 afcm_surface = extract_surface(ovarian_FDA, metric = "uni g", model = "fit_afcm", analysis_vars = c("age"), p = 0.05)
-plot(afcm_surface)
 
+plot(afcm_surface)
 ```
 
 ### Model summaries and C-index 
