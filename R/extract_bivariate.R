@@ -11,8 +11,8 @@
 #' @param r_vec Numeric vector of radii over which to evaluate spatial summary functions. Must begin at 0.
 #' @param func Spatial summary function to calculate. Options are c(Kcross, Lcross, Gcross) which denote Ripley's K, Besag's L, and nearest neighbor G function, respectively, or entropy from Vu et al, 2023.
 #' @param edge_correction Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")
-#' @param emperical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.
-#' @param permutations integer for the number of permtuations to use if emperical_CSR is `TRUE` and exact CSR not calculable
+#' @param empirical_CSR logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.
+#' @param permutations integer for the number of permtuations to use if empirical_CSR is `TRUE` and exact CSR not calculable
 #'
 #' @details `r lifecycle::badge('stable')`
 #'
@@ -53,7 +53,7 @@ bivariate = function(mximg,
                      r_vec,
                      func = c(Kcross, Lcross, Gcross, entropy),
                      edge_correction,
-                     emperical_CSR = FALSE,
+                     empirical_CSR = FALSE,
                      permutations = 1000){
   #### note to switch edge correction based on choice of func, this should be automated
 
@@ -78,7 +78,7 @@ bivariate = function(mximg,
                 correction = edge_correction)
 
   #if the user wants permutations to estimate CSR then will have to run them
-  if(emperical_CSR == TRUE){
+  if(empirical_CSR == TRUE){
     if(identical(Kcross, func)){
       #message("Using Exact Complete Spatial Randomness for Ripley's K")
       sumfun[[2]] = func(pp_obj, #exact CSR is across all points

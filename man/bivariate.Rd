@@ -12,7 +12,7 @@ bivariate(
   r_vec,
   func = c(Kcross, Lcross, Gcross, entropy),
   edge_correction,
-  emperical_CSR = FALSE,
+  empirical_CSR = FALSE,
   permutations = 1000
 )
 }
@@ -32,9 +32,9 @@ Should have variables \code{x} and \code{y} to denote x and y spatial locations 
 
 \item{edge_correction}{Character string that denotes the edge correction method for spatial summary function. For Kcross and Lcross choose one of c("border", "isotropic", "Ripley", "translate", "none"). For Gcross choose one of c("rs", "km", "han")}
 
-\item{emperical_CSR}{logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.}
+\item{empirical_CSR}{logical to indicate whether to use the permutations to identify the sample-specific complete spatial randomness (CSR) estimation.}
 
-\item{permutations}{integer for the number of permtuations to use if emperical_CSR is \code{TRUE} and exact CSR not calculable}
+\item{permutations}{integer for the number of permtuations to use if empirical_CSR is \code{TRUE} and exact CSR not calculable}
 }
 \value{
 A \code{data.frame} containing:
