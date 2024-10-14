@@ -69,10 +69,10 @@
 #' #run function
 #' ovarian_FDA = extract_summary_functions(ovarian_FDA, r_vec = 0:100,
 #'                                         extract_func = univariate,
-#'                                         summary_func = Kest,
+#'                                         summary_func = Gest,
 #'                                         markvar = "immune",
 #'                                         mark1 = "immune",
-#'                                         edge_correction = "trans")
+#'                                         edge_correction = "rs")
 #'
 #' @export
 extract_summary_functions <- function(mxFDAobject, r_vec = seq(0, 100, by = 10),

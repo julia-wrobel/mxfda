@@ -61,10 +61,10 @@ data('ovarian_FDA')
 #run function
 ovarian_FDA = extract_summary_functions(ovarian_FDA, r_vec = 0:100,
                                         extract_func = univariate,
-                                        summary_func = Kest,
+                                        summary_func = Gest,
                                         markvar = "immune",
                                         mark1 = "immune",
-                                        edge_correction = "trans")
+                                        edge_correction = "rs")
 
 }
 \references{

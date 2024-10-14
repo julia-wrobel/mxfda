@@ -1,7 +1,7 @@
 Package: mxfda
 Title: A Functional Data Analysis Package for Spatial Single Cell Data
 Version: 0.2.2
-Date: 2024-05-06
+Date: 2024-10-07
 Authors@R: 
     c(
     person("Julia", "Wrobel", role = c("aut"), 
