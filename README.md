@@ -30,7 +30,7 @@ devtools::install_github("julia-wrobel/mxfda")
 To install a specific release of `mxfda`, use the `devtools` syntax. This is an example for installing the first release of `mxfda`:
 
 ```
-devtools::install_github('julia-wrobel/mxfda@v0.2.2')
+devtools::install_github('julia-wrobel/mxfda@v0.2.2.1')
 ```
 
 ## Vignettes and Function References

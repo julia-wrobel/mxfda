@@ -33,7 +33,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">mxfda</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.2-1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -171,6 +171,7 @@ experiment are described in <span class="citation">Steinhart et al.
 <span><span class="co">#&gt;  Has spatial data</span></span>
 <span><span class="co">#&gt;  Univariate Summaries: Gest</span></span>
 <span><span class="co">#&gt;  Bivariate Summaries: None</span></span>
+<span><span class="co">#&gt;  Multivariate Summaries: None</span></span>
 <span><span class="co">#&gt; FPCs not yet calculated</span></span>
 <span><span class="co">#&gt; MFPCs not yet calculated</span></span>
 <span><span class="co">#&gt; FCMs not yet calculated</span></span>
@@ -220,6 +221,7 @@ functional principal components (FPCs) that have been calculated:</p>
 <span><span class="co">#&gt;  Has spatial data</span></span>
 <span><span class="co">#&gt;  Univariate Summaries: Gest</span></span>
 <span><span class="co">#&gt;  Bivariate Summaries: None</span></span>
+<span><span class="co">#&gt;  Multivariate Summaries: None</span></span>
 <span><span class="co">#&gt; FPCs Calculated:</span></span>
 <span><span class="co">#&gt;  Gest: 4 FPCs describe 96.9% variance</span></span>
 <span><span class="co">#&gt; MFPCs not yet calculated</span></span>
@@ -326,12 +328,14 @@ functions from the lung data.</p>
 <span>                                        markvar <span class="op">=</span> <span class="st">"immune"</span>,</span>
 <span>                                        mark1 <span class="op">=</span> <span class="st">"immune"</span><span class="op">)</span></span>
 <span><span class="co">#&gt; Using Theoretical Complete Spatial Randomness for Ripley's K</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■                       </span>  25% |  ETA:  4s</span></span>
-<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■■■■■■■■■■       </span>  81% |  ETA:  1s</span></span></code></pre></div>
-<p>These K-functions are visualized below.</p>
+<span><span class="co">#&gt;  <span style="color: #00BB00;">■■■■■■■■■■■■■■■■                </span>  50% |  ETA:  3s</span></span></code></pre></div>
+<p>These K-functions (with CSR substracted) are visualized below. Each
+black line is an individual, and values above zero at a particular
+radius indicate spatial clustering beyond what is expected under
+CSR.</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/graphics/plot.default.html" class="external-link">plot</a></span><span class="op">(</span><span class="va">mxFDAobject</span>, y <span class="op">=</span> <span class="st">"fundiff"</span>, what <span class="op">=</span> <span class="st">"uni k"</span>, sampleID <span class="op">=</span> <span class="st">"patientImage_id"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html" class="external-link">geom_hline</a></span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="mx_fpca_files/figure-html/unnamed-chunk-8-1.png" width="700"></p>
 <div class="section level4">
 <h4 id="run-and-visualize-mfpca">Run and visualize MFPCA<a class="anchor" aria-label="anchor" href="#run-and-visualize-mfpca"></a>
@@ -358,6 +362,7 @@ calculated.</p>
 <span><span class="co">#&gt;  Has spatial data</span></span>
 <span><span class="co">#&gt;  Univariate Summaries: Kest</span></span>
 <span><span class="co">#&gt;  Bivariate Summaries: None</span></span>
+<span><span class="co">#&gt;  Multivariate Summaries: None</span></span>
 <span><span class="co">#&gt; FPCs not yet calculated</span></span>
 <span><span class="co">#&gt; MFPCs Calculated:</span></span>
 <span><span class="co">#&gt;  Kest: 1 Level1 MFPCs and 2 Level2 MFPCs explain 99.7% variance</span></span>

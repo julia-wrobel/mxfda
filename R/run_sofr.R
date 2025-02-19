@@ -105,9 +105,18 @@ run_sofr <- function(mxFDAobject,
   mxfundata = mxfundata %>% select(-contains("r_"))
   mxfundata$xmat = mat
 
-  if(is.null(knots)) knots = floor(ncol(mat)/3)
-  if(knots > ncol(mat) - 5) knots = floor(ncol(mat)/3)
-  if(knots < 3) knots = 5
+  if(is.null(knots)){
+    knots = min(c(floor(ncol(mat)/3),50))
+    message("`knots` not specified. Using `knots = ", knots, "`")
+  }
+  if(knots > ncol(mat) - 5){
+    knots = min(c(floor(ncol(mat)/3),50))
+    message("More `knots` than resolution. Using `knots = ", knots, "`")
+  }
+  if(knots < 3){
+    knots = 5
+    message("More `knots` than resolution. Using `knots = ", knots, "`")
+  }
 
   if(family == "binomial"){
      outcome = stats::formula(formula)[[2]]
@@ -117,9 +126,15 @@ run_sofr <- function(mxFDAobject,
   form = deparse(stats::formula(formula))
   form =  paste0(form, ' + lf(xmat, k=', knots, ')')
 
-  fit_sofr <- pfr(formula = stats::as.formula(form),
-                  #family = family,
-                  data = mxfundata)
+  if(family == "gaussian"){
+    fit_sofr = pfr(formula = stats::as.formula(form),
+                   family = "gaussian",
+                   data = mxfundata)
+  } else {
+    fit_sofr = pfr(formula = stats::as.formula(form),
+                   family = "binomial",
+                   data = mxfundata)
+  }
 
   class(fit_sofr) <- append("sofr", class(fit_sofr))
 
