@@ -123,17 +123,19 @@ run_sofr <- function(mxFDAobject,
      mxfundata[[outcome]] = as.numeric(mxfundata[[outcome]])
   }
 
-  form = deparse(stats::formula(formula))
+  form = paste(deparse(stats::formula(formula)), collapse = " ")
   form =  paste0(form, ' + lf(xmat, k=', knots, ')')
 
   if(family == "gaussian"){
     fit_sofr = pfr(formula = stats::as.formula(form),
                    family = "gaussian",
-                   data = mxfundata)
+                   data = mxfundata,
+                   ...)
   } else {
     fit_sofr = pfr(formula = stats::as.formula(form),
                    family = "binomial",
-                   data = mxfundata)
+                   data = mxfundata,
+                   ...)
   }
 
   class(fit_sofr) <- append("sofr", class(fit_sofr))
